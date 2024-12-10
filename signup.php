@@ -80,6 +80,7 @@ if ($_POST) {
 ?>
 
 <center>
+<div class="background-wrapper">
 <div class="container">
     <table border="0">
         <tr>
@@ -89,6 +90,7 @@ if ($_POST) {
                 <?php if ($error) echo $error; ?>
             </td>
         </tr>
+        <!-- First Name And Last Name -->
         <tr>
             <form action="" method="POST">
             <td class="label-td" colspan="2">
@@ -97,12 +99,16 @@ if ($_POST) {
         </tr>
         <tr>
             <td class="label-td">
-                <input type="text" name="fname" class="input-text" placeholder="First Name" required>
+                <input type="text" name="fname" class="input-text" placeholder="First Name" required
+                pattern="[A-Za-z]+" title="First name can only contain letters.">
             </td>
             <td class="label-td">
-                <input type="text" name="lname" class="input-text" placeholder="Last Name" required>
+                <input type="text" name="lname" class="input-text" placeholder="Last Name" required
+                pattern="[A-Za-z]+" title="Last name can only contain letters.">
             </td>
         </tr>
+
+        <!-- Address -->
         <tr>
             <td class="label-td" colspan="2">
                 <label for="address" class="form-label">Address: </label>
@@ -113,16 +119,40 @@ if ($_POST) {
                 <input type="text" name="address" class="input-text" placeholder="Address" required>
             </td>
         </tr>
+
+
+        <!-- PhilHealth Question -->
         <tr>
             <td class="label-td" colspan="2">
-                <label for="nic" class="form-label">NIC: </label>
+                <label for="hasPhilhealth" class="form-label">Do you have a PhilHealth Number?</label>
             </td>
         </tr>
         <tr>
-            <td class="label-td" colspan="2">
-                <input type="text" name="nic" class="input-text" placeholder="NIC Number" required>
+            <td class="label-td">
+                <input type="radio" name="hasPhilhealth" value="yes" id="philhealth-yes" onclick="togglePhilhealthField()"> Yes
+            </td>
+            <td class="label-td">
+                <input type="radio" name="hasPhilhealth" value="no" id="philhealth-no" onclick="togglePhilhealthField()"> No
             </td>
         </tr>
+
+        <!-- PhilHealth Number input (only shown if "Yes" is selected) -->
+        <!-- <tr id="philhealth-row" style="display: none;">
+            <td class="label-td" colspan="2">
+                <label for="nic" class="form-label">PhilHealth No.: </label>
+            </td>
+        </tr> -->
+    
+        <tr id="philhealth-row-input" style="display: none;">
+            <td class="label-td" colspan="2">
+                <input type="text" name="nic" class="input-text" placeholder="Exclude the '-' when inputting" required
+                minlength="12" maxlength="12" pattern="\d{12}" title="PhilHealth number must be exactly 12 digits">
+            </td>
+        </tr>
+
+
+
+        <!-- Date Of Birth -->           
         <tr>
             <td class="label-td" colspan="2">
                 <label for="dob" class="form-label">Date of Birth: </label>
@@ -177,6 +207,21 @@ if ($_POST) {
         </tr>
     </table>
 </div>
+</div>
 </center>
+<script>
+    function togglePhilhealthField() {
+        var hasPhilhealthYes = document.getElementById('philhealth-yes').checked;
+        var philhealthRow = document.getElementById('philhealth-row-input'); // Target the correct input row
+
+        // Show or hide the input field based on the radio button selection
+        if (hasPhilhealthYes) {
+            philhealthRow.style.display = 'table-row'; // Show if "Yes" is selected
+        } else {
+            philhealthRow.style.display = 'none'; // Hide if "No" is selected
+        }
+    }
+</script>
+
 </body>
 </html>

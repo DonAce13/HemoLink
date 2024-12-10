@@ -1,7 +1,10 @@
 
 body{
     margin: 2%;
-    background-color: #F6F7FA;
+    background-color: var(--primarycolor);
+}
+.background-wrapper{
+    background-color: var(--primarycolor);
 }
 .container{
     width: 90%;

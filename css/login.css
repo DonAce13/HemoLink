@@ -1,7 +1,7 @@
 
 body{
     margin: 7%;
-    background-color: #F6F7FA;
+    background-color: var(--primarycolor);
 }
 
 
