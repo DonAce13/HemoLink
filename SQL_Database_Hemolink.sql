@@ -141,14 +141,14 @@ CREATE TABLE IF NOT EXISTS schedule (
 -- Insert data with dynamic current date and time
 INSERT INTO schedule (docid, title, scheduledate, scheduletime, nop) VALUES
 ('1', 'Current Test Session 1', CURDATE(), CURTIME(), 10),
-('2', 'Current Test Session 2', CURDATE(), CURTIME(), 20);
-('3', 'Current Test Session 3', CURDATE(), CURTIME(), 20);
-('4', 'Current Test Session 4', CURDATE(), CURTIME(), 20);
-('5', 'Current Test Session 5', CURDATE(), CURTIME(), 20);
-('6', 'Current Test Session 6', CURDATE(), CURTIME(), 20);
-('7', 'Current Test Session 7', CURDATE(), CURTIME(), 20);
-('8', 'Current Test Session 8', CURDATE(), CURTIME(), 20);
-('9', 'Current Test Session 9', CURDATE(), CURTIME(), 20);
+('2', 'Current Test Session 2', CURDATE(), CURTIME(), 20),
+('3', 'Current Test Session 3', CURDATE(), CURTIME(), 20),
+('4', 'Current Test Session 4', CURDATE(), CURTIME(), 20),
+('5', 'Current Test Session 5', CURDATE(), CURTIME(), 20),
+('6', 'Current Test Session 6', CURDATE(), CURTIME(), 20),
+('7', 'Current Test Session 7', CURDATE(), CURTIME(), 20),
+('8', 'Current Test Session 8', CURDATE(), CURTIME(), 20),
+('9', 'Current Test Session 9', CURDATE(), CURTIME(), 20),
 ('10', 'Current Test Session 10', CURDATE(), CURTIME(), 20);
 
 -- --------------------------------------------------------
