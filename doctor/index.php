@@ -262,7 +262,7 @@
 
 
                             
-                                    <p id="anim" style="font-size: 20px;font-weight:600;padding-left: 40px;">Your Up Coming Sessions until Next week</p>
+                                    <p id="anim" style="font-size: 20px;font-weight:600;padding-left: 40px;">Your Upcoming Sessions until Next week</p>
                                     <center>
                                         <div class="abc scroll" style="height: 250px;padding: 0;margin: 0;">
                                         <table width="85%" class="sub-table scrolldown" border="0" >
@@ -277,7 +277,7 @@
                                                 </th>
                                                 
                                                 <th class="table-headin">
-                                                Sheduled Date
+                                                Scheduled Date & Time
                                                 </th>
                                                 <th class="table-headin">
                                                     
