@@ -305,7 +305,7 @@
                                                 </th>
                                                 <th class="table-headin">
                                                     
-                                                    Scheduled Date & Time
+                                                    Sheduled Date & Time
                                                     
                                                 </th>
                                                     

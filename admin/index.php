@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../css/animations.css">  
     <link rel="stylesheet" href="../css/main.css">  
     <link rel="stylesheet" href="../css/admin.css">
-
+        
     <title>Dashboard</title>
 </head>
 <body>
@@ -361,7 +361,7 @@
                                                 </th>
                                                 <th class="table-headin">
                                                     
-                                                    Scheduled Date & Time
+                                                    Sheduled Date & Time
                                                     
                                                 </th>
                                                     
