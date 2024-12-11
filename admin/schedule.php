@@ -602,15 +602,14 @@
                                         <th class="table-headin">
                                              Patient ID
                                          </th>
+
                                          <th class="table-headin">
                                              Patient name
                                          </th>
+
                                          <th class="table-headin">
-                                             
-                                             Appointment number
-                                             
-                                         </th>
-                                        
+                                             Appointment number                                          
+                                         </th> 
                                          
                                          <th class="table-headin">
                                              Patient Telephone

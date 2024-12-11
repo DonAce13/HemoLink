@@ -28,6 +28,8 @@ font.logo-sub{
 }
 
 
+
+
 /*------custom-scroll-bar - from w3schools.com------------------*/
 /* width */
 ::-webkit-scrollbar {
@@ -345,12 +347,6 @@ input[type=search]:focus {
   
 }
 
-.menu-text{
-  padding-left: 40%;
-  font-weight: 500;
-  font-size: 16px;
-  
-}
 
 
 .menu-active{

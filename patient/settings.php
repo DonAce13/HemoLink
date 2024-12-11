@@ -322,7 +322,7 @@
                             </tr>
                             <tr>
                                 <td class="label-td" colspan="2">
-                                    <label for="nic" class="form-label">NIC: </label>
+                                    <label for="nic" class="form-label">Philhealth No.: </label>
                                 </td>
                             </tr>
                             <tr>
@@ -490,16 +490,16 @@
                                     </tr>
                                     <tr>
                                         <td class="label-td" colspan="2">
-                                            <input type="password" name="password" class="input-text" placeholder="Defind a Password" required><br>
+                                            <input type="password" name="password" class="input-text" placeholder="New Password" required><br>
                                         </td>
                                     </tr><tr>
                                         <td class="label-td" colspan="2">
-                                            <label for="cpassword" class="form-label">Conform Password: </label>
+                                            <label for="cpassword" class="form-label">Confirm Password: </label>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td class="label-td" colspan="2">
-                                            <input type="password" name="cpassword" class="input-text" placeholder="Conform Password" required><br>
+                                            <input type="password" name="cpassword" class="input-text" placeholder="Confirm Password" required><br>
                                         </td>
                                     </tr>
                                     

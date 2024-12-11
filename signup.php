@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="css/animations.css">  
     <link rel="stylesheet" href="css/main.css">  
     <link rel="stylesheet" href="css/signup.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         
     <title>Sign Up</title>
     
@@ -14,6 +15,22 @@
 <body>
 <?php
 session_start();
+
+// SweetAlert welcome alert
+if (isset($_SESSION["welcome_alert"])) {
+    echo "
+    <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+    <script>
+        Swal.fire({
+            title: 'Welcome, " . $_SESSION["username"] . "!',
+            text: 'Your account has been successfully created.',
+            icon: 'success',
+            confirmButtonText: 'Continue'
+        });
+    </script>
+    ";
+    unset($_SESSION["welcome_alert"]); // Remove the session variable after showing the alert
+}
 
 // Unset all server-side variables
 $_SESSION["user"] = "";
@@ -37,47 +54,62 @@ if ($_POST) {
     $cpassword = $_POST['confirm_password'] ?? ""; // Confirm password field
     $tele = $_POST['tele'] ?? ""; // Telephone field
 
-    // Server-side validation
-    if (!preg_match("/^[a-zA-Z]+$/", $fname) || !preg_match("/^[a-zA-Z]+$/", $lname)) {
-        $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">First name and last name can only contain letters.</label>';
-    } elseif ($newpassword !== $cpassword) {
-        $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Password Confirmation Error! Reconfirm Password</label>';
-    } else {
-        // Database connection (replace with your database details)
-        $database = new mysqli("localhost", "root", "", "edoc");
-        if ($database->connect_error) {
-            die("Connection failed: " . $database->connect_error);
-        }
-
-        // Check if email already exists in the webuser table
-        $emailResult = $database->query("SELECT * FROM webuser WHERE email='$email';");
-        if ($emailResult->num_rows > 0) {
-            $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Already have an account for this Email address.</label>';
-        } else {
-            // Check if mobile number already exists in the patient table
-            $teleResult = $database->query("SELECT * FROM patient WHERE ptel='$tele';");
-            if ($teleResult->num_rows > 0) {
-                $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Mobile number is already registered.</label>';
-            } else {
-                // Insert new record into the patient table
-                $database->query("INSERT INTO patient (pemail, pname, ppassword, paddress, pnic, pdob, ptel) VALUES ('$email', '$fname $lname', '$newpassword', '$address', '$nic', '$dob', '$tele');");
-
-                // Insert new record into the webuser table
-                $database->query("INSERT INTO webuser (email, usertype) VALUES ('$email', 'p');");
-
-                $_SESSION["user"] = $email;
-                $_SESSION["usertype"] = "p";
-                $_SESSION["username"] = $fname;
-
-                header('Location: patient/index.php');
-                exit();
-            }
-        }
-
-        $database->close();
+// Server-side validation
+if (!preg_match("/^[a-zA-Z]+$/", $fname) || !preg_match("/^[a-zA-Z]+$/", $lname)) {
+    $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">First name and last name can only contain letters.</label>';
+} elseif ($newpassword !== $cpassword) {
+    $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Password Confirmation Error! Reconfirm Password</label>';
+} else {
+    // Database connection (replace with your database details)
+    $database = new mysqli("192.168.56.1", "root", "", "HemoLink_Database");
+    if ($database->connect_error) {
+        die("Connection failed: " . $database->connect_error);
     }
+
+    // Check if email already exists in the webuser table
+    $stmt = $database->prepare("SELECT * FROM webuser WHERE email = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $emailResult = $stmt->get_result();
+    if ($emailResult->num_rows > 0) {
+        $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Already have an account for this Email address.</label>';
+    } else {
+        // Check if mobile number already exists in the patient table
+        $stmt = $database->prepare("SELECT * FROM patient WHERE ptel = ?");
+        $stmt->bind_param("s", $tele);
+        $stmt->execute();
+        $teleResult = $stmt->get_result();
+        if ($teleResult->num_rows > 0) {
+            $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Mobile number is already registered.</label>';
+        } else {
+            // Insert new record into the patient table
+            $stmt = $database->prepare("INSERT INTO patient (pemail, pname, ppassword, paddress, pnic, pdob, ptel) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $hashedPassword = password_hash($newpassword, PASSWORD_BCRYPT); // Hash the password for security
+            $fullName = $fname . ' ' . $lname;
+            $stmt->bind_param("sssssss", $email, $fullName, $hashedPassword, $address, $nic, $dob, $tele);
+            $stmt->execute();
+
+            // Insert new record into the webuser table
+            $stmt = $database->prepare("INSERT INTO webuser (email, usertype) VALUES (?, ?)");
+            $userType = 'p';
+            $stmt->bind_param("ss", $email, $userType);
+            $stmt->execute();
+
+            // Set session variables and redirect to patient dashboard
+            $_SESSION["user"] = $email;
+            $_SESSION["usertype"] = "p";
+            $_SESSION["username"] = $fname;
+
+            header('Location: patient/index.php');
+            exit();
+        }
+        $stmt->close();
+    }
+    $database->close();
+}
 }
 ?>
+
 
 <center>
 <div class="background-wrapper">
@@ -145,8 +177,8 @@ if ($_POST) {
     
         <tr id="philhealth-row-input" style="display: none;">
             <td class="label-td" colspan="2">
-                <input type="text" name="nic" class="input-text" placeholder="Exclude the '-' when inputting" required
-                minlength="12" maxlength="12" pattern="\d{12}" title="PhilHealth number must be exactly 12 digits">
+                <input type="text" id="philhealth-input" name="nic" class="input-text" placeholder="Exclude the '-' when inputting"
+                    minlength="12" maxlength="12" pattern="\d{12}" title="PhilHealth number must be exactly 12 digits">
             </td>
         </tr>
 
@@ -211,16 +243,20 @@ if ($_POST) {
 </center>
 <script>
     function togglePhilhealthField() {
-        var hasPhilhealthYes = document.getElementById('philhealth-yes').checked;
-        var philhealthRow = document.getElementById('philhealth-row-input'); // Target the correct input row
+    var hasPhilhealthYes = document.getElementById('philhealth-yes').checked;
+    var philhealthRow = document.getElementById('philhealth-row-input');
+    var philhealthInput = document.getElementById('philhealth-input');
 
-        // Show or hide the input field based on the radio button selection
-        if (hasPhilhealthYes) {
-            philhealthRow.style.display = 'table-row'; // Show if "Yes" is selected
-        } else {
-            philhealthRow.style.display = 'none'; // Hide if "No" is selected
-        }
+    // Show or hide the input field based on the radio button selection
+    if (hasPhilhealthYes) {
+        philhealthRow.style.display = 'table-row'; // Show if "Yes" is selected
+        philhealthInput.setAttribute('required', 'required'); // Add required attribute
+    } else {
+        philhealthRow.style.display = 'none'; // Hide if "No" is selected
+        philhealthInput.removeAttribute('required'); // Remove required attribute
     }
+}
+
 </script>
 
 </body>

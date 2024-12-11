@@ -38,78 +38,85 @@
 
 
 
-    if($_POST){
-
-        $email=$_POST['useremail'];
-        $password=$_POST['userpassword'];
+    if ($_POST) {
+        $email = $_POST['useremail'];
+        $password = $_POST['userpassword'];
         
-        $error='<label for="promter" class="form-label"></label>';
+        $error = '<label for="promter" class="form-label"></label>';
 
-        $result= $database->query("select * from webuser where email='$email'");
-        if($result->num_rows==1){
-            $utype=$result->fetch_assoc()['usertype'];
-            if ($utype=='p'){
-                //TODO
+        $result = $database->query("select * from webuser where email='$email'");
+        if ($result->num_rows == 1) {
+            $utype = $result->fetch_assoc()['usertype'];
+            if ($utype == 'p') {
                 $checker = $database->query("select * from patient where pemail='$email' and ppassword='$password'");
-                if ($checker->num_rows==1){
-
-
-                    //   Patient dashbord
-                    $_SESSION['user']=$email;
-                    $_SESSION['usertype']='p';
-                    
-                    header('location: patient/index.php');
-
-                }else{
-                    $error='<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Wrong credentials: Invalid email or password</label>';
+                if ($checker->num_rows == 1) {
+                    $_SESSION['user'] = $email;
+                    $_SESSION['usertype'] = 'p';
+                    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+                    echo "<script>
+                            Swal.fire({
+                                title: 'Success!',
+                                text: 'Logged in successfully as Patient!',
+                                icon: 'success',
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                window.location.href = 'patient/index.php';
+                            });
+                          </script>";
+                    exit();
+                } else {
+                    $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Wrong credentials: Invalid email or password</label>';
                 }
 
-            }elseif($utype=='a'){
-                //TODO
+            } elseif ($utype == 'a') {
                 $checker = $database->query("select * from admin where aemail='$email' and apassword='$password'");
-                if ($checker->num_rows==1){
-
-
-                    //   Admin dashbord
-                    $_SESSION['user']=$email;
-                    $_SESSION['usertype']='a';
-                    
-                    header('location: admin/index.php');
-
-                }else{
-                    $error='<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Wrong credentials: Invalid email or password</label>';
+                if ($checker->num_rows == 1) {
+                    $_SESSION['user'] = $email;
+                    $_SESSION['usertype'] = 'a';
+                    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+                    echo "<script>
+                            Swal.fire({
+                                title: 'Success!',
+                                text: 'Logged in successfully as Admin!',
+                                icon: 'success',
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                window.location.href = 'admin/index.php';
+                            });
+                          </script>";
+                    exit();
+                } else {
+                    $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Wrong credentials: Invalid email or password</label>';
                 }
 
-
-            }elseif($utype=='d'){
-                //TODO
+            } elseif ($utype == 'd') {
                 $checker = $database->query("select * from doctor where docemail='$email' and docpassword='$password'");
-                if ($checker->num_rows==1){
-
-
-                    //   doctor dashbord
-                    $_SESSION['user']=$email;
-                    $_SESSION['usertype']='d';
-                    header('location: doctor/index.php');
-
-                }else{
-                    $error='<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Wrong credentials: Invalid email or password</label>';
+                if ($checker->num_rows == 1) {
+                    $_SESSION['user'] = $email;
+                    $_SESSION['usertype'] = 'd';
+                    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+                    echo "<script>
+                            Swal.fire({
+                                title: 'Success!',
+                                text: 'Logged in successfully as Doctor!',
+                                icon: 'success',
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                window.location.href = 'doctor/index.php';
+                            });
+                          </script>";
+                    exit();
+                } else {
+                    $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Wrong credentials: Invalid email or password</label>';
                 }
 
             }
             
-        }else{
-            $error='<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">We cant found any acount for this email.</label>';
+        } else {
+            $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">We cant found any account for this email.</label>';
         }
-
-
-
-
-
-
-        
-    }else{
-        $error='<label for="promter" class="form-label">&nbsp;</label>';
+    } else {
+        $error = '<label for="promter" class="form-label">&nbsp;</label>';
     }
 
     ?>
