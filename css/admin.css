@@ -1,124 +1,89 @@
-/* Menu Container */
-/* Menu Container */
+/* Ensure the container sets up the flex layout */
+.container {
+    display: flex;
+    flex-wrap: nowrap;
+    width: 100%;
+}
+
+/* Menu styles */
 .menu {
-    width: 100%;
-    background-color: #fff;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    position: fixed; /* Make the menu fixed at the top */
+    width: 20%;
+    min-width: 200px;
+    background-color: #f5f5f5;
+    overflow-y: auto;
+    position: sticky;
     top: 0;
-    left: 0;
-    z-index: 1000; /* Ensure it stays above other elements */
-    display: flex;
-    flex-direction: column; /* Stack items vertically */
-    justify-content: flex-start;
-    align-items: flex-start;
-    padding: 5px 15px;
-    height: auto;
-    overflow: auto;
+    display: block; /* Show the menu by default */
 }
 
+/* Hamburger Icon styles (hidden by default) */
+.hamburger {
+    display: none; /* Hidden by default */
+    cursor: pointer;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 30px;
+    width: 35px;
+    z-index: 2;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
 
-/* Menu Items Layout */
-.menu-container {
-    display: flex; /* Flex container for the menu items */
-    justify-content: flex-start; /* Aligns menu items to the left */
-    align-items: center;
-    margin: 0;
-    padding: 0;
+.hamburger .bar {
+    height: 4px;
     width: 100%;
-    flex-shrink: 0; /* Prevents shrinking of the container */
+    background-color: #333;
+    border-radius: 10px;
 }
 
-/* Menu Button */
-.menu-btn {
-    margin-right: 15px; /* Space between menu items */
-    padding: 5px 10px; /* Padding for buttons */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    white-space: nowrap; /* Prevents text from wrapping inside buttons */
-    flex-shrink: 0; /* Prevents shrinking of individual menu buttons */
-}
-
-/* Menu Text */
-.menu-text {
-    font-size: 1.5vh; /* Default font size */
-    color: #161c2d;
-    text-overflow: ellipsis; /* Adds ellipsis if text overflows */
-    overflow: hidden; /* Prevents text overflow */
-    white-space: nowrap; /* Ensures text stays on one line */
-}
-
-/* Media Query for Mobile (Shrinking) */
-@media (max-width: 768px) {
-    .menu {
-        height: auto; /* Adjust height to fit content on small screens */
-    }
-    .menu-container {
-        width: 100%; /* Full width on mobile */
-    }
-    .menu-btn {
-        margin-right: 10px; /* Slightly reduce margin */
-        padding: 5px; /* Adjust padding on smaller screens */
-    }
-    .menu-text {
-        font-size: 12px; /* Reduce font size on smaller screens */
-    }
-}
-
-
-
-
-/* Menu Button */
-.menu-btn {
-    margin-right: 15px; /* Space between menu items */
-    padding: 5px 10px; /* Padding for the buttons */
-    display: flex;
-    align-items: center; /* Centers text vertically inside each button */
-    justify-content: center; /* Centers text horizontally inside each button */
-}
-
-/* Body Content Layout */
+/* Dashboard body */
 .dash-body {
-    display: flex; /* Use flexbox to allow children to grow or shrink */
-    flex-direction: column; /* Stack elements vertically */
-    justify-content: flex-start; /* Align content at the top */
-    align-items: flex-start; /* Align items to the left */
-    width: 100%; /* Full width */
-    height: 100vh; /* Full height of the viewport */
-    padding: 10px; /* Add padding for spacing */
-    box-sizing: border-box; /* Ensure padding doesn’t affect width/height */
-    overflow: auto; /* Allow scrolling if content overflows */
-}
-
-/* For larger screens (e.g., laptops and desktops) */
-@media (min-width: 1024px) {
+    width: 100%; /* Take the remaining space */
+    padding: 15px;
+    overflow-x: auto; /* Allow horizontal scrolling for wide content */
+    @media (max-width: 768px){
     .dash-body {
-        padding: 20px; /* More padding for larger screens */
+
+        overflow-x: auto;
     }
 }
-
-/* For medium screens (tablets and small laptops) */
-@media (max-width: 1024px) and (min-width: 768px) {
-    .dash-body {
-        padding: 15px; /* Adjust padding */
-    }
 }
 
-/* For smaller screens (phones) */
+/* For smaller screens (responsive design) */
 @media (max-width: 768px) {
-    .dash-body {
-        padding: 10px; /* Adjust padding for smaller screens */
-        flex-direction: column; /* Stack elements vertically */
+    .container {
+        flex-direction: column; /* Stack menu and body vertically */
     }
 
     .menu {
-        flex-direction: column; /* Stack the menu vertically on small screens */
+        width: 100%; /* Full width for smaller screens */
+        min-width: 0; /* Reset minimum width */
+        display: none; /* Initially hide the menu */
+        flex-direction: column; /* Stack items vertically */
+    }
+
+    .menu.show {
+        display: block; /* Show the menu when 'show' class is added */
+    }
+
+    .dash-body {
+        width: 100%; /* Full width for the body */
+        margin-top: 60px; /* Space for hamburger */
+    }
+
+    .hamburger {
+        display: flex; /* Show hamburger icon on smaller screens */
     }
 }
 
 
 
+.menu-container{
+    width: 100%;
+    border-spacing: 0;
+    
+}
 
 .profile-title{
     font-weight: 500;
@@ -150,6 +115,10 @@
     padding-bottom: 12%;
     /*box-shadow: 0 0 3px rgba(52,58,64,0.08);*/
     text-align: center;
+    @media(max-width: 768px){
+        padding-top: 0%;
+        padding-bottom: 0%;
+    }
     
 }
 
@@ -229,4 +198,88 @@
     margin-top: 30px;
     
 }
+.menu-text{
+    margin-left: 16vh;
+    @media (max-width: 767px){
+     margin-left: 20vh;;
+    }
+}
 
+
+
+
+* Ensure the container sets up the flex layout */
+.container {
+    display: flex;
+    flex-wrap: nowrap;
+    width: 100%;
+}
+
+/* Menu styles */
+.menu {
+    width: 20%;
+    min-width: 200px;
+    background-color: #f5f5f5;
+    overflow-y: auto;
+    position: sticky;
+    top: 0;
+    display: block; /* Show the menu by default */
+}
+
+/* Hamburger Icon styles (hidden by default) */
+.hamburger {
+    display: none; /* Hidden by default */
+    cursor: pointer;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 30px;
+    width: 35px;
+    z-index: 999; /* Make sure it's on top */
+    position: fixed; /* Fix position to avoid it being overlapped */
+    top: 20px; /* Adjust the position from the top */
+    left: 20px; /* Adjust the position from the left */
+}
+
+.hamburger .bar {
+    height: 4px;
+    width: 100%;
+    background-color: #333;
+    border-radius: 10px;
+}
+
+/* Dashboard body */
+.dash-body {
+    width: 80%; /* Take the remaining space */
+    padding: 15px;
+    overflow-x: auto; /* Allow horizontal scrolling for wide content */
+}
+
+/* For smaller screens (responsive design) */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column; /* Stack menu and body vertically */
+    }
+
+    .menu {
+        width: 100%; /* Full width for smaller screens */
+        min-width: 0; /* Reset minimum width */
+        display: none; /* Initially hide the menu */
+        flex-direction: column; /* Stack items vertically */
+    }
+
+    .menu.show {
+        display: block; /* Show the menu when 'show' class is added */
+    }
+
+    .dash-body {
+        width: 100%; /* Full width for the body */
+        margin-top: 60px; /* Space for hamburger */
+    }
+
+    .hamburger {
+        display: flex; /* Show hamburger icon on smaller screens */
+        position: fixed; /* Make sure it's fixed in place */
+        top: 20px; /* Ensure it's not hidden */
+        left: 20px;
+    }
+}

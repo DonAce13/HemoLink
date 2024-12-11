@@ -179,7 +179,7 @@
                                 Name
                                 </th>
                                 <th class="table-headin">   
-                                NIC
+                                Philhealth Id:
                                 </th>
                                 <th class="table-headin">
                                 Telephone 
