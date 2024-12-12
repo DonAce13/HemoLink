@@ -37,45 +37,14 @@
     border-radius: 10px;
 }
 
-/* Dashboard body */
-.dash-body {
-    width: 100%; /* Take the remaining space */
-    padding: 15px;
-    overflow-x: auto; /* Allow horizontal scrolling for wide content */
-    @media (max-width: 768px){
-    .dash-body {
-
-        overflow-x: auto;
-    }
-}
+.btn-label{
+    display: flex; 
+    justify-content: 
+    center; align-items: center;
 }
 
-/* For smaller screens (responsive design) */
-@media (max-width: 768px) {
-    .container {
-        flex-direction: column; /* Stack menu and body vertically */
-    }
 
-    .menu {
-        width: 100%; /* Full width for smaller screens */
-        min-width: 0; /* Reset minimum width */
-        display: none; /* Initially hide the menu */
-        flex-direction: column; /* Stack items vertically */
-    }
 
-    .menu.show {
-        display: block; /* Show the menu when 'show' class is added */
-    }
-
-    .dash-body {
-        width: 100%; /* Full width for the body */
-        margin-top: 60px; /* Space for hamburger */
-    }
-
-    .hamburger {
-        display: flex; /* Show hamburger icon on smaller screens */
-    }
-}
 
 
 
@@ -247,10 +216,20 @@
     border-radius: 10px;
 }
 
+.date-container {
+    margin-right: auto; /* Align container to the left in Flexbox/Grid layout */
+    display: flex; /* Use Flexbox for internal alignment */
+    justify-content: flex-start; /* Align items inside to the start (left) */
+    align-items: center; /* Center items vertically */
+}
+
+.date-container p {
+    text-align: center; /* Align paragraph text to the left */
+    margin-left: 10px; /* Add spacing on the left */
+}
 /* Dashboard body */
 .dash-body {
-    width: 80%; /* Take the remaining space */
-    padding: 15px;
+    width: 100%; /* Take the remaining space */
     overflow-x: auto; /* Allow horizontal scrolling for wide content */
 }
 
@@ -273,13 +252,37 @@
 
     .dash-body {
         width: 100%; /* Full width for the body */
-        margin-top: 60px; /* Space for hamburger */
     }
 
     .hamburger {
         display: flex; /* Show hamburger icon on smaller screens */
         position: fixed; /* Make sure it's fixed in place */
         top: 20px; /* Ensure it's not hidden */
-        left: 20px;
+        right: 20px;
+        left: auto;
+
     }
+    .header-search {
+        display: flex;
+        justify-content: center;
+        width: 45%;
+        margin-top: 40px;
+        padding-left: 10px;
+    }
+    .nav-bar{
+        margin-top:20px
+    }
+    .date-container {
+        width: 50%; /* Ensure it spans full width */
+    }
+
+    .date-container p {
+        text-align: center; /* Ensure content aligns left within table cells */
+    }
+    .btn-label{
+        margin-left:0;
+        padding:0;
+    }
+
+
 }

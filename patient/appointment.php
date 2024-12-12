@@ -1,3 +1,61 @@
+<?php
+// Start session and check user authentication
+session_start();
+
+if (isset($_SESSION["user"])) {
+    if ($_SESSION["user"] == "" || $_SESSION['usertype'] != 'p') {
+        header("Location: ../login.php");
+        exit;
+    } else {
+        $useremail = $_SESSION["user"];
+    }
+} else {
+    header("Location: ../login.php");
+    exit;
+}
+
+// Import database connection
+include("../connection.php");
+
+// Query to get patient details
+$sqlmain = "SELECT * FROM patient WHERE pemail=?";
+$stmt = $database->prepare($sqlmain);
+$stmt->bind_param("s", $useremail);
+$stmt->execute();
+$userrow = $stmt->get_result();
+$userfetch = $userrow->fetch_assoc();
+$userid = $userfetch["pid"];
+$username = $userfetch["pname"];
+?>
+
+<?php
+
+// PHP handling for cancellation
+if (isset($_GET['action']) && $_GET['action'] == 'drop') {
+    $appoid = $_GET['id'];
+
+    // Delete the booking from the schedule
+    $sql = "DELETE FROM appointment WHERE appoid=?";
+    $stmt = $database->prepare($sql);
+    $stmt->bind_param('i', $appoid);
+    $stmt->execute();
+
+    // Redirect to show confirmation
+    header("Location: appointment.php?action=canceled&id=$appoid");
+}
+
+if (isset($_GET['action']) && $_GET['action'] == 'canceled') {
+    echo "<script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Booking Canceled',
+            text: 'Your appointment has been canceled.',
+            confirmButtonText: 'OK'
+        });
+    </script>";
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,7 +63,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/animations.css">  
-    <link rel="stylesheet" href="../css/main.css">  
+    <link rel="stylesheet" href="../css/main.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="../css/admin.css">
         
     <title>Appointments</title>
@@ -16,37 +74,13 @@
         .sub-table{
             animation: transitionIn-Y-bottom 0.5s;
         }
-</style>
+    </style>
 </head>
 <body>
     <?php
 
     //learn from w3schools.com
 
-    session_start();
-
-    if(isset($_SESSION["user"])){
-        if(($_SESSION["user"])=="" or $_SESSION['usertype']!='p'){
-            header("location: ../login.php");
-        }else{
-            $useremail=$_SESSION["user"];
-        }
-
-    }else{
-        header("location: ../login.php");
-    }
-    
-
-    //import database
-    include("../connection.php");
-    $sqlmain= "select * from patient where pemail=?";
-    $stmt = $database->prepare($sqlmain);
-    $stmt->bind_param("s",$useremail);
-    $stmt->execute();
-    $userrow = $stmt->get_result();
-    $userfetch=$userrow->fetch_assoc();
-    $userid= $userfetch["pid"];
-    $username=$userfetch["pname"];
 
 
     //echo $userid;
@@ -99,32 +133,50 @@
                     </table>
                     </td>
                 </tr>
-                <tr class="menu-row" >
-                    <td class="menu-btn menu-icon-home" >
-                        <a href="index.php" class="non-style-link-menu "><div><p class="menu-text">Home</p></a></div></a>
-                    </td>
-                </tr>
+                <?php
+                $current_page = basename(parse_url($_SERVER['PHP_SELF'], PHP_URL_PATH));
+                ?>
+
                 <tr class="menu-row">
-                    <td class="menu-btn menu-icon-doctor">
-                        <a href="doctors.php" class="non-style-link-menu"><div><p class="menu-text">All Doctors</p></a></div>
+                    <td class="menu-btn menu-icon-home <?php echo ($current_page == 'index.php') ? 'menu-active' : ''; ?>">
+                        <a href="index.php" class="non-style-link-menu">
+                            <div><p class="menu-text">Home</p></div>
+                        </a>
                     </td>
                 </tr>
-                
-                <tr class="menu-row" >
-                    <td class="menu-btn menu-icon-session">
-                        <a href="schedule.php" class="non-style-link-menu"><div><p class="menu-text">Scheduled Sessions</p></div></a>
+
+                <tr class="menu-row">
+                    <td class="menu-btn menu-icon-doctor <?php echo ($current_page == 'doctors.php') ? 'menu-active' : ''; ?>">
+                        <a href="doctors.php" class="non-style-link-menu">
+                            <div><p class="menu-text">All Doctors</p></div>
+                        </a>
                     </td>
                 </tr>
-                <tr class="menu-row" >
-                    <td class="menu-btn menu-icon-appoinment  menu-active menu-icon-appoinment-active">
-                        <a href="appointment.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">My Bookings</p></a></div>
+
+                <tr class="menu-row">
+                    <td class="menu-btn menu-icon-session <?php echo ($current_page == 'schedule.php') ? 'menu-active' : ''; ?>">
+                        <a href="schedule.php" class="non-style-link-menu">
+                            <div><p class="menu-text">Scheduled Sessions</p></div>
+                        </a>
                     </td>
                 </tr>
-                <tr class="menu-row" >
-                    <td class="menu-btn menu-icon-settings">
-                        <a href="settings.php" class="non-style-link-menu"><div><p class="menu-text">Settings</p></a></div>
+
+                <tr class="menu-row">
+                    <td class="menu-btn menu-icon-appoinment <?php echo ($current_page == 'appointment.php') ? 'menu-active' : ''; ?>">
+                        <a href="appointment.php" class="non-style-link-menu">
+                            <div><p class="menu-text">My Bookings</p></div>
+                        </a>
                     </td>
                 </tr>
+
+                <tr class="menu-row">
+                    <td class="menu-btn menu-icon-settings <?php echo ($current_page == 'settings.php') ? 'menu-active' : ''; ?>">
+                        <a href="settings.php" class="non-style-link-menu">
+                            <div><p class="menu-text">Settings</p></div>
+                        </a>
+                    </td>
+                </tr>
+
                 
             </table>
         </div>
@@ -218,130 +270,103 @@
                         
                         <tbody>
                         
-                            <?php
+                        <?php
+                if ($result->num_rows == 0) {
+                    echo '<tr>
+                    <td colspan="7">
+                        <br><br><br><br>
+                        <center>
+                            <img src="../img/notfound.svg" width="25%">
+                            <br>
+                            <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">
+                                We couldn\'t find anything related to your keywords!
+                            </p>
+                            <a class="non-style-link" href="appointment.php">
+                                <button class="login-btn btn-primary-soft btn" 
+                                        style="display: flex;justify-content: center;align-items: center;margin-left:20px;">
+                                    &nbsp; Show all Appointments &nbsp;
+                                </button>
+                            </a>
+                        </center>
+                        <br><br><br><br>
+                    </td>
+                    </tr>';
+                } else {
+                    while ($row = $result->fetch_assoc()) {
+                        $scheduleid = $row["scheduleid"];
+                        $title = $row["title"];
+                        $docname = $row["docname"];
+                        $scheduledate = $row["scheduledate"];
+                        $scheduletime = $row["scheduletime"];
+                        $apponum = $row["apponum"];
+                        $appodate = $row["appodate"];
+                        $appoid = $row["appoid"];
 
+                        echo '
+                        <tr>
+                            <td style="width: 25%;">
+                                <div class="dashboard-items search-items">
+                                    <div style="width:100%;">
+                                        <div class="h3-search">
+                                            Booking Date: ' . substr($appodate, 0, 30) . '<br>
+                                            Reference Number: HemoLink ' . $appoid . '
+                                        </div>
+                                        <div class="h1-search">
+                                            ' . substr($title, 0, 21) . '<br>
+                                        </div>
+                                        <div class="h3-search">
+                                            Appointment Number: <div class="h1-search">0' . $apponum . '</div>
+                                        </div>
+                                        <div class="h3-search">
+                                            ' . substr($docname, 0, 30) . '
+                                        </div>
+                                        <div class="h4-search">
+                                            Scheduled Date: ' . $scheduledate . '<br>Starts: <b>@' . substr($scheduletime, 0, 5) . '</b> (24h)
+                                        </div>
+                                        <br>
+                                        <button class="cancel-booking-btn btn-primary-soft btn" 
+                                                style="padding-top:11px;padding-bottom:11px;width:100%" 
+                                                data-id="' . $appoid . '" 
+                                                data-title="' . $title . '" 
+                                                data-doc="' . $docname . '">
+                                            <font class="tn-in-text">Cancel Booking</font>
+                                        </button>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>';
+                    }
+                }
+                    // SweetAlert script for Cancel Booking
+                    ?>
+                    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                    <script>
+                        document.querySelectorAll('.cancel-booking-btn').forEach(function(button) {
+                            button.addEventListener('click', function() {
+                                const appoid = this.getAttribute('data-id');
+                                const title = this.getAttribute('data-title');
+                                const docname = this.getAttribute('data-doc');
                                 
-                                
+                                Swal.fire({
+                                    title: 'Are you sure?',
+                                    text: 'You are about to cancel this booking!',
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonColor: '#d33',
+                                    cancelButtonColor: '#3085d6',
+                                    confirmButtonText: 'Yes, cancel it!',
+                                    cancelButtonText: 'No, keep it'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        window.location.href = '?action=drop&id=' + appoid + '&title=' + encodeURIComponent(title) + '&doc=' + encodeURIComponent(docname);
+                                    }
+                                });
+                            });
+                        });
+                    </script>
+                    
 
-                                if($result->num_rows==0){
-                                    echo '<tr>
-                                    <td colspan="7">
-                                    <br><br><br><br>
-                                    <center>
-                                    <img src="../img/notfound.svg" width="25%">
-                                    
-                                    <br>
-                                    <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">We  couldnt find anything related to your keywords !</p>
-                                    <a class="non-style-link" href="appointment.php"><button  class="login-btn btn-primary-soft btn"  style="display: flex;justify-content: center;align-items: center;margin-left:20px;">&nbsp; Show all Appointments &nbsp;</font></button>
-                                    </a>
-                                    </center>
-                                    <br><br><br><br>
-                                    </td>
-                                    </tr>';
-                                    
-                                }
-                                else{
 
-                                    for ( $x=0; $x<($result->num_rows);$x++){
-                                        echo "<tr>";
-                                        for($q=0;$q<3;$q++){
-                                            $row=$result->fetch_assoc();
-                                            if (!isset($row)){
-                                            break;
-                                            };
-                                            $scheduleid=$row["scheduleid"];
-                                            $title=$row["title"];
-                                            $docname=$row["docname"];
-                                            $scheduledate=$row["scheduledate"];
-                                            $scheduletime=$row["scheduletime"];
-                                            $apponum=$row["apponum"];
-                                            $appodate=$row["appodate"];
-                                            $appoid=$row["appoid"];
-    
-                                            if($scheduleid==""){
-                                                break;
-                                            }
-    
-                                            echo '
-                                            <td style="width: 25%;">
-                                                    <div  class="dashboard-items search-items"  >
-                                                    
-                                                        <div style="width:100%;">
-                                                        <div class="h3-search">
-                                                                    Booking Date: '.substr($appodate,0,30).'<br>
-                                                                    Reference Number: Mabayuan Number '.$appoid.'
-                                                                </div>
-                                                                <div class="h1-search">
-                                                                    '.substr($title,0,21).'<br>
-                                                                </div>
-                                                                <div class="h3-search">
-                                                                    Appointment Number:<div class="h1-search">0'.$apponum.'</div>
-                                                                </div>
-                                                                <div class="h3-search">
-                                                                    '.substr($docname,0,30).'
-                                                                </div>
-                                                                
-                                                                
-                                                                <div class="h4-search">
-                                                                    Scheduled Date: '.$scheduledate.'<br>Starts: <b>@'.substr($scheduletime,0,5).'</b> (24h)
-                                                                </div>
-                                                                <br>
-                                                                <a href="?action=drop&id='.$appoid.'&title='.$title.'&doc='.$docname.'" ><button  class="login-btn btn-primary-soft btn "  style="padding-top:11px;padding-bottom:11px;width:100%"><font class="tn-in-text">Cancel Booking</font></button></a>
-                                                        </div>
-                                                                
-                                                    </div>
-                                                </td>';
-    
-                                        }
-                                        echo "</tr>";
-                           
-                                // for ( $x=0; $x<$result->num_rows;$x++){
-                                //     $row=$result->fetch_assoc();
-                                //     $appoid=$row["appoid"];
-                                //     $scheduleid=$row["scheduleid"];
-                                //     $title=$row["title"];
-                                //     $docname=$row["docname"];
-                                //     $scheduledate=$row["scheduledate"];
-                                //     $scheduletime=$row["scheduletime"];
-                                //     $pname=$row["pname"];
-                                //     
-                                //     
-                                //     echo '<tr >
-                                //         <td style="font-weight:600;"> &nbsp;'.
-                                        
-                                //         substr($pname,0,25)
-                                //         .'</td >
-                                //         <td style="text-align:center;font-size:23px;font-weight:500; color: var(--btnnicetext);">
-                                //         '.$apponum.'
-                                        
-                                //         </td>
-                                //         <td>
-                                //         '.substr($title,0,15).'
-                                //         </td>
-                                //         <td style="text-align:center;;">
-                                //             '.substr($scheduledate,0,10).' @'.substr($scheduletime,0,5).'
-                                //         </td>
-                                        
-                                //         <td style="text-align:center;">
-                                //             '.$appodate.'
-                                //         </td>
-
-                                //         <td>
-                                //         <div style="display:flex;justify-content: center;">
-                                        
-                                //         <!--<a href="?action=view&id='.$appoid.'" class="non-style-link"><button  class="btn-primary-soft btn button-icon btn-view"  style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">View</font></button></a>
-                                //        &nbsp;&nbsp;&nbsp;-->
-                                //        <a href="?action=drop&id='.$appoid.'&name='.$pname.'&session='.$title.'&apponum='.$apponum.'" class="non-style-link"><button  class="btn-primary-soft btn button-icon btn-delete"  style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">Cancel</font></button></a>
-                                //        &nbsp;&nbsp;&nbsp;</div>
-                                //         </td>
-                                //     </tr>';
-                                    
-                                }
-                            }
-                                 
-                            ?>
- 
-                            </tbody>
 
                         </table>
                         </div>
