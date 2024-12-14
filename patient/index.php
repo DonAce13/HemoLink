@@ -1,3 +1,42 @@
+<?php
+
+// Start the session to check for user login
+session_start();
+
+if (isset($_SESSION["user"])) {
+    if ($_SESSION["user"] == "" || $_SESSION['usertype'] != 'p') {
+        header("location: ../login.php");
+        exit;
+    }
+} else {
+    header("location: ../login.php");
+    exit;
+}
+
+// Include the database connection file
+include("../connection.php");  // Make sure this path is correct
+
+// Assuming $patientEmail is fetched from the database
+$query = "SELECT pemail FROM patient WHERE pemail = ?";  // Use 'pemail' as per the patient table schema
+
+// Prepare a secure query using prepared statements
+$stmt = $database->prepare($query);
+$stmt->bind_param("s", $_SESSION["user"]);
+$stmt->execute();
+$result = $stmt->get_result();
+
+// Check if query was successful and fetch the email
+if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+    $patientEmail = $row['pemail']; // Retrieve the patient's email
+} else {
+    // Handle the case where no patient is found
+    echo "Error: Patient email not found in the database.";
+    exit;
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,147 +49,155 @@
         
     <title>Dashboard</title>
     <style>
-        .dashbord-tables{
+        .dashbord-tables {
             animation: transitionIn-Y-over 0.5s;
         }
-        .filter-container{
-            animation: transitionIn-Y-bottom  0.5s;
+        .filter-container {
+            animation: transitionIn-Y-bottom 0.5s;
         }
-        .sub-table,.anime{
+        .sub-table, .anime {
             animation: transitionIn-Y-bottom 0.5s;
         }
     </style>
-    
-    
 </head>
 <body>
-    <?php
-
-    //learn from w3schools.com
-
+<?php
+// Check if a session is already started to avoid the warning
+if (session_status() === PHP_SESSION_NONE) {
     session_start();
+}
 
-    if(isset($_SESSION["user"])){
-        if(($_SESSION["user"])=="" or $_SESSION['usertype']!='p'){
-            header("location: ../login.php");
-        }else{
-            $useremail=$_SESSION["user"];
-        }
+// Check if the user is logged in and is a patient
+if (!isset($_SESSION["user"]) || empty($_SESSION["user"]) || $_SESSION['usertype'] != 'p') {
+    header("location: ../login.php");
+    exit;
+}
 
-    }else{
-        header("location: ../login.php");
-    }
-    
+$useremail = $_SESSION["user"];
 
-    //import database
-    include("../connection.php");
+// Import the database connection
+include("../connection.php");
 
-    $sqlmain= "select * from patient where pemail=?";
-    $stmt = $database->prepare($sqlmain);
-    $stmt->bind_param("s",$useremail);
-    $stmt->execute();
-    $userrow = $stmt->get_result();
-    $userfetch=$userrow->fetch_assoc();
+// Fetch patient details securely using prepared statements
+$sqlmain = "SELECT * FROM patient WHERE pemail = ?";
+$stmt = $database->prepare($sqlmain);
+$stmt->bind_param("s", $useremail);
+$stmt->execute();
+$result = $stmt->get_result();
 
-    $userid= $userfetch["pid"];
-    $username=$userfetch["pname"];
+if ($result->num_rows > 0) {
+    $userfetch = $result->fetch_assoc();
+    $userid = $userfetch["pid"];
+    $username = $userfetch["pname"];
+} else {
+    // Handle the case where no patient is found
+    $username = "Unknown User";
+    $userid = 0;
+}
+?>
 
-
-    //echo $userid;
-    //echo $username;
-    
-    ?>
-    <div class="container">
-        <div class="menu">
+<div class="container">
+<div class="hamburger" id="hamburger">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+        
+        <!-- Menu Container -->
+        <div class="menu" id="menu">
             <table class="menu-container" border="0">
                 <tr>
                     <td style="padding:10px" colspan="2">
                         <table border="0" class="profile-container">
-                            <tr>
-                                <td width="30%" style="padding-left:20px" >
-                                    <img src="../img/user.png" alt="" width="100%" style="border-radius:50%">
-                                </td>
-                                <td style="padding:0px;margin:0px;">
-                                    <p class="profile-title"><?php echo substr($username,0,13)  ?>..</p>
-                                    <p class="profile-subtitle"><?php echo substr($useremail,0,22)  ?></p>
-                                </td>
-                            </tr>
+                        <tr>
+                            <td width="30%" style="padding-left:20px">
+                                <img src="../img/user.png" alt="" width="100%" style="border-radius:50%">
+                            </td>
+                            <td style="padding:0px;margin:0px;">
+                                <p class="profile-title"><?php echo $username  ?></p>
+                                <p class="profile-subtitle"><?php echo $patientEmail; ?></p> <!-- Display admin email here -->
+                            </td>
+                        </tr>
+
                             <tr>
                                 <td colspan="2">
                                     <a href="../logout.php" ><input type="button" value="Log out" class="logout-btn btn-primary-soft btn"></a>
                                 </td>
                             </tr>
-                    </table>
+                        </table>
                     </td>
                 </tr>
                 <tr class="menu-row" >
-                    <td class="menu-btn menu-icon-home menu-active menu-icon-home-active" >
-                        <a href="index.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">Home</p></a></div></a>
+                    <td class="menu-btn menu-icon-dashbord menu-active menu-icon-dashbord-active" >
+                        <a href="index.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">Dashboard</p></a></div></a>
                     </td>
                 </tr>
                 <tr class="menu-row">
-                    <td class="menu-btn menu-icon-doctor">
-                        <a href="doctors.php" class="non-style-link-menu"><div><p class="menu-text">All Doctors</p></a></div>
-                    </td>
-                </tr>
-                
-                <tr class="menu-row" >
-                    <td class="menu-btn menu-icon-session">
-                        <a href="schedule.php" class="non-style-link-menu"><div><p class="menu-text">Scheduled Sessions</p></div></a>
+                    <td class="menu-btn menu-icon-doctor ">
+                        <a href="doctors.php" class="non-style-link-menu "><div><p class="menu-text">Doctors</p></a></div>
                     </td>
                 </tr>
                 <tr class="menu-row" >
+                    <td class="menu-btn menu-icon-schedule">
+                        <a href="schedule.php" class="non-style-link-menu"><div><p class="menu-text">Schedule</p></div></a>
+                    </td>
+                </tr>
+                <tr class="menu-row">
                     <td class="menu-btn menu-icon-appoinment">
-                        <a href="appointment.php" class="non-style-link-menu"><div><p class="menu-text">My Bookings</p></a></div>
+                        <a href="appointment.php" class="non-style-link-menu"><div><p class="menu-text">Appointment</p></a></div>
                     </td>
                 </tr>
                 <tr class="menu-row" >
-                    <td class="menu-btn menu-icon-settings">
-                        <a href="settings.php" class="non-style-link-menu"><div><p class="menu-text">Settings</p></a></div>
+                    <td class="menu-btn menu-icon-patient">
+                        <a href="patient.php" class="non-style-link-menu"><div><p class="menu-text">Patients</p></a></div>
                     </td>
                 </tr>
-                
             </table>
         </div>
+        <script>
+    const hamburger = document.getElementById('hamburger');
+    const menu = document.getElementById('menu');
+    hamburger.addEventListener('click', () => {
+    console.log("Hamburger clicked!"); // Debugging line
+    menu.classList.toggle('show');
+    });
+
+    </script>
+
+
+
+
+
+
+
         <div class="dash-body" style="margin-top: 15px">
             <table border="0" width="100%" style=" border-spacing: 0;margin:0;padding:0;" >
                         
-                        <tr >
-                            
-                            <td colspan="1" class="nav-bar" >
-                            <p style="font-size: 23px;padding-left:12px;font-weight: 600;margin-left:20px;">Home</p>
-                          
-                            </td>
-                            <td width="25%">
-
-                            </td>
-                            <td width="15%">
-                                <p style="font-size: 14px;color: rgb(119, 119, 119);padding: 0;margin: 0;text-align: right;">
+            <tr class="date-container">
+                                <td width="100%">
+                                    <p style="font-size: 14px;color: rgb(119, 119, 119);padding: 0;margin: 0;">
                                     Today's Date
-                                </p>
-                                <p class="heading-sub12" style="padding: 0;margin: 0;">
-                                    <?php 
-                                date_default_timezone_set('Asia/Kolkata');
-        
-                                $today = date('Y-m-d');
-                                echo $today;
+                                    </p>
+                                    <p class="heading-sub12" style="margin: 0;">
+                                        <?php 
+                                            date_default_timezone_set('Asia/Kolkata');
+                                            $today = date('Y-m-d');
+                                            echo $today;
 
-
-                                $patientrow = $database->query("select  * from  patient;");
-                                $doctorrow = $database->query("select  * from  doctor;");
-                                $appointmentrow = $database->query("select  * from  appointment where appodate>='$today';");
-                                $schedulerow = $database->query("select  * from  schedule where scheduledate='$today';");
-
-
-                                ?>
-                                </p>
-                            </td>
-                            <td width="10%">
-                                <button  class="btn-label"  style="display: flex;justify-content: center;align-items: center;"><img src="../img/calendar.svg" width="100%"></button>
-                            </td>
-        
-        
-                        </tr>
+                                            $patientrow = $database->query("select  * from  patient;");
+                                            $doctorrow = $database->query("select  * from  doctor;");
+                                            $appointmentrow = $database->query("select  * from  appointment where appodate>='$today';");
+                                            $schedulerow = $database->query("select  * from  schedule where scheduledate='$today';");
+                                        ?>
+                                    </p>
+                                </td>
+                                <td width="10%">
+                                    <!-- <button class="btn-label">
+                                        <img src="../img/calendar.svg" width="100%">
+                                    </button> -->
+                                </td>
+                            </tr>
+                            
                 <tr>
                     <td colspan="4" >
                         
@@ -168,33 +215,11 @@
                             </p>
                             
                             <h3>Look up a Doctor Here</h3>
-                            <form action="schedule.php" method="post" style="display: flex">
 
-                                <input type="search" name="search" class="input-text " placeholder="Search Doctor and We will Find The Session Available" list="doctors" style="width:45%;">&nbsp;&nbsp;
-                                
-                                <?php
-                                    echo '<datalist id="doctors">';
-                                    $list11 = $database->query("select  docname,docemail from  doctor;");
-    
-                                    for ($y=0;$y<$list11->num_rows;$y++){
-                                        $row00=$list11->fetch_assoc();
-                                        $d=$row00["docname"];
-                                        
-                                        echo "<option value='$d'><br/>";
-                                        
-                                    };
-    
-                                echo ' </datalist>';
-    ?>
-                                
-                           
-                                <input type="Submit" value="Search" class="login-btn btn-primary btn" style="padding-left: 25px;padding-right: 25px;padding-top: 10px;padding-bottom: 10px;">
-                            
-                            <br>
-                            <br>
                             
                         </td>
                     </tr>
+                    
                     </table>
                     </center>
                     
@@ -203,68 +228,58 @@
                 <tr>
                     <td colspan="4">
                         <table border="0" width="100%"">
-                            <tr>
-                                <td width="50%">
+                        <tr class="menu-row">
+                        <td class="menu-btn stats1">
+                            <a href="doctors.php" class="non-style-link">
+                                <div class="dashboard-items">
+                                    <div>
+                                        <div class="h1-dashboard">
+                                            <?php echo $doctorrow->num_rows; ?>
+                                        </div><br>
+                                        <div class="h3-dashboard">
+                                            All Doctors &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        </div>
+                                    </div>
+                                    <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/doctors-hover.svg');"></div>
+                                </div>
+                            </a>
+                        </td>
 
-                                    
+                        <td class="menu-btn stats1">
+                            <a href="schedule.php" class="non-style-link">
+                                <div class="dashboard-items">
+                                    <div>
+                                        <div class="h1-dashboard">
+                                            <?php echo $schedulerow->num_rows; ?>
+                                        </div><br>
+                                        <div class="h3-dashboard">
+                                            Today Sessions
+                                        </div>
+                                    </div>
+                                    <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/session-iceblue.svg');"></div>
+                                </div>
+                            </a>
+                        </td>
+                    </tr>
 
+                    <tr class="menu-row">
+                        <td class="menu-btn stats2">
+                            <a href="appointment.php" class="non-style-link">
+                                <div class="dashboard-items">
+                                    <div>
+                                        <div class="h1-dashboard">
+                                            <?php echo $appointmentrow->num_rows; ?>
+                                        </div><br>
+                                        <div class="h3-dashboard">
+                                            New Booking &nbsp;&nbsp;
+                                        </div>
+                                    </div>
+                                    <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/book-hover.svg');"></div>
+                                </div>
+                            </a>
+                        </td>
+                    </tr>
 
-
-
-                                    <center>
-                                        <table class="filter-container" style="border: none;" border="0">
-                                            <tr>
-                                                <td colspan="4">
-                                                    <p style="font-size: 20px;font-weight:600;padding-left: 12px;">Status</p>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="width: 25%;">
-                                                    <div  class="dashboard-items"  style="padding:20px;margin:auto;width:95%;display: flex">
-                                                        <div>
-                                                                <div class="h1-dashboard">
-                                                                    <?php    echo $doctorrow->num_rows  ?>
-                                                                </div><br>
-                                                                <div class="h3-dashboard">
-                                                                    All Doctors &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                                </div>
-                                                        </div>
-                                                                <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/doctors-hover.svg');"></div>
-                                                    </div>
-                                                </td>
-                                                <td style="width: 25%;">
-                                                    <div  class="dashboard-items"  style="padding:30px;margin:auto;width:95%;display: flex">
-                                                        <div>
-                                                                <div class="h1-dashboard">
-                                                                    <?php    echo $schedulerow ->num_rows  ?>
-                                                                </div><br>
-                                                                <div class="h3-dashboard">
-                                                                    Today Sessions
-                                                                </div>
-                                                        </div>
-                                                                <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/session-iceblue.svg');"></div>
-                                                    </div>
-                                                </td>
-                                                </tr>
-                                                <tr>
-                                                <td style="width: 25%;">
-                                                    <div  class="dashboard-items"  style="padding:20px;margin:auto;width:95%;display: flex; ">
-                                                        <div>
-                                                                <div class="h1-dashboard" >
-                                                                    <?php    echo $appointmentrow ->num_rows  ?>
-                                                                </div><br>
-                                                                <div class="h3-dashboard" >
-                                                                    NewBooking &nbsp;&nbsp;
-                                                                </div>
-                                                        </div>
-                                                                <div class="btn-icon-back dashboard-icons" style="margin-left: 0px;background-image: url('../img/icons/book-hover.svg');"></div>
-                                                    </div>
-                                                    
-                                                </td>
-
-                                                
-                                                
-                                            </tr>
                                         </table>
                                     </center>
 
@@ -276,7 +291,11 @@
 
 
                                 </td>
-                                <td>
+                                
+                            </tr>
+                        </table>
+                    </td>
+                    <td>
 
 
                             
@@ -382,9 +401,6 @@
 
 
                                 </td>
-                            </tr>
-                        </table>
-                    </td>
                 <tr>
             </table>
         </div>

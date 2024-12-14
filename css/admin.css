@@ -41,6 +41,7 @@
     display: flex; 
     justify-content: 
     center; align-items: center;
+    margin-left: 15px;
 }
 
 
@@ -70,6 +71,7 @@
     margin: 0;
     text-align: left;
     padding-left: 8%;
+    margin-right: 20px;
 }
 
 .logout-btn{
@@ -128,6 +130,58 @@
 */
 
 
+
+
+
+/* Style 1: Title - Upcoming Sessions */
+.upcoming-session-title {
+    text-align: left;
+    padding: 0px;
+    padding-right: 48px;
+    padding-bottom: 25px;
+    font-size: 23px;
+    font-weight: 700;
+    color: var(--primarycolor);
+    margin-left: 42px;
+}
+
+/* Style 2: Description - Quick Access Text */
+.upcoming-session-description {
+    text-align: left;
+    padding-right: 50px;
+    font-size: 15px;
+    font-weight: 500;
+    color: #212529e3;
+    line-height: 20px;
+    margin-left: 44px;
+    padding-bottom: 23px;
+}
+
+
+/* Style for Upcoming Appointments Title */
+.upcoming-appointments-title {
+    text-align: left;
+    padding: 10px;
+    padding-right: 48px;
+    padding-bottom: 0;
+    font-size: 23px;
+    font-weight: 700;
+    color: var(--primarycolor);
+    margin-left: 42px;
+}
+
+
+/* Style for Upcoming Appointments Description */
+.upcoming-appointments-description {
+    padding-bottom: 50px;
+    text-align: left;
+    padding-right: 50px;
+    font-size: 15px;
+    font-weight: 500;
+    color: #212529e3;
+    line-height: 20px;
+    margin-left: 44px;
+}
 
 
 
@@ -258,31 +312,228 @@
         display: flex; /* Show hamburger icon on smaller screens */
         position: fixed; /* Make sure it's fixed in place */
         top: 20px; /* Ensure it's not hidden */
-        right: 20px;
         left: auto;
 
     }
     .header-search {
         display: flex;
         justify-content: center;
-        width: 45%;
+        width: 100%;
         margin-top: 40px;
-        padding-left: 10px;
+        padding-left: 35px;
     }
     .nav-bar{
         margin-top:20px
     }
     .date-container {
-        width: 50%; /* Ensure it spans full width */
+        width: 100%; /* Ensure it spans full width */
+        padding-left: 50px;
     }
 
     .date-container p {
         text-align: center; /* Ensure content aligns left within table cells */
     }
-    .btn-label{
-        margin-left:0;
-        padding:0;
+    .btn-label {
+        margin-left: 0; /* Keep margin-left at zero */
+        padding: 0; /* Ensure no extra padding */
+        display: flex; /* Ensure the button aligns properly with Flexbox */
+        justify-content: flex-start; /* Align the button content to the left */
+        align-items: center; /* Vertically center the content */
+        width: auto; /* Ensure it doesn't take unnecessary width */
     }
+    /* Ensure the parent container uses Flexbox */
+    .filter-container {
+        display: flex;
+        flex-wrap: wrap; /* Allow wrapping */
+        flex-direction: column; /* Stack items vertically */
+    }
+    
+
+    /* Separate each stat block */
+    .stats1, .stats2 {
+        display: flex; /* Ensure Flexbox is applied */
+        flex-direction: column; /* Stack contents within each block */
+        width: 100%; /* Full width for each stat block */
+        margin-bottom: 15px; /* Add spacing between rows */
+    }
+
+    /* Ensure items inside dashboard-items adjust properly */
+    .dashboard-items {
+        flex-wrap: nowrap; /* Prevent internal wrapping unless needed */
+        margin-left: 0; /* Reset unnecessary margins */
+        justify-content: flex-start; /* Align contents to the left */
+    }
+
+    /* Ensure consistent sizing for icons */
+    .btn-icon-back.dashboard-icons {
+        width: 40px; /* Adjust for smaller screens */
+        height: 40px;
+    }
+
+    /* Adjust font size for smaller screens */
+    .h1-dashboard, .h3-dashboard {
+        font-size: 16px;
+    }
+    .filter-container.doctor-header.patient-header {
+        background-size: cover; /* Ensures the image still covers the container */
+        background-position: center; /* Keeps the image centered */
+        padding: 15px; /* Adjust padding for better fit on smaller screens */
+    }
+}
+
+.dashboard-items {
+    padding: 17px; /* Space inside each item */
+    margin-left: 10px; /* Spacing on the left */
+    display: flex; /* Flex layout for child alignment */
+    align-items: center; /* Vertically center contents */
+    justify-content: flex-start; /* Align contents to the left */
+    gap: 10px; /* Spacing between icon and text */
+    max-width: 100%; /* Prevent items from overflowing parent container */
+    flex-wrap: wrap; /* Allow wrapping of content on smaller screens */
+    box-sizing: border-box; /* Include padding in width calculations */
+    overflow: hidden; /* Prevent any overflowing content */
+}
+
+/* Styling for Icons Using Background Images */
+.btn-icon-back.dashboard-icons {
+    display: block; /* Block-level element for proper sizing */
+    width: 50px; /* Set consistent width */
+    height: 50px; /* Set consistent height */
+    background-size: contain; /* Ensure the SVG image fits within the container */
+    background-repeat: no-repeat; /* Avoid repeated backgrounds */
+    background-position: center; /* Center the background image */
+    border-radius: 50%; /* Optional: Circular icon style */
+    overflow: hidden; /* Hide overflow for perfectly fit images */
+    flex-shrink: 0; /* Prevent icon from shrinking in small spaces */
+}
+
+/* Styling for Icons Using <img> Elements */
+.dashboard-items img {
+    width: 50px; /* Consistent icon width */
+    height: 50px; /* Consistent icon height */
+    object-fit: contain; /* Preserve aspect ratio without distortion */
+    border-radius: 50%; /* Optional: Circular styling for images */
+    display: block; /* Ensure images behave consistently */
+    flex-shrink: 0; /* Prevent images from shrinking in small spaces */
+}
+/* For smaller screens (responsive design) */
+@media (max-width: 768px) {
+    /* Container for stats1 and stats2 */
+    .stats1, .stats2 {
+        display: flex;
+        flex-direction: column; /* Stack vertically */
+        width: 100%; /* Ensure each item takes full width */
+        margin-bottom: 15px; /* Space between items */
+    }
+
+    /* Make sure stats1 and stats2 are aligned properly on smaller screens */
+    .stats1 {
+        order: 1; /* Ensure stats1 appears first */
+    }
+
+    .stats2 {
+        order: 2; /* Ensure stats2 appears below stats1 */
+    }
+
+    /* You can adjust icon size for mobile view */
+    .dashboard-items .btn-icon-back.dashboard-icons {
+        width: 40px;
+        height: 40px;
+    }
+
+    /* Adjust text size for smaller screens */
+    .dashboard-items .h1-dashboard,
+    .dashboard-items .h3-dashboard {
+        font-size: 16px; /* Reduced font size */
+        font-weight: bold; /* Emphasize the text */
+
+    }
+    .dashboard-icons{
+        margin-left:0;
+    }
+    .stats1 {
+        display: flex;
+        flex-direction: row; /* Ensure horizontal layout */
+        width: auto; /* Allow items to take up necessary width */
+    }
+    .stats2 {
+        display: flex;
+        flex-direction: row; /* Ensure horizontal layout */
+        width: 100%; /* Allow items to take up necessary width */
+    }
+    
+    /* Center the entire container */
+.status-report {
+    display: flex;
+    flex-direction: column; /* Stack the rows vertically */
+    justify-content: center; /* Horizontally center the content */
+    align-items: center; /* Vertically center the content */
+    padding: 20px;
+    gap: 20px; /* Add spacing between rows */
+}
+
+/* Style for each td in the status-report to ensure they are centered */
+.status-report td {
+    display: flex;
+    justify-content: center; /* Horizontally center the content */
+    align-items: center; /* Vertically center the content */
+    width: 100%; /* Ensure each td takes full width */
+}
+
+/* Ensure that dashboard items are displayed properly inside each td */
+.dashboard-items {
+    display: flex;
+    justify-content: center; /* Horizontally center the content inside */
+    align-items: center; /* Vertically center the content inside */
+    text-align: center;
+    flex-direction: column; /* Stack the text and icon vertically */
+    padding: 20px;
+}
+
+/* Optional icon size adjustments */
+.btn-icon-back.dashboard-icons {
+    width: 40px; /* Adjust icon size */
+    height: 40px; /* Adjust icon size */
+    background-size: cover;
+    margin-top: 10px; /* Space between the text and icon */
+}
+
+/* Style for the .stats1 and .stats2 */
+.stats1, .stats2 {
+    display: flex;
+    justify-content: center; /* Center each item inside */
+    align-items: center; /* Center each item vertically */
+    width: 100%; /* Ensure full width for the td */
+    padding: 10px; /* Optional padding */
+}
+
+/* Ensure the container items take enough space */
+.stats1, .stats2 {
+    flex: 1; /* Make them take equal width in their respective row */
+}
+
 
 
 }
+.calendar {
+    padding: 10px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+    position: relative;
+}
+
+#calendar {
+    /* You can either build your own calendar or use a plugin */
+    width: 100%;
+    height: 300px; /* Adjust to your needs */
+}
+
+
+
+
+
+
+

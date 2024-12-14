@@ -101,9 +101,9 @@
         <div class="dash-body">
             <table border="0" width="100%" style=" border-spacing: 0;margin:0;padding:0;margin-top:25px; ">
                 <tr >
-                    <td width="13%">
+                    <!-- <td width="13%">
                         <a href="doctors.php" ><button  class="login-btn btn-primary-soft btn btn-icon-back"  style="padding-top:11px;padding-bottom:11px;margin-left:20px;width:125px"><font class="tn-in-text">Back</font></button></a>
-                    </td>
+                    </td> -->
                     <td>
                         
                         <form action="" method="post" class="header-search">
@@ -159,6 +159,7 @@
                     
                 </tr>
                 <?php
+                $action = isset($_GET['action']) ? $_GET['action'] : ''; 
                     if($_POST){
                         $keyword=$_POST["search"];
                         
@@ -325,7 +326,7 @@
                         <h2></h2>
                         <a class="close" href="doctors.php">&times;</a>
                         <div class="content">
-                            eDoc Web App<br>
+                            HemoLink <br> App<br>
                             
                         </div>
                         <div style="display: flex;justify-content: center;">
@@ -361,7 +362,7 @@
                             </tr>
                             <tr>
                                 <td class="label-td" colspan="2">
-                                    <label for="nic" class="form-label">Philhealth No.: </label>
+                                    <label for="nic" class="form-label">PhilHealth ID: </label>
                                 </td>
                             </tr>
                             <tr>
@@ -435,13 +436,16 @@
             </div>
             ';
         }
-        }elseif($action=='edit'){
+        }
+        
+        elseif($action=='edit'){
             $sqlmain= "select * from doctor where docid=?";
             $stmt = $database->prepare($sqlmain);
             $stmt->bind_param("i",$id);
             $stmt->execute();
             $result = $stmt->get_result();
             $row=$result->fetch_assoc();
+            
        
             $name=$row["docname"];
             $email=$row["docemail"];
@@ -516,12 +520,12 @@
                                     
                                     <tr>
                                         <td class="label-td" colspan="2">
-                                            <label for="nic" class="form-label">NIC: </label>
+                                            <label for="nic" class="form-label">PhilHealth ID: </label>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td class="label-td" colspan="2">
-                                            <input type="text" name="nic" class="input-text" placeholder="NIC Number" value="'.$nic.'" required><br>
+                                            <input type="text" name="nic" class="input-text" placeholder="PhilHealth ID:" value="'.$nic.'" required><br>
                                         </td>
                                     </tr>
                                     <tr>

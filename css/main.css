@@ -351,7 +351,7 @@ input[type=search]:focus {
 
 .menu-active{
   color: var(--primarycolor);
-  border-right: 7px solid var(--primarycolor);
+  border-right: 10px solid var(--primarycolor);
   background-color: var();
 }
 
@@ -506,7 +506,12 @@ input[type=search]:focus {
   color: var(--primarycolor);
   /*background-color: #d8ebfa25 ;*/
   /*box-shadow: 0 3px 5px 0 rgba(95, 95, 97, 0.3);*/
+  
 }
+.dashboard-items{
+  padding:20px;margin:auto;display: flex;padding-bottom:26px;
+}
+
 
 
 .h1-dashboard{
@@ -531,7 +536,7 @@ input[type=search]:focus {
   padding-top: 30px;
   padding-bottom: 30px;
   border-radius: 7px;
-  margin-left: 40px;
+  margin-left: 90px;
   margin-right: 0px;
   
 }
@@ -561,6 +566,11 @@ input[type=search]:focus {
 
 .patient-header{
   background-image: url(../img/b3.jpg);
+}
+@media(max-width: 768px){
+  .doctor-header{
+  padding: 0px;
+}
 }
 
 .search-items{
@@ -608,3 +618,74 @@ input[type=search]:focus {
   background-repeat: no-repeat;
   transition: 0.5s;
 }
+@media (max-width: 768px) {
+  .container {
+      flex-direction: column; /* Stack menu and body vertically */
+  }
+
+  .menu {
+      width: 100%; /* Full width for smaller screens */
+      min-width: 0; /* Reset minimum width */
+      display: none; /* Initially hide the menu */
+      flex-direction: column; /* Stack items vertically */
+  }
+
+  .menu.show {
+      display: block; /* Show the menu when 'show' class is added */
+  }
+
+  .dash-body {
+      width: 100%; /* Full width for the body */
+  }
+
+  .hamburger {
+      display: flex; /* Show hamburger icon on smaller screens */
+      position: fixed; /* Make sure it's fixed in place */
+      top: 20px; /* Ensure it's not hidden */
+      right: 20px;
+      left: auto;
+
+  }
+  .header-search {
+      display: flex;
+      justify-content: center;
+      width: 45%;
+      margin-top: 40px;
+      padding-left: 10px;
+  }
+  .nav-bar{
+      margin-top:20px
+  }
+  .date-container {
+      width: 50%; /* Ensure it spans full width */
+  }
+
+  .date-container p {
+      text-align: center; /* Ensure content aligns left within table cells */
+  }
+  .btn-label {
+      margin-left: 0; /* Keep margin-left at zero */
+      padding: 0; /* Ensure no extra padding */
+      display: flex; /* Ensure the button aligns properly with Flexbox */
+      justify-content: flex-start; /* Align the button content to the left */
+      align-items: center; /* Vertically center the content */
+      width: auto; /* Ensure it doesn't take unnecessary width */
+  }
+  .dashbord-tables {
+    width: 100%;
+}
+.responsive-td {
+    display: block;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.sub-table {
+    width: 100%;
+}
+
+.sub-table th, .sub-table td {
+    font-size: 14px;
+}
+}
+

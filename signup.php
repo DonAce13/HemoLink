@@ -171,14 +171,14 @@ if (!preg_match("/^[a-zA-Z]+$/", $fname) || !preg_match("/^[a-zA-Z]+$/", $lname)
         <!-- PhilHealth Number input (only shown if "Yes" is selected) -->
         <!-- <tr id="philhealth-row" style="display: none;">
             <td class="label-td" colspan="2">
-                <label for="nic" class="form-label">PhilHealth No.: </label>
+                <label for="nic" class="form-label">.PhilHealth ID: </label>
             </td>
         </tr> -->
     
         <tr id="philhealth-row-input" style="display: none;">
             <td class="label-td" colspan="2">
                 <input type="text" id="philhealth-input" name="nic" class="input-text" placeholder="Exclude the '-' when inputting"
-                    minlength="12" maxlength="12" pattern="\d{12}" title="PhilHealth number must be exactly 12 digits">
+                    minlength="12" maxlength="12" pattern="\d{12}" title="PhilHealth ID must be exactly 12 digits">
             </td>
         </tr>
 
