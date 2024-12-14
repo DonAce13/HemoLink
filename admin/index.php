@@ -135,12 +135,12 @@ include("../connection.php");
             </table>
         </div>
         <script>
-    const hamburger = document.getElementById('hamburger');
-    const menu = document.getElementById('menu');
-    hamburger.addEventListener('click', () => {
-    console.log("Hamburger clicked!"); // Debugging line
-    menu.classList.toggle('show');
-    });
+            const hamburger = document.getElementById('hamburger');
+            const menu = document.getElementById('menu');
+            hamburger.addEventListener('click', () => {
+            console.log("Hamburger clicked!"); // Debugging line
+            menu.classList.toggle('show');
+        });
 
     </script>
 
@@ -151,33 +151,35 @@ include("../connection.php");
         <div class="dash-body" style="margin-top: 15px">
             <table border="0" width="100%" style=" border-spacing: 0;margin:0;padding:0;" >
                         
-            <tr >
-                            
-                        <tr class="date-container">
-                                <td width="100%">
-                                    <p style="font-size: 14px;color: rgb(119, 119, 119);padding: 0;margin: 0;">
-                                    Today's Date
-                                    </p>
-                                    <p class="heading-sub12" style="margin: 0;">
-                                        <?php 
-                                            date_default_timezone_set('Asia/Kolkata');
-                                            $today = date('Y-m-d');
-                                            echo $today;
+            <tr >       
+                <tr class="date-container">
+                    <td width="100%">
+                        <p style="font-size: 14px;color: rgb(119, 119, 119);padding: 0;margin: 0;">
+                            Today's Date
+                        </p>
+                    <p class="heading-sub12" style="margin: 0;">
+                
+                <?php 
+                    date_default_timezone_set('Asia/Kolkata');
+                    $today = date('Y-m-d');
+                    echo $today;
 
-                                            $patientrow = $database->query("select  * from  patient;");
-                                            $doctorrow = $database->query("select  * from  doctor;");
-                                            $appointmentrow = $database->query("select  * from  appointment where appodate>='$today';");
-                                            $schedulerow = $database->query("select  * from  schedule where scheduledate='$today';");
-                                        ?>
-                                    </p>
-                                </td>
-                                <td width="10%">
+                    $patientrow = $database->query("select  * from  patient;");
+                    $doctorrow = $database->query("select  * from  doctor;");
+                    $appointmentrow = $database->query("select  * from  appointment where appodate>='$today';");
+                    $schedulerow = $database->query("select  * from  schedule where scheduledate='$today';");
+                ?>
+
+                </p>
+            </td>
+                <td width="10%">
                                     <!-- <button class="btn-label">
                                         <img src="../img/calendar.svg" width="100%">
                                     </button> -->
-                                </td>
-                            </tr>
-                            <td colspan="2" class="nav-bar" >
+                </td>
+
+            </tr>
+                <td colspan="2" class="nav-bar" >
                                 
                                 <form action="doctors.php" method="post" class="header-search">
         
@@ -204,10 +206,11 @@ include("../connection.php");
                                 </form>
                                 
                             </td>
-                           
-
-                            <tr>
-                    <td colspan="4">
+                
+                <tr>
+                        
+                    <tr>
+                        <td colspan="4">
                         
                         <center>
                         <table class="filter-container" style="border: none;" border="0">
@@ -215,7 +218,8 @@ include("../connection.php");
                                 <td colspan="4">
                                     <p style="font-size: 20px;font-weight:600;padding-left: 12px;">Status</p>
                                 </td>
-                        </tr>
+                            </tr>
+
                             <tr class="status-report">
                                 <td class="stats1">
                                     <a href="doctors.php" class="non-style-link">
@@ -294,8 +298,8 @@ include("../connection.php");
 
 
                 <tr>
-    <td colspan="4">
-        <table width="100%" border="0" class="dashbord-tables">
+        <td colspan="4">
+            <table width="100%" border="0" class="dashbord-tables">
             <tr>
                 <td class="responsive-td">
                     <p class="upcoming-appointments-title">
@@ -351,10 +355,10 @@ include("../connection.php");
                                             $docname = $row["docname"];
                                             $title = $row["title"];
                                             echo '<tr>
-                                                  <td class="responsive-td" style="text-align:center;font-size:23px;font-weight:500;color:var(--btnnicetext);padding:20px;">' . $apponum . '</td>
-                                                  <td class="responsive-td" style="font-weight:600;">' . substr($pname, 0, 25) . '</td>
-                                                  <td class="responsive-td" style="font-weight:600;">' . substr($docname, 0, 25) . '</td>
-                                                  <td class="responsive-td">' . substr($title, 0, 15) . '</td>
+                                                  <td style="text-align:center;font-size:23px;font-weight:500;color:var(--btnnicetext);padding:20px;">' . $apponum . '</td>
+                                                  <td style="font-weight:600;">' . substr($pname, 0, 25) . '</td>
+                                                  <td style="font-weight:600;">' . substr($docname, 0, 25) . '</td>
+                                                  <td>' . substr($title, 0, 15) . '</td>
                                               </tr>';
                                         }
                                     }
@@ -412,10 +416,13 @@ include("../connection.php");
                                             $scheduledate = $row["scheduledate"];
                                             $scheduletime = $row["scheduletime"];
                                             echo '<tr>
-                                                  <td class="responsive-td" style="padding:20px;">' . substr($title, 0, 30) . '</td>
-                                                  <td class="responsive-td">' . substr($docname, 0, 20) . '</td>
-                                                  <td class="responsive-td" style="text-align:center;">
-                                                      ' . substr($scheduledate, 0, 10) . ' ' . substr($scheduletime, 0, 5) . '
+                                                  <td style="padding:20px;">' . substr($title, 0, 30) . '
+                                                  </td>
+                                                  <td>' . substr($docname, 0, 20) . '
+                                                  </td>
+                                                  <td style="text-align:center;">' . 
+                                                  substr($scheduledate, 0, 10) . ' 
+                                                  ' . substr($scheduletime, 0, 5) . '
                                                   </td>
                                               </tr>';
                                         }

@@ -171,7 +171,7 @@ if (!preg_match("/^[a-zA-Z]+$/", $fname) || !preg_match("/^[a-zA-Z]+$/", $lname)
         <!-- PhilHealth Number input (only shown if "Yes" is selected) -->
         <!-- <tr id="philhealth-row" style="display: none;">
             <td class="label-td" colspan="2">
-                <label for="nic" class="form-label">.PhilHealth ID: </label>
+                <label for="nic" class="form-label">.PhilHealth No: </label>
             </td>
         </tr> -->
     

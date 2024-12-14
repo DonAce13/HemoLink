@@ -147,11 +147,11 @@ if ($result->num_rows > 0) {
                         <a href="appointment.php" class="non-style-link-menu"><div><p class="menu-text">Appointment</p></a></div>
                     </td>
                 </tr>
-                <tr class="menu-row" >
+                <!-- <tr class="menu-row" >
                     <td class="menu-btn menu-icon-patient">
                         <a href="patient.php" class="non-style-link-menu"><div><p class="menu-text">Patients</p></a></div>
                     </td>
-                </tr>
+                </tr> -->
             </table>
         </div>
         <script>
@@ -393,13 +393,13 @@ if ($result->num_rows > 0) {
                                                     $scheduletime=$row["scheduletime"];
                                                    
                                                     echo '<tr>
-                                                        <td style="padding:30px;font-size:25px;font-weight:700;"> &nbsp;'.
+                                                        <td style="text-align: center;padding:30px;font-size:25px;font-weight:700;"> &nbsp;'.
                                                         $apponum
                                                         .'</td>
-                                                        <td style="padding:20px;"> &nbsp;'.
+                                                       <td style= "text-align: center;"> &nbsp;'.
                                                         substr($title,0,30)
                                                         .'</td>
-                                                        <td>
+                                                        <td style= "text-align: center;">
                                                         '.substr($docname,0,20).'
                                                         </td>
                                                         <td style="text-align:center;">

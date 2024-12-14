@@ -323,7 +323,8 @@
         padding-left: 35px;
     }
     .nav-bar{
-        margin-top:20px
+        margin-top:20px;
+        display: inline-flex;
     }
     .date-container {
         width: 100%; /* Ensure it spans full width */
@@ -332,6 +333,7 @@
 
     .date-container p {
         text-align: center; /* Ensure content aligns left within table cells */
+        
     }
     .btn-label {
         margin-left: 0; /* Keep margin-left at zero */
@@ -379,7 +381,16 @@
         background-position: center; /* Keeps the image centered */
         padding: 15px; /* Adjust padding for better fit on smaller screens */
     }
+    .date-container1{
+        width: 70%;
+    }
+    .table-center {
+        width: 100%; /* Take up full width on smaller screens */
+        margin: 0 auto; /* Still centered */
+    }
 }
+
+
 
 .dashboard-items {
     padding: 17px; /* Space inside each item */

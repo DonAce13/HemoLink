@@ -19,39 +19,84 @@
 </style>
 </head>
 <body>
-    <?php
+<?php
+// Start the session
+session_start();
 
-    //learn from w3schools.com
-
-    session_start();
-
-    if(isset($_SESSION["user"])){
-        if(($_SESSION["user"])=="" or $_SESSION['usertype']!='d'){
-            header("location: ../login.php");
-        }else{
-            $useremail=$_SESSION["user"];
-        }
-
-    }else{
+// Check if the user is logged in and is a doctor
+if (isset($_SESSION["user"])) {
+    if ($_SESSION["usertype"] !== 'p') {
         header("location: ../login.php");
+        exit;
+    }
+    $useremail = $_SESSION["user"];
+} else {
+    header("location: ../login.php");
+    exit;
+}
+
+// Import database connection
+include("../connection.php");
+
+// Fetch doctor data based on email
+$sqlmain = "SELECT * FROM doctor WHERE docemail=?";
+$stmt = $database->prepare($sqlmain);
+$stmt->bind_param("s", $useremail);
+$stmt->execute();
+$userrow = $stmt->get_result();
+
+// Check if doctor data exists
+if ($userrow->num_rows > 0) {
+    $userfetch = $userrow->fetch_assoc();
+    $userid = $userfetch["docid"];
+    $username = $userfetch["docname"];
+} else {
+    // Handle the case if no doctor is found with the given email
+    echo "No doctor found with this email.";
+    exit;
+}
+
+// Default values for filtering and search
+$selecttype = "My";
+$current = "My patients Only";
+
+// Handle search and filtering logic
+if ($_POST) {
+    if (isset($_POST["search"])) {
+        $keyword = $_POST["search12"];
+        $sqlmain = "SELECT * FROM patient WHERE pemail='$keyword' OR pname='$keyword' OR pname LIKE '$keyword%' OR pname LIKE '%$keyword%'";
+        $selecttype = "my";
     }
     
+    if (isset($_POST["filter"])) {
+        if ($_POST["showonly"] == 'all') {
+            $sqlmain = "SELECT * FROM patient";
+            $selecttype = "All";
+            $current = "All patients";
+        } else {
+            $sqlmain = "SELECT * FROM appointment INNER JOIN patient ON patient.pid=appointment.pid INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid WHERE schedule.docid=$userid";
+            $selecttype = "My";
+            $current = "My patients Only";
+        }
+    }
+} else {
+    // Default query if no POST request is made
+    $sqlmain = "SELECT * FROM appointment INNER JOIN patient ON patient.pid=appointment.pid INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid WHERE schedule.docid=$userid";
+    $selecttype = "My";
+}
 
-    //import database
-    include("../connection.php");
-    $sqlmain= "select * from doctor where docemail=?";
-    $stmt = $database->prepare($sqlmain);
-    $stmt->bind_param("s",$useremail);
-    $stmt->execute();
-    $userrow = $stmt->get_result();
-    $userfetch=$userrow->fetch_assoc();
-    $userid= $userfetch["docid"];
-    $username=$userfetch["docname"];
+// Execute query for patients and appointments
+$result = $database->query($sqlmain);
 
+// Handle cases where no records are found
+if ($result->num_rows == 0) {
+    echo "No patients found.";
+    exit;
+}
 
-    //echo $userid;
-    //echo $username;
-    ?>
+// Rest of your code to process the result
+?>
+
     <div class="container">
     <div class="menu">
             <table class="menu-container" border="0">

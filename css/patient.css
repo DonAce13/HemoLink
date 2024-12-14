@@ -131,3 +131,8 @@ body{
     
     
 }
+/* @media(max-width:768px){
+    .date-container{
+        width: 75%;
+    }
+} */

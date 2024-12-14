@@ -58,3 +58,9 @@ td{
     margin-bottom: 15px;
     width: 100%;
 }
+@media (max-width: 768px) {
+    .container {
+        width: 80%;
+        margin: 40px;
+    }
+}

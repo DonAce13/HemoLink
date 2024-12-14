@@ -570,7 +570,12 @@ input[type=search]:focus {
 @media(max-width: 768px){
   .doctor-header{
   padding: 0px;
+  .date-container1{
+    width:75%;
+  }
 }
+
+
 }
 
 .search-items{
