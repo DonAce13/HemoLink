@@ -160,13 +160,14 @@ if ($result->num_rows > 0) {
                         </a>
                     </td>
                 </tr>
-                <!-- <tr class="menu-row">
-                    <td class="menu-btn menu-icon-patient <?php if ($currentPage == 'patient.php') echo 'menu-active menu-icon-patient-active'; ?>">
-                        <a href="patient.php" class="non-style-link-menu <?php if ($currentPage == 'patient.php') echo 'non-style-link-menu-active'; ?>">
-                            <div><p class="menu-text">Patients</p></div>
+                <tr class="menu-row">
+                    <td class="menu-btn menu-icon-appoinment <?php if ($currentPage == 'setttings.php') echo 'menu-active menu-icon-appoinment-active'; ?>">
+                        <a href="settings.php" class="non-style-link-menu <?php if ($currentPage == 'settings.php') echo 'non-style-link-menu-active'; ?>">
+                            <div><p class="menu-text">Settings</p></div>
                         </a>
                     </td>
-                </tr> -->
+                </tr>
+
 
             </table>
         </div>
@@ -235,19 +236,19 @@ if ($result->num_rows > 0) {
                     <p class="heading-sub12" style="margin: 0;">
                 
                     <?php
-date_default_timezone_set('Asia/Kolkata');
-$today = date('Y-m-d');
-echo $today;
+                        date_default_timezone_set('Asia/Kolkata');
+                        $today = date('Y-m-d');
+                        echo $today;
 
-$patientrow = $database->query("select * from patient;");
-$doctorrow = $database->query("select * from doctor;");
-$appointmentrow = $database->query("select * from appointment where appodate>='$today';");
+                        $patientrow = $database->query("select * from patient;");
+                        $doctorrow = $database->query("select * from doctor;");
+                        $appointmentrow = $database->query("select * from appointment where appodate>='$today';");
 
-// Updated query with JOIN to fetch doctor details with schedule
-$schedulerow = $database->query("SELECT schedule.scheduleid, schedule.title, schedule.scheduledate, schedule.scheduletime, doctor.docname 
-                                FROM schedule 
-                                JOIN doctor ON schedule.docid = doctor.docid 
-                                WHERE schedule.scheduledate = '$today'");
+                        // Updated query with JOIN to fetch doctor details with schedule
+                        $schedulerow = $database->query("SELECT schedule.scheduleid, schedule.title, schedule.scheduledate, schedule.scheduletime, doctor.docname 
+                        FROM schedule 
+                        JOIN doctor ON schedule.docid = doctor.docid 
+                        WHERE schedule.scheduledate = '$today'");
 
 ?>
 
@@ -277,94 +278,95 @@ $schedulerow = $database->query("SELECT schedule.scheduleid, schedule.title, sch
 <tr>
     <td colspan="4">
         <center>
-            <div class="abc scroll">
-                <table width="100%" class="sub-table scrolldown" border="0" style="padding: 50px;border:none">
-                    <tbody>
-                        <?php
-                        // Check if there are any schedules
-                        if ($schedulerow->num_rows == 0) {
-                            echo '<tr>
-                            <td colspan="4">
-                            <br><br><br><br>
-                            <center>
-                            <img src="../img/notfound.svg" width="25%">
-                            <br>
-                            <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">We  couldn\'t find anything related to your keywords !</p>
-                            <a class="non-style-link" href="schedule.php"><button  class="login-btn btn-primary-soft btn"  style="display: flex;justify-content: center;align-items: center;margin-left:20px;">&nbsp; Show all Sessions &nbsp;</font></button>
-                            </a>
-                            </center>
-                            <br><br><br><br>
-                            </td>
-                            </tr>';
+        <div class="abc scroll">
+    <table width="100%" class="sub-table scrolldown" border="0" style="padding: 50px;border:none">
+        <tbody>
+            <?php
+            // Check if there are any schedules
+            if ($schedulerow->num_rows == 0) {
+                echo '<tr>
+                <td colspan="4">
+                <br><br><br><br>
+                <center>
+                <img src="../img/notfound.svg" width="25%">
+                <br>
+                <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">We couldn\'t find anything related to your keywords !</p>
+                <a class="non-style-link" href="schedule.php"><button class="login-btn btn-primary-soft btn" style="display: flex;justify-content: center;align-items: center;margin-left:20px;">&nbsp; Show all Sessions &nbsp;</button></a>
+                </center>
+                <br><br><br><br>
+                </td>
+                </tr>';
+            } else {
+                // Iterate through the schedules
+                for ($x = 0; $x < ($schedulerow->num_rows); $x++) {
+                    echo "<tr>";
+                    for ($q = 0; $q < 3; $q++) {
+                        $row = $schedulerow->fetch_assoc();
+                        if (!isset($row)) {
+                            break;
+                        }
+                        $scheduleid = $row["scheduleid"];
+                        $title = $row["title"];
+                        $docname = $row["docname"];
+                        $scheduledate = $row["scheduledate"];
+                        $scheduletime = $row["scheduletime"];
+
+                        if ($scheduleid == "") {
+                            break;
+                        }
+
+                        // Assuming the user is logged in and the email is in session
+                        $user_email = $_SESSION['user'];
+
+                        // Check if the user has already booked this schedule
+                        $booking_check = $database->query("SELECT * FROM appointment WHERE pid = (SELECT pid FROM patient WHERE pemail = '$user_email') AND scheduleid = '$scheduleid'");
+
+                        // Get the number of patients already booked for this session
+                        $patient_count = $database->query("SELECT COUNT(*) AS patient_count FROM appointment WHERE scheduleid = '$scheduleid'")->fetch_assoc();
+                        $max_patients = 10; // Set the max patients limit per session (you can adjust this value)
+
+                        // Check if the session has reached the max number of patients
+                        if ($patient_count['patient_count'] >= $max_patients) {
+                            $button_disabled = '<button class="login-btn btn-primary-soft btn" style="padding-top:11px;padding-bottom:11px;width:100%" disabled><font class="tn-in-text">Session Full</font></button>';
+                            $popup_message = "Booking has reached its maximum number of patients.";
+                            echo "<script type='text/javascript'>alert('$popup_message');</script>";
                         } else {
-                            // Iterate through the schedules
-                            for ($x = 0; $x < ($schedulerow->num_rows); $x++) {
-                                echo "<tr>";
-                                for ($q = 0; $q < 3; $q++) {
-                                    $row = $schedulerow->fetch_assoc();
-                                    if (!isset($row)) {
-                                        break;
-                                    }
-                                    $scheduleid = $row["scheduleid"];
-                                    $title = $row["title"];
-                                    $docname = $row["docname"]; // This will now be fetched correctly
-                                    $scheduledate = $row["scheduledate"];
-                                    $scheduletime = $row["scheduletime"];
-
-                                    if ($scheduleid == "") {
-                                        break;
-                                    }
-
-                                    // Assuming the user is logged in and the email is in session
-                                    $user_email = $_SESSION['user']; // Or replace with $_SESSION['userid'] if using user IDs
-
-                                    // Check if the user has already booked this schedule
-                                    $booking_check = $database->query("SELECT * FROM appointment WHERE pid = (SELECT pid FROM patient WHERE pemail = '$user_email') AND scheduleid = '$scheduleid'");
-
-                                    // If the user has already booked, disable the button
-                                    if ($booking_check->num_rows > 0) {
-                                        $button_disabled = '<button class="login-btn btn-primary-soft btn" style="padding-top:11px;padding-bottom:11px;width:100%" disabled><font class="tn-in-text">Already Booked</font></button>';
-                                    } else {
-                                        $button_disabled = '<a href="booking.php?id=' . $scheduleid . '"><button class="login-btn btn-primary-soft btn" style="padding-top:11px;padding-bottom:11px;width:100%"><font class="tn-in-text">Book Now</font></button></a>';
-                                    }
-
-                                    // Display schedule and booking button
-                                    echo '
-                                    <td style="width: 25%;">
-                                        <div class="dashboard-items search-items">
-                                            <div style="width:100%">
-                                                <div class="h1-search">
-                                                    ' . substr($title, 0, 21) . '
-                                                </div><br>
-                                                <div class="h3-search">
-                                                    ' . substr($docname, 0, 30) . '
-                                                </div>
-                                                <div class="h4-search">
-                                                    ' . $scheduledate . '<br>Starts: <b>@' . substr($scheduletime, 0, 5) . '</b>
-                                                </div>
-                                                <br>
-                                                ' . $button_disabled . '
-                                            </div>
-                                        </div>
-                                    </td>';
-                                }
-                                echo "</tr>";
+                            // If the user has already booked, disable the button
+                            if ($booking_check->num_rows > 0) {
+                                $button_disabled = '<button class="login-btn btn-primary-soft btn" style="padding-top:11px;padding-bottom:11px;width:100%" disabled><font class="tn-in-text">Already Booked</font></button>';
+                            } else {
+                                $button_disabled = '<a href="booking.php?id=' . $scheduleid . '"><button class="login-btn btn-primary-soft btn" style="padding-top:11px;padding-bottom:11px;width:100%"><font class="tn-in-text">Book Now</font></button></a>';
                             }
                         }
-                        ?>
- 
-                            </tbody>
 
-                        </table>
-                        </div>
-                        </center>
-                   </td> 
-                </tr>
-                       
-                        
-                        
-            </table>
-        </div>
+                        // Display schedule and booking button
+                        echo '
+                        <td style="width: 25%;">
+                            <div class="dashboard-items search-items">
+                                <div style="width:100%">
+                                    <div class="h1-search">
+                                        ' . substr($title, 0, 21) . '
+                                    </div><br>
+                                    <div class="h3-search">
+                                        ' . substr($docname, 0, 30) . '
+                                    </div>
+                                    <div class="h4-search">
+                                        ' . $scheduledate . '<br>Starts: <b>@' . substr($scheduletime, 0, 5) . '</b>
+                                    </div>
+                                    <br>
+                                    ' . $button_disabled . '
+                                </div>
+                            </div>
+                        </td>';
+                    }
+                    echo "</tr>";
+                }
+            }
+            ?>
+        </tbody>
+    </table>
+</div>
+
     </div>
 
     </div>

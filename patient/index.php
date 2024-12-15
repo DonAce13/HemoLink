@@ -147,6 +147,11 @@ if ($result->num_rows > 0) {
                         <a href="appointment.php" class="non-style-link-menu"><div><p class="menu-text">Appointment</p></a></div>
                     </td>
                 </tr>
+                <tr class="menu-row" >
+                    <td class="menu-btn menu-icon-settings">
+                        <a href="settings.php" class="non-style-link-menu"><div><p class="menu-text">Settings</p></a></div>
+                    </td>
+                </tr>
                 <!-- <tr class="menu-row" >
                     <td class="menu-btn menu-icon-patient">
                         <a href="patient.php" class="non-style-link-menu"><div><p class="menu-text">Patients</p></a></div>
@@ -374,7 +379,7 @@ if ($result->num_rows > 0) {
                                                     
                                                     <br>
                                                     <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">Nothing to show here!</p>
-                                                    <a class="non-style-link" href="schedule.php"><button  class="login-btn btn-primary-soft btn"  style="display: flex;justify-content: center;align-items: center;margin-left:20px;">&nbsp; Channel a Doctor &nbsp;</font></button>
+                                                    <a class="non-style-link" href="schedule.php"><button  class="login-btn btn-primary-soft btn"  style="display: flex;justify-content: center;align-items: center;margin-left:20px;">&nbsp; Find a Schedule &nbsp;</font></button>
                                                     </a>
                                                     </center>
                                                     <br><br><br><br>

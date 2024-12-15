@@ -135,6 +135,12 @@ if ($result->num_rows > 0) {
                     <a href="appointment.php" class="non-style-link-menu <?php echo ($currentPage == 'appointment.php') ? 'non-style-link-menu-active' : ''; ?>"><div><p class="menu-text">Appointment</p></a></div>
                 </td>
             </tr>
+
+            <tr class="menu-row" >
+                    <td class="menu-btn menu-icon-settings">
+                        <a href="settings.php" class="non-style-link-menu"><div><p class="menu-text">Settings</p></a></div>
+                    </td>
+                </tr>
             <!-- <tr class="menu-row">
                 <td class="menu-btn menu-icon-patient <?php echo ($currentPage == 'patient.php') ? 'menu-active menu-icon-patient-active' : ''; ?>">
                     <a href="patient.php" class="non-style-link-menu <?php echo ($currentPage == 'patient.php') ? 'non-style-link-menu-active' : ''; ?>"><div><p class="menu-text">Patients</p></a></div>

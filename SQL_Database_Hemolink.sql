@@ -1,7 +1,6 @@
 -- phpMyAdmin SQL Dump
 -- version 4.8.5
 -- https://www.phpmyadmin.net/
---
 -- Host: 127.0.0.1:3306
 -- Generation Time: Dec 15, 2024 at 01:39 PM
 -- Server version: 5.7.26
@@ -33,18 +32,18 @@ INSERT INTO `admin` (`aemail`, `apassword`) VALUES
 
 DROP TABLE IF EXISTS `appointment`;
 CREATE TABLE IF NOT EXISTS `appointment` (
-  `appoid` int(11) NOT NULL AUTO_INCREMENT,
-  `pid` int(10) DEFAULT NULL,
-  `apponum` int(3) DEFAULT NULL,
-  `scheduleid` int(10) DEFAULT NULL,
-  `appodate` date DEFAULT NULL,
-  `scheduletime` TIME DEFAULT NULL,  -- Added scheduletime
-  `is_self` BOOLEAN NOT NULL DEFAULT 1,
-  `other_patient_name` VARCHAR(255) DEFAULT NULL,
-  `description` TEXT DEFAULT NULL,
-  `philhealth_id` VARCHAR(20) DEFAULT NULL,
-  `age` INT(3) DEFAULT NULL,
-  `status` ENUM('scheduled', 'done', 'canceled', 'ongoing') DEFAULT 'scheduled',
+  `appoid` int(11) NOT NULL AUTO_INCREMENT,  -- Primary key
+  `pid` int(10) DEFAULT NULL,  -- Patient ID (foreign key to patient table)
+  `apponum` int(3) DEFAULT NULL,  -- Appointment number
+  `scheduleid` int(10) DEFAULT NULL,  -- Schedule ID (foreign key to schedule table)
+  `appodate` date DEFAULT NULL,  -- Appointment date
+  `scheduletime` TIME DEFAULT NULL,  -- Appointment time
+  `is_self` BOOLEAN NOT NULL DEFAULT 0,  -- 0 means appointment for self, 1 means appointment for others
+  `other_patient_name` VARCHAR(255) DEFAULT NULL,  -- Name of other patient (if is_self is 1)
+  `description` TEXT DEFAULT NULL,  -- Appointment description or reason
+  `philhealth_id` VARCHAR(20) DEFAULT NULL,  -- PhilHealth ID (for other patients)
+  `age` INT(3) DEFAULT NULL,  -- Age of the patient (for other patients)
+  `status` ENUM('scheduled', 'done', 'canceled', 'ongoing') DEFAULT 'scheduled',  -- Appointment status
   PRIMARY KEY (`appoid`),
   KEY `pid` (`pid`),
   KEY `scheduleid` (`scheduleid`),
@@ -53,10 +52,29 @@ CREATE TABLE IF NOT EXISTS `appointment` (
   KEY `idx_is_self` (`is_self`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
--- Dumping data for table `appointment`
-INSERT INTO `appointment` (`appoid`, `pid`, `apponum`, `scheduleid`, `appodate`, `scheduletime`, `is_self`, `status`) VALUES
-(1, 1, 1, 1, '2022-06-03', '10:00:00', 1, 'scheduled'),
-(2, 2, 2, 2, '2022-06-04', '14:00:00', 0, 'scheduled');
+-- Add constraints to the `appointment` table for `is_self` validation
+ALTER TABLE `appointment`
+ADD CONSTRAINT `chk_is_self_fields`
+  CHECK (
+    (is_self = 0 AND other_patient_name IS NULL AND description IS NULL AND philhealth_id IS NULL AND age IS NULL)
+    OR 
+    (is_self = 1 AND other_patient_name IS NOT NULL AND description IS NOT NULL AND philhealth_id IS NOT NULL AND age IS NOT NULL)
+  );
+
+-- Sample data for appointments
+
+-- Sample appointment for self (is_self = 0)
+INSERT INTO `appointment` (`pid`, `apponum`, `scheduleid`, `appodate`, `scheduletime`, `is_self`, `status`) 
+VALUES
+  (1, 1, 1, '2024-12-17', '10:00:00', 0, 'scheduled');
+
+-- Sample appointment for others (is_self = 1)
+INSERT INTO `appointment` (`pid`, `apponum`, `scheduleid`, `appodate`, `scheduletime`, `is_self`, `other_patient_name`, `description`, `philhealth_id`, `age`, `status`) 
+VALUES
+  (2, 2, 2, '2024-12-18', '14:00:00', 1, 'John Doe', 'General checkup', 'PH987654321', 30, 'scheduled');
+
+
+
 
 -- --------------------------------------------------------
 -- Table structure for table `doctor`
@@ -84,6 +102,7 @@ INSERT INTO `doctor` (`docid`, `docemail`, `docname`, `docpassword`, `docnic`, `
 -- Table structure for table `patient`
 --
 
+-- Table structure for table `patient`
 DROP TABLE IF EXISTS `patient`;
 CREATE TABLE IF NOT EXISTS `patient` (
   `pid` int(11) NOT NULL AUTO_INCREMENT,
@@ -100,10 +119,24 @@ CREATE TABLE IF NOT EXISTS `patient` (
   KEY `idx_pnic` (`pnic`)
 ) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
--- Dumping data for table `patient`
+-- Create a trigger to enforce address format using REGEXP
+DELIMITER $$
+
+CREATE TRIGGER validate_address_format
+BEFORE INSERT ON `patient`
+FOR EACH ROW
+BEGIN
+  IF NOT NEW.paddress REGEXP '^[0-9]+, [A-Za-z ]+$' THEN
+    SIGNAL SQLSTATE '45000'
+    SET MESSAGE_TEXT = 'Invalid address format. Address must start with a number followed by a comma and space, and then the street name.';
+  END IF;
+END $$
+
+DELIMITER ;
+
+-- Sample data insertion
 INSERT INTO `patient` (`pid`, `pemail`, `pname`, `ppassword`, `paddress`, `pnic`, `pdob`, `ptel`) VALUES
-(1, 'patient@gmail.com', 'Test Patient', '123', 'Sri Lanka', '0000000000', '2000-01-01', '0120000000'),
-(2, 'yasuo@gmail.com', 'Hashen Udara', '123', 'Sri Lanka', '0110000000', '2022-06-03', '0700000000');
+(1, 'patient@gmail.com', 'Test Patient', '123', '87, Otero Avenue', '0000000000', '2000-01-01', '0120000000');
 
 -- --------------------------------------------------------
 -- Table structure for table `schedule`
@@ -117,7 +150,7 @@ CREATE TABLE IF NOT EXISTS `schedule` (
   `scheduledate` date DEFAULT NULL,
   `scheduletime` time DEFAULT NULL,
   `nop` int(4) DEFAULT NULL,
-  `deleted_at` TIMESTAMP NULL DEFAULT NULL,  -- Soft delete column
+  `deleted_at` TIMESTAMP NULL DEFAULT NULL,
   PRIMARY KEY (`scheduleid`),
   KEY `docid` (`docid`),
   KEY `idx_scheduledate_time` (`scheduledate`, `scheduletime`),
@@ -250,11 +283,11 @@ BEGIN
    UPDATE `appointment`
    SET `status` = 'done'
    WHERE `appodate` < CURDATE() OR (`appodate` = CURDATE() AND `scheduletime` < CURTIME())
-   AND `status` = 'scheduled';
+   AND `status` = 'ongoing';
 
    -- Optionally, set appointments to 'cancelled' if they haven't been attended yet
    UPDATE `appointment`
-   SET `status` = 'cancelled'
+   SET `status` = 'canceled'
    WHERE `appodate` > CURDATE() OR (`appodate` = CURDATE() AND `scheduletime` > CURTIME())
    AND `status` = 'scheduled';
 END$$

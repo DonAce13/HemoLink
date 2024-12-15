@@ -148,9 +148,11 @@ if (!preg_match("/^[a-zA-Z]+$/", $fname) || !preg_match("/^[a-zA-Z]+$/", $lname)
         </tr>
         <tr>
             <td class="label-td" colspan="2">
-                <input type="text" name="address" class="input-text" placeholder="Address" required>
+                <input type="text" name="address" class="input-text" placeholder="Address" required 
+                    pattern="^[0-9]+, [A-Za-z ]+$" title="Address should be in the format: #123, Street Name">
             </td>
         </tr>
+
 
 
         <!-- PhilHealth Question -->
@@ -214,11 +216,13 @@ if (!preg_match("/^[a-zA-Z]+$/", $fname) || !preg_match("/^[a-zA-Z]+$/", $lname)
             </td>
         </tr>
         <tr>
-            <td class="label-td" colspan="2">
-                <label for="tele" class="form-label">Telephone: </label>
-                <input type="tel" name="tele" class="input-text" placeholder="Telephone Number" required>
-            </td>
-        </tr>
+        <td class="label-td" colspan="2">
+            <label for="tele" class="form-label">Telephone: </label>
+            <input type="tel" name="tele" class="input-text" placeholder="Telephone Number" required 
+                pattern="^09\d{9}$" title="The number should start at 09 and be exactly 11 digits long.">
+        </td>
+    </tr>
+
         <tr>
             <td>
                 <input type="reset" value="Reset" class="login-btn btn-primary-soft btn">

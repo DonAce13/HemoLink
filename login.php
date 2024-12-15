@@ -13,21 +13,18 @@
 <body>
     <?php
     $error = '';
-    //learn from w3schools.com
-    //Unset all the server side variables
-
+    // Start session
     session_start();
 
-    $_SESSION["user"]="";
-    $_SESSION["usertype"]="";
-    
+    $_SESSION["user"] = "";
+    $_SESSION["usertype"] = "";
+
     // Set the new timezone
     date_default_timezone_set('Asia/Kolkata');
     $date = date('Y-m-d');
+    $_SESSION["date"] = $date;
 
-    $_SESSION["date"]=$date;
-    
-    //import database
+    // Import database
     include("connection.php");
 
     if ($_POST) {
@@ -44,7 +41,7 @@
         if ($result->num_rows == 1) {
             $user = $result->fetch_assoc();
             $utype = $user['usertype'];
-        
+
             switch ($utype) {
                 case 'p': // Patient Login
                     $stmt = $database->prepare("SELECT * FROM patient WHERE pemail = ?");
@@ -59,20 +56,21 @@
                     $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Invalid user type.</label>';
                     break;
             }
-        
+
             $stmt->bind_param("s", $email);
             $stmt->execute();
             $userResult = $stmt->get_result();
-        
+
             if ($userResult->num_rows == 1) {
                 $userDetails = $userResult->fetch_assoc();
-                $hashedPassword = ($utype == 'a') ? $userDetails['apassword'] : ($utype == 'p' ? $userDetails['ppassword'] : $userDetails['docpassword']);
-        
-                // Adjust this check based on the database password storage method (plain text or hashed)
-                if ($password === $hashedPassword) { // Change to password_verify() if hashed passwords
+                // Retrieve the correct password field for the user type
+                $plainPassword = ($utype == 'a') ? $userDetails['apassword'] : ($utype == 'p' ? $userDetails['ppassword'] : $userDetails['docpassword']);
+
+                // Direct comparison of passwords (plain text)
+                if ($password === $plainPassword) {
                     $_SESSION['user'] = $email;
                     $_SESSION['usertype'] = $utype;
-        
+
                     // Redirect to the appropriate dashboard
                     if ($utype == 'p') {
                         header('Location: patient/index.php');
@@ -91,7 +89,6 @@
         } else {
             $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">We can\'t find any account for this email.</label>';
         }
-        
     }
     ?>
     <center>

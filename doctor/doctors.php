@@ -92,6 +92,12 @@
                         <a href="patient.php" class="non-style-link-menu"><div><p class="menu-text">Patients</p></a></div>
                     </td>
                 </tr>
+                <tr class="menu-row" >
+                    <td class="menu-btn menu-icon-settings">
+                        <a href="settings.php" class="non-style-link-menu"><div><p class="menu-text">Settings</p></a></div>
+                    </td>
+                </tr>
+                
 
             </table>
         </div>
