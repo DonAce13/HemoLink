@@ -26,6 +26,28 @@ font.logo-sub{
     box-sizing: border-box;
     font-weight: 600;
 }
+.container-text {
+  text-align: center; /* Centers the content inside */
+}
+
+.container-text p {
+  background-color: var(--primarycolor); /* Semi-transparent white background */
+  padding: 5px; /* Padding around the text */
+  display: inline-block; /* Ensures the background only applies to the text */
+  border-radius: 10px; /* Rounded corners for the background */
+  max-width: 80%; /* Restricts the width of the text */
+  word-wrap: break-word; /* Ensures long words break and don't overflow */
+}
+
+.heading-text {
+  font-size: 24px; /* Adjust font size as needed */
+  font-weight: bold;
+}
+
+.sub-text2 {
+  font-size: 16px; /* Adjust font size as needed */
+}
+
 
 
 

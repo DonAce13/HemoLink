@@ -9,13 +9,10 @@
     <link rel="stylesheet" href="css/login.css">
         
     <title>Login</title>
-
-    
-    
 </head>
 <body>
     <?php
-
+    $error = '';
     //learn from w3schools.com
     //Unset all the server side variables
 
@@ -30,88 +27,73 @@
 
     $_SESSION["date"]=$date;
     
-
     //import database
     include("connection.php");
-
-    
-
 
     if ($_POST) {
         $email = $_POST['useremail'];
         $password = $_POST['userpassword'];
-    
         $error = '<label for="promter" class="form-label"></label>';
     
-        // Check if email exists in the webuser table
-        $result = $database->query("SELECT * FROM webuser WHERE email='$email'");
+        // Prepared statement to check if email exists in webuser table
+        $stmt = $database->prepare("SELECT * FROM webuser WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+    
         if ($result->num_rows == 1) {
             $user = $result->fetch_assoc();
             $utype = $user['usertype'];
-    
-            if ($utype == 'p') {
-                // Patient Login
-                $checker = $database->query("SELECT * FROM patient WHERE pemail='$email'");
-                if ($checker->num_rows == 1) {
-                    $patient = $checker->fetch_assoc();
-                    if (password_verify($password, $patient['ppassword'])) {
-                        // Password is correct, login successful
-                        $_SESSION['user'] = $email;
-                        $_SESSION['usertype'] = 'p';
+        
+            switch ($utype) {
+                case 'p': // Patient Login
+                    $stmt = $database->prepare("SELECT * FROM patient WHERE pemail = ?");
+                    break;
+                case 'd': // Doctor Login
+                    $stmt = $database->prepare("SELECT * FROM doctor WHERE docemail = ?");
+                    break;
+                case 'a': // Admin Login
+                    $stmt = $database->prepare("SELECT * FROM admin WHERE aemail = ?");
+                    break;
+                default:
+                    $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Invalid user type.</label>';
+                    break;
+            }
+        
+            $stmt->bind_param("s", $email);
+            $stmt->execute();
+            $userResult = $stmt->get_result();
+        
+            if ($userResult->num_rows == 1) {
+                $userDetails = $userResult->fetch_assoc();
+                $hashedPassword = ($utype == 'a') ? $userDetails['apassword'] : ($utype == 'p' ? $userDetails['ppassword'] : $userDetails['docpassword']);
+        
+                // Adjust this check based on the database password storage method (plain text or hashed)
+                if ($password === $hashedPassword) { // Change to password_verify() if hashed passwords
+                    $_SESSION['user'] = $email;
+                    $_SESSION['usertype'] = $utype;
+        
+                    // Redirect to the appropriate dashboard
+                    if ($utype == 'p') {
                         header('Location: patient/index.php');
-                    } else {
-                        $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Wrong credentials: Invalid email or password</label>';
-                    }
-                } else {
-                    $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">No patient record found for this email.</label>';
-                }
-            } elseif ($utype == 'a') {
-                // Admin Login (Plain text password comparison)
-                $checker = $database->query("SELECT * FROM admin WHERE aemail='$email'");
-                if ($checker->num_rows == 1) {
-                    $admin = $checker->fetch_assoc();
-                    if ($password == $admin['apassword']) {
-                        // Plain text comparison for admin
-                        $_SESSION['user'] = $email;
-                        $_SESSION['usertype'] = 'a';
-                        header('Location: admin/index.php');
-                    } else {
-                        $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Wrong credentials: Invalid email or password</label>';
-                    }
-                } else {
-                    $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">No admin record found for this email.</label>';
-                }
-            } elseif ($utype == 'd') {
-                // Doctor Login
-                $checker = $database->query("SELECT * FROM doctor WHERE docemail='$email'");
-                if ($checker->num_rows == 1) {
-                    $doctor = $checker->fetch_assoc();
-                    if (password_verify($password, $doctor['docpassword'])) {
-                        // Password is correct, login successful
-                        $_SESSION['user'] = $email;
-                        $_SESSION['usertype'] = 'd';
+                    } elseif ($utype == 'd') {
                         header('Location: doctor/index.php');
                     } else {
-                        $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Wrong credentials: Invalid email or password</label>';
+                        header('Location: admin/index.php');
                     }
+                    exit();
                 } else {
-                    $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">No doctor record found for this email.</label>';
+                    $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Wrong credentials: Invalid password.</label>';
                 }
+            } else {
+                $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">No record found for this email.</label>';
             }
         } else {
             $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">We can\'t find any account for this email.</label>';
         }
-    } else {
-        $error = '<label for="promter" class="form-label">&nbsp;</label>';
+        
     }
-    
-
     ?>
-
-
-
-
-
     <center>
     <div class="container">
         <table border="0" style="margin: 0;padding: 0;width: 60%;">
@@ -149,7 +131,6 @@
                 </td>
             </tr>
 
-
             <tr>
                 <td><br>
                 <?php echo $error ?>
@@ -170,14 +151,9 @@
                     <br><br><br>
                 </td>
             </tr>
-                        
-                        
-    
-                        
-                    </form>
+        </form>
         </table>
-
     </div>
-</center>
+    </center>
 </body>
 </html>

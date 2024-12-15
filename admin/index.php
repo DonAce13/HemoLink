@@ -278,7 +278,7 @@ include("../connection.php");
                                                     <?php echo $schedulerow->num_rows; ?>
                                                 </div><br>
                                                 <div class="h3-dashboard">
-                                                    Today Sessions
+                                                    All Sessions
                                                 </div>
                                             </div>
                                             <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/session-iceblue.svg');"></div>

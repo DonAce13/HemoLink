@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jun 19, 2022 at 01:39 PM
+-- Generation Time: Dec 15, 2024 at 01:39 PM
 -- Server version: 5.7.26
 -- PHP Version: 7.3.5
 
@@ -12,18 +12,7 @@ SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
---
---
-
 -- --------------------------------------------------------
-
---
 -- Table structure for table `admin`
 --
 
@@ -34,16 +23,11 @@ CREATE TABLE IF NOT EXISTS `admin` (
   PRIMARY KEY (`aemail`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
---
 -- Dumping data for table `admin`
---
-
 INSERT INTO `admin` (`aemail`, `apassword`) VALUES
 ('administrator@gmail.com', '123');
 
 -- --------------------------------------------------------
-
---
 -- Table structure for table `appointment`
 --
 
@@ -54,21 +38,27 @@ CREATE TABLE IF NOT EXISTS `appointment` (
   `apponum` int(3) DEFAULT NULL,
   `scheduleid` int(10) DEFAULT NULL,
   `appodate` date DEFAULT NULL,
+  `scheduletime` TIME DEFAULT NULL,  -- Added scheduletime
+  `is_self` BOOLEAN NOT NULL DEFAULT 1,
+  `other_patient_name` VARCHAR(255) DEFAULT NULL,
+  `description` TEXT DEFAULT NULL,
+  `philhealth_id` VARCHAR(20) DEFAULT NULL,
+  `age` INT(3) DEFAULT NULL,
+  `status` ENUM('scheduled', 'done', 'canceled', 'ongoing') DEFAULT 'scheduled',
   PRIMARY KEY (`appoid`),
   KEY `pid` (`pid`),
-  KEY `scheduleid` (`scheduleid`)
+  KEY `scheduleid` (`scheduleid`),
+  KEY `idx_appodate` (`appodate`),
+  KEY `idx_pid_scheduleid` (`pid`, `scheduleid`),
+  KEY `idx_is_self` (`is_self`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
---
 -- Dumping data for table `appointment`
---
-
-INSERT INTO `appointment` (`appoid`, `pid`, `apponum`, `scheduleid`, `appodate`) VALUES
-(1, 1, 1, 1, '2022-06-03');
+INSERT INTO `appointment` (`appoid`, `pid`, `apponum`, `scheduleid`, `appodate`, `scheduletime`, `is_self`, `status`) VALUES
+(1, 1, 1, 1, '2022-06-03', '10:00:00', 1, 'scheduled'),
+(2, 2, 2, 2, '2022-06-04', '14:00:00', 0, 'scheduled');
 
 -- --------------------------------------------------------
-
---
 -- Table structure for table `doctor`
 --
 
@@ -82,19 +72,15 @@ CREATE TABLE IF NOT EXISTS `doctor` (
   `doctel` varchar(15) DEFAULT NULL,
   `specialties` int(2) DEFAULT NULL,
   PRIMARY KEY (`docid`),
-  KEY `specialties` (`specialties`)
+  KEY `specialties` (`specialties`),
+  KEY `idx_docemail` (`docemail`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
---
 -- Dumping data for table `doctor`
---
-
 INSERT INTO `doctor` (`docid`, `docemail`, `docname`, `docpassword`, `docnic`, `doctel`, `specialties`) VALUES
 (1, 'doctor@gmail.com', 'Test Doctor', '123', '000000000', '0110000000', 1);
 
 -- --------------------------------------------------------
-
---
 -- Table structure for table `patient`
 --
 
@@ -108,51 +94,56 @@ CREATE TABLE IF NOT EXISTS `patient` (
   `pnic` varchar(15) DEFAULT NULL,
   `pdob` date DEFAULT NULL,
   `ptel` varchar(15) DEFAULT NULL,
-  PRIMARY KEY (`pid`)
+  PRIMARY KEY (`pid`),
+  KEY `idx_pemail` (`pemail`),
+  KEY `idx_ptel` (`ptel`),
+  KEY `idx_pnic` (`pnic`)
 ) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
---
 -- Dumping data for table `patient`
---
-
 INSERT INTO `patient` (`pid`, `pemail`, `pname`, `ppassword`, `paddress`, `pnic`, `pdob`, `ptel`) VALUES
 (1, 'patient@gmail.com', 'Test Patient', '123', 'Sri Lanka', '0000000000', '2000-01-01', '0120000000'),
 (2, 'yasuo@gmail.com', 'Hashen Udara', '123', 'Sri Lanka', '0110000000', '2022-06-03', '0700000000');
 
 -- --------------------------------------------------------
-
---
 -- Table structure for table `schedule`
 --
 
-DROP TABLE IF EXISTS schedule;
-CREATE TABLE IF NOT EXISTS schedule (
-  scheduleid int(11) NOT NULL AUTO_INCREMENT,
-  docid varchar(255) DEFAULT NULL,
-  title varchar(255) DEFAULT NULL,
-  scheduledate date DEFAULT NULL,
-  scheduletime time DEFAULT NULL,
-  nop int(4) DEFAULT NULL,
-  PRIMARY KEY (scheduleid),
-  KEY docid (docid)
+DROP TABLE IF EXISTS `schedule`;
+CREATE TABLE IF NOT EXISTS `schedule` (
+  `scheduleid` int(11) NOT NULL AUTO_INCREMENT,
+  `docid` varchar(255) DEFAULT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  `scheduledate` date DEFAULT NULL,
+  `scheduletime` time DEFAULT NULL,
+  `nop` int(4) DEFAULT NULL,
+  `deleted_at` TIMESTAMP NULL DEFAULT NULL,  -- Soft delete column
+  PRIMARY KEY (`scheduleid`),
+  KEY `docid` (`docid`),
+  KEY `idx_scheduledate_time` (`scheduledate`, `scheduletime`),
+  KEY `idx_docid_date` (`docid`, `scheduledate`)
 ) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
 
 -- Insert data with dynamic current date and time
-INSERT INTO schedule (docid, title, scheduledate, scheduletime, nop) VALUES
-('1', 'Current Test Session 1', CURDATE(), CURTIME(), 10),
-('2', 'Current Test Session 2', CURDATE(), CURTIME(), 20),
-('3', 'Current Test Session 3', CURDATE(), CURTIME(), 20),
-('4', 'Current Test Session 4', CURDATE(), CURTIME(), 20),
-('5', 'Current Test Session 5', CURDATE(), CURTIME(), 20),
-('6', 'Current Test Session 6', CURDATE(), CURTIME(), 20),
-('7', 'Current Test Session 7', CURDATE(), CURTIME(), 20),
-('8', 'Current Test Session 8', CURDATE(), CURTIME(), 20),
-('9', 'Current Test Session 9', CURDATE(), CURTIME(), 20),
-('10', 'Current Test Session 10', CURDATE(), CURTIME(), 20);
+INSERT INTO `schedule` (`docid`, `title`, `scheduledate`, `scheduletime`, `nop`) VALUES
+('1', 'Current Test Session 1', CURDATE(), CURTIME(), 10);
 
 -- --------------------------------------------------------
-
+-- Create table `archived_schedule` for soft-deleted sessions
 --
+
+CREATE TABLE IF NOT EXISTS `archived_schedule` (
+  `scheduleid` int(11) NOT NULL,
+  `docid` varchar(255) DEFAULT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  `scheduledate` date DEFAULT NULL,
+  `scheduletime` time DEFAULT NULL,
+  `nop` int(4) DEFAULT NULL,
+  `deleted_at` TIMESTAMP NOT NULL,
+  PRIMARY KEY (`scheduleid`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
 -- Table structure for table `specialties`
 --
 
@@ -163,10 +154,7 @@ CREATE TABLE IF NOT EXISTS `specialties` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
---
 -- Dumping data for table `specialties`
---
-
 INSERT INTO `specialties` (`id`, `sname`) VALUES
 (1, 'Accident and emergency medicine'),
 (2, 'Allergology'),
@@ -226,8 +214,6 @@ INSERT INTO `specialties` (`id`, `sname`) VALUES
 (56, 'Venereology');
 
 -- --------------------------------------------------------
-
---
 -- Table structure for table `webuser`
 --
 
@@ -238,17 +224,41 @@ CREATE TABLE IF NOT EXISTS `webuser` (
   PRIMARY KEY (`email`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
---
 -- Dumping data for table `webuser`
---
-
 INSERT INTO `webuser` (`email`, `usertype`) VALUES
 ('administrator@gmail.com', 'a'),
 ('doctor@gmail.com', 'd'),
 ('patient@gmail.com', 'p'),
 ('wakuwaku@gmail.com', 'p');
-COMMIT;
 
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+-- --------------------------------------------------------
+-- MySQL Event to update appointment statuses periodically
+
+DELIMITER $$
+
+CREATE EVENT IF NOT EXISTS update_appointment_status
+ON SCHEDULE EVERY 1 MINUTE
+DO
+BEGIN
+   -- Set appointments to 'ongoing' if the current date and time match the scheduled date/time
+   UPDATE `appointment`
+   SET `status` = 'ongoing'
+   WHERE `appodate` = CURDATE() AND `scheduletime` <= CURTIME()
+   AND `status` = 'scheduled';
+
+   -- Set appointments to 'done' if the scheduled time has passed
+   UPDATE `appointment`
+   SET `status` = 'done'
+   WHERE `appodate` < CURDATE() OR (`appodate` = CURDATE() AND `scheduletime` < CURTIME())
+   AND `status` = 'scheduled';
+
+   -- Optionally, set appointments to 'cancelled' if they haven't been attended yet
+   UPDATE `appointment`
+   SET `status` = 'cancelled'
+   WHERE `appodate` > CURDATE() OR (`appodate` = CURDATE() AND `scheduletime` > CURTIME())
+   AND `status` = 'scheduled';
+END$$
+
+DELIMITER ;
+
+COMMIT;
