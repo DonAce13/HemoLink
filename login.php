@@ -64,7 +64,8 @@
             if ($userResult->num_rows == 1) {
                 $userDetails = $userResult->fetch_assoc();
                 // Retrieve the correct password field for the user type
-                $plainPassword = ($utype == 'a') ? $userDetails['apassword'] : ($utype == 'p' ? $userDetails['ppassword'] : $userDetails['docpassword']);
+                $plainPassword = ($utype == 'a') ? $userDetails['apassword'] : 
+                                 ($utype == 'p' ? $userDetails['ppassword'] : $userDetails['docpassword']);
 
                 // Direct comparison of passwords (plain text)
                 if ($password === $plainPassword) {

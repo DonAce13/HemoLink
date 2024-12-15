@@ -84,9 +84,8 @@ if (!preg_match("/^[a-zA-Z]+$/", $fname) || !preg_match("/^[a-zA-Z]+$/", $lname)
         } else {
             // Insert new record into the patient table
             $stmt = $database->prepare("INSERT INTO patient (pemail, pname, ppassword, paddress, pnic, pdob, ptel) VALUES (?, ?, ?, ?, ?, ?, ?)");
-            $hashedPassword = password_hash($newpassword, PASSWORD_BCRYPT); // Hash the password for security
             $fullName = $fname . ' ' . $lname;
-            $stmt->bind_param("sssssss", $email, $fullName, $hashedPassword, $address, $nic, $dob, $tele);
+            $stmt->bind_param("sssssss", $email, $fullName, $newpassword, $address, $nic, $dob, $tele); // Use plain password here
             $stmt->execute();
 
             // Insert new record into the webuser table
@@ -149,11 +148,9 @@ if (!preg_match("/^[a-zA-Z]+$/", $fname) || !preg_match("/^[a-zA-Z]+$/", $lname)
         <tr>
             <td class="label-td" colspan="2">
                 <input type="text" name="address" class="input-text" placeholder="Address" required 
-                    pattern="^[0-9]+, [A-Za-z ]+$" title="Address should be in the format: #123, Street Name">
+                    pattern="^[0-9]+, [A-Za-z ]+$" title="Address should be in the format: 123, Street Name">
             </td>
         </tr>
-
-
 
         <!-- PhilHealth Question -->
         <tr>
@@ -171,20 +168,12 @@ if (!preg_match("/^[a-zA-Z]+$/", $fname) || !preg_match("/^[a-zA-Z]+$/", $lname)
         </tr>
 
         <!-- PhilHealth Number input (only shown if "Yes" is selected) -->
-        <!-- <tr id="philhealth-row" style="display: none;">
-            <td class="label-td" colspan="2">
-                <label for="nic" class="form-label">.PhilHealth No: </label>
-            </td>
-        </tr> -->
-    
         <tr id="philhealth-row-input" style="display: none;">
             <td class="label-td" colspan="2">
                 <input type="text" id="philhealth-input" name="nic" class="input-text" placeholder="Exclude the '-' when inputting"
                     minlength="12" maxlength="12" pattern="\d{12}" title="PhilHealth ID must be exactly 12 digits">
             </td>
         </tr>
-
-
 
         <!-- Date Of Birth -->           
         <tr>
@@ -231,37 +220,19 @@ if (!preg_match("/^[a-zA-Z]+$/", $fname) || !preg_match("/^[a-zA-Z]+$/", $lname)
                 <input type="submit" value="Next" class="login-btn btn-primary btn">
             </td>
         </tr>
-        <tr>
-            <td colspan="2">
-                <br>
-                <label for="" class="sub-text" style="font-weight: 280;">Already have an account&#63; </label>
-                <a href="login.php" class="hover-link1 non-style-link">Login</a>
-                <br><br><br>
-            </td>
-        </tr>
-            </form>
-        </tr>
+    </form>
     </table>
 </div>
 </div>
 </center>
+
 <script>
+    // Toggle the visibility of the PhilHealth input field
     function togglePhilhealthField() {
-    var hasPhilhealthYes = document.getElementById('philhealth-yes').checked;
-    var philhealthRow = document.getElementById('philhealth-row-input');
-    var philhealthInput = document.getElementById('philhealth-input');
-
-    // Show or hide the input field based on the radio button selection
-    if (hasPhilhealthYes) {
-        philhealthRow.style.display = 'table-row'; // Show if "Yes" is selected
-        philhealthInput.setAttribute('required', 'required'); // Add required attribute
-    } else {
-        philhealthRow.style.display = 'none'; // Hide if "No" is selected
-        philhealthInput.removeAttribute('required'); // Remove required attribute
+        var philhealthYes = document.getElementById("philhealth-yes");
+        var philhealthRowInput = document.getElementById("philhealth-row-input");
+        philhealthRowInput.style.display = philhealthYes.checked ? "table-row" : "none";
     }
-}
-
 </script>
-
 </body>
 </html>
