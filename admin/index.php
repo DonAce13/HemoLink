@@ -315,7 +315,7 @@ include("../connection.php");
                 <td class="responsive-td" width="50%">
                     <center>
                         <div class="abc scroll" style="height: 200px;">
-                            <table width="85%" class="sub-table scrolldown" border="0">
+                            <table width="100%" class="sub-table scrolldown" border="0">
                                 <thead>
                                     <tr>
                                         <th class="table-headin">Appointment number</th>
@@ -355,10 +355,10 @@ include("../connection.php");
                                             $docname = $row["docname"];
                                             $title = $row["title"];
                                             echo '<tr>
-                                                  <td style="text-align:center;font-size:23px;font-weight:500;color:var(--btnnicetext);padding:20px;">' . $apponum . '</td>
-                                                  <td style="font-weight:600;">' . substr($pname, 0, 25) . '</td>
-                                                  <td style="font-weight:600;">' . substr($docname, 0, 25) . '</td>
-                                                  <td>' . substr($title, 0, 15) . '</td>
+                                                  <td style="text-align:center;font-size:23px;font-weight:500;color:var(--btnnicetext);padding:15px;">' . $apponum . '</td>
+                                                  <td style="text-align:center;font-weight:600;">' . substr($pname, 0, 25) . '</td>
+                                                  <td style="text-align:center;font-weight:600;">' . substr($docname, 0, 25) . '</td>
+                                                  <td style="text-align:center;font-weight:600;">'. substr($title, 0, 15) . '</td>
                                               </tr>';
                                         }
                                     }
@@ -379,7 +379,7 @@ include("../connection.php");
                         Add, Remove, and many features are available in the @Schedule section.
                     </p>
                 </td>
-                <td class="responsive-td" width="50%" style="padding: 0;">
+                <td class="responsive-td" width="50%" style="margin-top: 20px;">
                     <center>
                         <div class="abc scroll" style="height: 200px;padding: 0;margin: 0;">
                             <table width="85%" class="sub-table scrolldown" border="0">
@@ -416,9 +416,9 @@ include("../connection.php");
                                             $scheduledate = $row["scheduledate"];
                                             $scheduletime = $row["scheduletime"];
                                             echo '<tr>
-                                                  <td style="padding:20px;">' . substr($title, 0, 30) . '
+                                                  <td style="text-align:center;font-weight:600;padding:15px;">' . substr($title, 0, 30) . '
                                                   </td>
-                                                  <td>' . substr($docname, 0, 20) . '
+                                                  <td style="text-align:center;font-weight:600;">'. substr($docname, 0, 20) . '
                                                   </td>
                                                   <td style="text-align:center;">' . 
                                                   substr($scheduledate, 0, 10) . ' 
