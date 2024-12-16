@@ -201,7 +201,7 @@ include("../connection.php");
                                     ?>
                                     
                                
-                                    <input type="Submit" value="Search" class="login-btn btn-primary-soft btn" style="padding-left: 25px;padding-right: 25px;padding-top: 10px;padding-bottom: 10px;">
+                                    <input type="Submit" value="Search"class="btn-primary-soft btn button-icon btn-search" style="padding-left: 25px;padding-right: 25px;padding-top: 10px;padding-bottom: 10px;">
                                 
                                 </form>
                                 
@@ -403,7 +403,7 @@ include("../connection.php");
                                         echo '<tr><td colspan="4">
                                                   <center>
                                                   <img src="../img/notfound.svg" width="25%">
-                                                  <p class="heading-main12" style="font-size:20px;color:rgb(49, 49, 49)">We couldn\'t find anything related to your keywords!</p>
+                                                  <p class="heading-main12" style="font-size:20px;color:rgb(49, 49, 49)">We are unable find anything related to your keywords!</p>
                                                   <a class="non-style-link" href="schedule.php">
                                                       <button class="login-btn btn-primary-soft btn">Show all Sessions</button>
                                                   </a>

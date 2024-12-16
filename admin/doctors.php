@@ -93,60 +93,56 @@
 
             </table>
         </div>
-        <div class="dash-body">
-            <table border="0" width="100%" style=" border-spacing: 0;margin:0;padding:0;margin-top:25px; ">
-                <tr >
-                    <!-- <td width="13%">
-
-                    <a href="patient.php" ><button  class="login-btn btn-primary-soft btn btn-icon-back"  style="padding-top:11px;padding-bottom:11px;margin-left:20px;width:125px"><font class="tn-in-text">Back</font></button></a>
-                        
-                    </td> -->
-                    <td>
-                        
-                        <form action="" method="post" class="header-search">
-
-                            <input type="search" name="search" class="input-text header-searchbar" placeholder="Search Doctor name or Email" list="doctors">&nbsp;&nbsp;
-                            
-                            <?php
-                                echo '<datalist id="doctors">';
-                                $list11 = $database->query("select  docname,docemail from  doctor;");
-
-                                for ($y=0;$y<$list11->num_rows;$y++){
-                                    $row00=$list11->fetch_assoc();
-                                    $d=$row00["docname"];
-                                    $c=$row00["docemail"];
-                                    echo "<option value='$d'><br/>";
-                                    echo "<option value='$c'><br/>";
-                                };
-
-                            echo ' </datalist>';
-?>
-                            
-                       
-                            <input type="Submit" value="Search" class="login-btn btn-primary btn" style="padding-left: 25px;padding-right: 25px;padding-top: 10px;padding-bottom: 10px;">
-                        
-                        </form>
-                        
-                    </td>
-                    <td width="15%">
-                        <p style="font-size: 14px;color: rgb(119, 119, 119);padding: 0;margin: 0;text-align: right;">
-                            Today's Date
-                        </p>
-                        <p class="heading-sub12" style="padding: 0;margin: 0;">
-                            <?php 
+        <div class="dash-body" style="margin-top: 15px;">
+    <table border="0" width="100%" style="border-spacing: 0; margin: 0; padding: 0;">
+        <tr class="date-container">
+            <td width="100%">
+            <p style="font-size: 14px;color: rgb(119, 119, 119);padding: 0;margin: 0;">
+                    Today's Date
+                </p>
+                <p class="heading-sub12" style="padding: 0; margin: 0;">
+                    <?php 
                         date_default_timezone_set('Asia/Kolkata');
-
                         $date = date('Y-m-d');
                         echo $date;
-                        ?>
-                        </p>
-                    </td>
-                    <td width="10%">
-                        <button  class="btn-label"  style="display: flex;justify-content: center;align-items: center;"><img src="../img/calendar.svg" width="100%"></button>
-                    </td>
+
+                        $patientrow = $database->query("SELECT * FROM patient;");
+                        $doctorrow = $database->query("SELECT * FROM doctor;");
+                        $appointmentrow = $database->query("SELECT * FROM appointment WHERE appodate >= '$date';");
+                        $schedulerow = $database->query("SELECT * FROM schedule WHERE scheduledate = '$date';");
+                    ?>
+                </p>
+            </td>
+        </tr>
+    </table>
+
+    <table border="0" width="100%" style="border-spacing: 0; margin: 0; padding: 0; margin-top: 25px;">
+        <tr>
+            <!-- Search Section -->
+            <td>
+                <form action="" method="post" class="header-search" style="display: flex; align-items: center; gap: 15px;">
+                    <input type="search" name="search" class="input-text header-searchbar" placeholder="Search Doctor name or Email" list="doctors" style="width: 250px; padding: 10px;">
+                    
+                    <?php
+                        echo '<datalist id="doctors">';
+                        $list11 = $database->query("SELECT docname, docemail FROM doctor;");
+                        for ($y = 0; $y < $list11->num_rows; $y++) {
+                            $row00 = $list11->fetch_assoc();
+                            $d = $row00["docname"];
+                            $c = $row00["docemail"];
+                            echo "<option value='$d'>";
+                            echo "<option value='$c'>";
+                        }
+                        echo '</datalist>';
+                    ?>
+                    
+                    <input type="submit" value="Search" class="btn-primary-soft btn button-icon btn-search" style="padding: 10px 25px;">
+                </form>
+            </td>
+        </tr>
 
 
-                </tr>
+
                
                 <tr >
                     <td colspan="2" style="padding-top:30px;">
@@ -218,7 +214,7 @@
                                     <img src="../img/notfound.svg" width="25%">
                                     
                                     <br>
-                                    <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">We  couldnt find anything related to your keywords !</p>
+                                    <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">We cannot find anything related to your keywords !</p>
                                     <a class="non-style-link" href="doctors.php"><button  class="login-btn btn-primary-soft btn"  style="display: flex;justify-content: center;align-items: center;margin-left:20px;">&nbsp; Show all Doctors &nbsp;</font></button>
                                     </a>
                                     </center>

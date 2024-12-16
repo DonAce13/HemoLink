@@ -130,6 +130,10 @@
 */
 
 
+.sub-table {
+    padding: 25px;
+    margin-bottom: 25px;
+}
 
 
 
@@ -388,6 +392,7 @@
         width: 100%; /* Take up full width on smaller screens */
         margin: 0 auto; /* Still centered */
     }
+
 }
 
 

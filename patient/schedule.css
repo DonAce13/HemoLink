@@ -1,0 +1,182 @@
+/* Default styles (for larger screens) */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Make the menu container responsive */
+.menu {
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background-color: #333;
+    color: white;
+    padding: 15px;
+    transition: 0.3s;
+    overflow-x: hidden; /* Prevent horizontal overflow */
+}
+
+.menu-container {
+    margin-top: 20px;
+}
+
+.sub-table {
+    margin: 20px;
+    padding: 50px;
+
+}
+
+
+
+.sub-tablescrolldown{
+padding: 50px;border:none"
+}
+
+/* Add media query for screens smaller than 768px */
+@media (max-width: 768px) {
+    /* Adjust the menu */
+    .menu {
+        width: 100%; /* Expand to 100% of the screen width */
+        padding: 20px;
+    }
+
+    /* Stack the profile and buttons vertically */
+    .profile-container {
+        display: block;
+        text-align: center;
+    }
+
+    /* Make the profile image smaller */
+    .profile-container img {
+        width: 70px; /* Reduce image size */
+        height: 70px;
+        margin-bottom: 10px;
+    }
+
+    /* Make buttons more responsive */
+    .menu-btn {
+        text-align: center;
+        padding: 8px 0;
+        font-size: 14px;
+    }
+
+    .menu-text {
+        font-size: 12px;
+    }
+
+    .sub-table {
+        width: 40%!important;
+        padding: 8px;
+        box-sizing: border-box;
+    }
+
+    .hamburger {
+        display: block;
+        position: absolute;
+        top: 15px;
+        right: 10px;
+        cursor: pointer;
+    }
+
+    /* Hide menu by default on smaller screens and show when hamburger is clicked */
+    .menu.show {
+        display: block;
+    }
+
+    .menu {
+        display: none;
+    }
+
+    /* Adjust the container content */
+    .container {
+        margin-left: 0;
+        padding: 10px;
+        width: 100%; /* Ensure full width of container */
+    }
+
+    .dash-body {
+        margin-top: 10px;
+    }
+
+    /* Adjust the table layout for smaller screens */
+    table {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        table-layout: fixed; /* Make table responsive */
+    }
+
+    .filter-container td {
+        padding: 5px;
+    }
+
+    .filter-container input[type="date"], .header-search input[type="search"] {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .header-search input[type="Submit"] {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+/* Further adjust for very small screens */
+    /* Further adjust for even smaller screens */
+    .menu {
+        width: 100%;
+        padding: 15px;
+    }
+
+    .hamburger {
+        top: 10px;
+        right: 10px;
+    }
+
+    .sub-btn {
+        padding: 8px;
+    }
+
+    .header-search input[type="search"] {
+        width: 90%;
+    }
+
+    /* Adjust profile container for small screens */
+    .profile-container {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .menu-text {
+        font-size: 10px;
+    }
+
+    .menu-btn {
+        font-size: 12px;
+        padding: 6px;
+    }
+
+    .menu-container {
+        margin-top: 10px;
+    }
+
+    /* Adjust the filter button */
+    .filter-container input[type="submit"] {
+        padding: 8px;
+        font-size: 12px;
+    }
+
+    .sub-table {
+        padding: 5px;
+        margin: 10px 0;
+        width: 275px;
+    }
+
+    /* Ensure no horizontal overflow on mobile */
+    body {
+        overflow-x: hidden;
+    }
+}
