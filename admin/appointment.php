@@ -38,7 +38,8 @@
 
     //import database
     include("../connection.php");
-
+    $list110 = $database->query("SELECT * FROM appointment");
+    $appointment_count = ($list110) ? $list110->num_rows : 0; // Ensure no error if the query fails.
     
     ?>
     <div class="container">
@@ -101,10 +102,6 @@
                     <a href="patient.php" ><button  class="login-btn btn-primary-soft btn btn-icon-back"  style="padding-top:11px;padding-bottom:11px;margin-left:20px;width:125px"><font class="tn-in-text">Back</font></button></a>
                         
                     </td> -->
-                    <td>
-                        <p style="font-size: 23px;padding-left:12px;font-weight: 600;">Appointment Manager</p>
-                                           
-                    </td>
                     <tr class="date-container">
             <td width="100%">
             <p style="font-size: 14px;color: rgb(119, 119, 119);padding: 0;margin: 0;">
@@ -124,12 +121,36 @@
                 </p>
             </td>
         </tr>
-                    <td width="10%">
-                        <button  class="btn-label"  style="display: flex;justify-content: center;align-items: center;"><img src="../img/calendar.svg" width="100%"></button>
-                    </td>
-
+                    
 
                 </tr>
+                <td colspan="2" class="nav-bar" >
+                                
+                                <form action="doctors.php" method="post" class="header-search">
+        
+                                    <input type="search" name="search" class="input-text header-searchbar" placeholder="Search Doctor name or Email" list="doctors">&nbsp;&nbsp;
+                                    
+                                    <?php
+                                        echo '<datalist id="doctors">';
+                                        $list11 = $database->query("select  docname,docemail from  doctor;");
+        
+                                        for ($y=0;$y<$list11->num_rows;$y++){
+                                            $row00=$list11->fetch_assoc();
+                                            $d=$row00["docname"];
+                                            $c=$row00["docemail"];
+                                            echo "<option value='$d'><br/>";
+                                            echo "<option value='$c'><br/>";
+                                        };
+        
+                                    echo ' </datalist>';
+                                    ?>
+                                    
+                               
+                                    <input type="Submit" value="Search"class="btn-primary-soft btn button-icon btn-search" style="padding-left: 25px;padding-right: 25px;padding-top: 10px;padding-bottom: 10px;">
+                                
+                                </form>
+                                
+                            </td>
                
                 <!-- <tr>
                     <td colspan="4" >
@@ -143,7 +164,8 @@
                 <tr>
                     <td colspan="4" style="padding-top:10px;width: 100%;" >
                     
-                        <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)">All Appointments (<?php echo $list110->num_rows; ?>)</p>
+                    <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)">All Appointments (<?php echo $appointment_count; ?>)</p>
+
                     </td>
                     
                 </tr>

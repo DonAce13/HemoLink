@@ -89,6 +89,7 @@
                     <td class="menu-btn menu-icon-patient">
                         <a href="patient.php" class="non-style-link-menu"><div><p class="menu-text">Patients</p></a></div>
                     </td>
+                    
                 </tr>
 
             </table>
@@ -114,31 +115,39 @@
                 </p>
             </td>
         </tr>
-    </table>
+        </tr>
+                <td colspan="2" class="nav-bar" >
+                                
+                                <form action="doctors.php" method="post" class="header-search">
+        
+                                    <input type="search" name="search" class="input-text header-searchbar" placeholder="Search Doctor name or Email" list="doctors">&nbsp;&nbsp;
+                                    
+                                    <?php
+                                        echo '<datalist id="doctors">';
+                                        $list11 = $database->query("select  docname,docemail from  doctor;");
+        
+                                        for ($y=0;$y<$list11->num_rows;$y++){
+                                            $row00=$list11->fetch_assoc();
+                                            $d=$row00["docname"];
+                                            $c=$row00["docemail"];
+                                            echo "<option value='$d'><br/>";
+                                            echo "<option value='$c'><br/>";
+                                        };
+        
+                                    echo ' </datalist>';
+                                    ?>
+                                    
+                               
+                                    <input type="Submit" value="Search"class="btn-primary-soft btn button-icon btn-search" style="padding-left: 25px;padding-right: 25px;padding-top: 10px;padding-bottom: 10px;">
+                                
+                                </form>
+                                
+                            </td>
 
     <table border="0" width="100%" style="border-spacing: 0; margin: 0; padding: 0; margin-top: 25px;">
         <tr>
             <!-- Search Section -->
-            <td>
-                <form action="" method="post" class="header-search" style="display: flex; align-items: center; gap: 15px;">
-                    <input type="search" name="search" class="input-text header-searchbar" placeholder="Search Doctor name or Email" list="doctors" style="width: 250px; padding: 10px;">
-                    
-                    <?php
-                        echo '<datalist id="doctors">';
-                        $list11 = $database->query("SELECT docname, docemail FROM doctor;");
-                        for ($y = 0; $y < $list11->num_rows; $y++) {
-                            $row00 = $list11->fetch_assoc();
-                            $d = $row00["docname"];
-                            $c = $row00["docemail"];
-                            echo "<option value='$d'>";
-                            echo "<option value='$c'>";
-                        }
-                        echo '</datalist>';
-                    ?>
-                    
-                    <input type="submit" value="Search" class="btn-primary-soft btn button-icon btn-search" style="padding: 10px 25px;">
-                </form>
-            </td>
+            
         </tr>
 
 
@@ -152,6 +161,7 @@
                         <a href="?action=add&id=none&error=0" class="non-style-link"><button  class="login-btn btn-primary btn button-icon"  style="display: flex;justify-content: center;align-items: center;margin-left:75px;background-image: url('../img/icons/add.svg');">Add New</font></button>
                             </a></td>
                 </tr>
+                
                 <tr>
                     <td colspan="4" style="padding-top:10px;">
                         <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)">All Doctors (<?php echo $list11->num_rows; ?>)</p>
@@ -171,6 +181,7 @@
 
 
                 ?>
+                
                   
                 <tr>
                    <td colspan="4">
