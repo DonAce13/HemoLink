@@ -1,8 +1,9 @@
 <?php
+// Establish connection to MySQL on localhost
+$database = new mysqli("localhost", "root", "", "hemolink_database");
 
-$database = new mysqli("192.168.56.1", "root", "", "HemoLink_Database");
+// Check if connection is successful
 if ($database->connect_error) {
     die("Connection failed: " . $database->connect_error);
 }
-
 ?>

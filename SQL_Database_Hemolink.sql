@@ -13,8 +13,6 @@ SET time_zone = "+00:00";
 
 -- --------------------------------------------------------
 -- Table structure for table `admin`
---
-
 DROP TABLE IF EXISTS `admin`;
 CREATE TABLE IF NOT EXISTS `admin` (
   `aemail` varchar(255) NOT NULL,
@@ -22,14 +20,17 @@ CREATE TABLE IF NOT EXISTS `admin` (
   PRIMARY KEY (`aemail`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
+--
 -- Dumping data for table `admin`
-INSERT INTO `admin` (`aemail`, `apassword`) VALUES
-('administrator@gmail.com', '123');
-
--- --------------------------------------------------------
--- Table structure for table `appointment`
 --
 
+INSERT INTO `admin` (`aemail`, `apassword`) VALUES
+('administator@gmail.com', '123');
+
+-- --------------------------------------------------------
+
+
+-- Table structure for table `appointment`
 DROP TABLE IF EXISTS `appointment`;
 CREATE TABLE IF NOT EXISTS `appointment` (
   `appoid` int(11) NOT NULL AUTO_INCREMENT,  -- Primary key
@@ -52,14 +53,29 @@ CREATE TABLE IF NOT EXISTS `appointment` (
   KEY `idx_is_self` (`is_self`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
--- Add constraints to the `appointment` table for `is_self` validation
-ALTER TABLE `appointment`
-ADD CONSTRAINT `chk_is_self_fields`
-  CHECK (
-    (is_self = 0 AND other_patient_name IS NULL AND description IS NULL AND philhealth_id IS NULL AND age IS NULL)
-    OR 
-    (is_self = 1 AND other_patient_name IS NOT NULL AND description IS NOT NULL AND philhealth_id IS NOT NULL AND age IS NOT NULL)
-  );
+-- Create Trigger to validate the `is_self` logic
+DELIMITER $$
+
+CREATE TRIGGER validate_is_self_fields
+BEFORE INSERT ON `appointment`
+FOR EACH ROW
+BEGIN
+    -- When is_self is 0 (appointment for self), other fields must be NULL
+    IF NEW.is_self = 0 THEN
+        SET NEW.other_patient_name = NULL;
+        SET NEW.description = NULL;
+        SET NEW.philhealth_id = NULL;
+        SET NEW.age = NULL;
+    -- When is_self is 1 (appointment for others), these fields must not be NULL
+    ELSEIF NEW.is_self = 1 THEN
+        IF NEW.other_patient_name IS NULL OR NEW.description IS NULL OR NEW.philhealth_id IS NULL OR NEW.age IS NULL THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'All fields for other patient (name, description, PhilHealth ID, and age) must be provided when is_self is 1';
+        END IF;
+    END IF;
+END $$
+
+DELIMITER ;
 
 -- Sample data for appointments
 
@@ -74,12 +90,8 @@ VALUES
   (2, 2, 2, '2024-12-18', '14:00:00', 1, 'John Doe', 'General checkup', 'PH987654321', 30, 'scheduled');
 
 
-
-
 -- --------------------------------------------------------
 -- Table structure for table `doctor`
---
-
 DROP TABLE IF EXISTS `doctor`;
 CREATE TABLE IF NOT EXISTS `doctor` (
   `docid` int(11) NOT NULL AUTO_INCREMENT,
@@ -99,9 +111,6 @@ INSERT INTO `doctor` (`docid`, `docemail`, `docname`, `docpassword`, `docnic`, `
 (1, 'doctor@gmail.com', 'Test Doctor', '123', '000000000', '0110000000', 1);
 
 -- --------------------------------------------------------
--- Table structure for table `patient`
---
-
 -- Table structure for table `patient`
 DROP TABLE IF EXISTS `patient`;
 CREATE TABLE IF NOT EXISTS `patient` (
@@ -140,8 +149,6 @@ INSERT INTO `patient` (`pid`, `pemail`, `pname`, `ppassword`, `paddress`, `pnic`
 
 -- --------------------------------------------------------
 -- Table structure for table `schedule`
---
-
 DROP TABLE IF EXISTS `schedule`;
 CREATE TABLE IF NOT EXISTS `schedule` (
   `scheduleid` int(11) NOT NULL AUTO_INCREMENT,
@@ -163,7 +170,6 @@ INSERT INTO `schedule` (`docid`, `title`, `scheduledate`, `scheduletime`, `nop`)
 
 -- --------------------------------------------------------
 -- Create table `archived_schedule` for soft-deleted sessions
---
 
 CREATE TABLE IF NOT EXISTS `archived_schedule` (
   `scheduleid` int(11) NOT NULL,
@@ -178,8 +184,6 @@ CREATE TABLE IF NOT EXISTS `archived_schedule` (
 
 -- --------------------------------------------------------
 -- Table structure for table `specialties`
---
-
 DROP TABLE IF EXISTS `specialties`;
 CREATE TABLE IF NOT EXISTS `specialties` (
   `id` int(2) NOT NULL,
@@ -248,8 +252,6 @@ INSERT INTO `specialties` (`id`, `sname`) VALUES
 
 -- --------------------------------------------------------
 -- Table structure for table `webuser`
---
-
 DROP TABLE IF EXISTS `webuser`;
 CREATE TABLE IF NOT EXISTS `webuser` (
   `email` varchar(255) NOT NULL,
