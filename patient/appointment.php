@@ -170,7 +170,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'drop') {
                     </td>
                 </tr>
                 <tr class="menu-row">
-                    <td class="menu-btn menu-icon-appoinment <?php if ($currentPage == 'settings.php') echo 'menu-active menu-icon-appoinment-active'; ?>">
+                    <td class="menu-btn menu-icon-settings <?php if ($currentPage == 'settings.php') echo 'menu-active menu-icon-appoinment-active'; ?>">
                         <a href="settings.php" class="non-style-link-menu <?php if ($currentPage == 'settings.php') echo 'non-style-link-menu-active'; ?>">
                             <div><p class="menu-text">Settings</p></div>
                         </a>

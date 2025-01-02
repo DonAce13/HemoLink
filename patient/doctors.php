@@ -1,5 +1,4 @@
 <?php
-
 // Start the session to check for user login
 session_start();
 
@@ -34,9 +33,7 @@ if ($result->num_rows > 0) {
     echo "Error: Patient email not found in the database.";
     exit;
 }
-
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -56,22 +53,55 @@ if ($result->num_rows > 0) {
         .sub-table{
             animation: transitionIn-Y-bottom 0.5s;
         }
-</style>
+
+        /* Hamburger Styles */
+        .hamburger {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 30px;
+            height: 25px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .bar {
+            height: 4px;
+            width: 100%;
+            background-color: #333;
+            border-radius: 2px;
+            transition: all 0.3s ease-in-out;
+        }
+        .hamburger.active .bar:nth-child(1) {
+            transform: rotate(45deg) translateY(10px);
+        }
+        .hamburger.active .bar:nth-child(2) {
+            opacity: 0;
+        }
+        .hamburger.active .bar:nth-child(3) {
+            transform: rotate(-45deg) translateY(-10px);
+        }
+
+        /* Menu */
+        .menu {
+            display: none;
+            transition: all 0.3s ease-in-out;
+        }
+        .menu.show {
+            display: block;
+        }
+    </style>
 </head>
 <body>
     <?php
-
     if(isset($_SESSION["user"])){
         if(($_SESSION["user"])=="" or $_SESSION['usertype']!='p'){
             header("location: ../login.php");
         }else{
             $useremail=$_SESSION["user"];
         }
-
     }else{
         header("location: ../login.php");
     }
-    
 
     //import database
     include("../connection.php");
@@ -79,10 +109,11 @@ if ($result->num_rows > 0) {
     $userfetch=$userrow->fetch_assoc();
     $userid= $userfetch["pid"];
     $username=$userfetch["pname"];
-
     ?>
+    
     <div class="container">
-    <div class="hamburger" id="hamburger">
+        <!-- Hamburger Icon -->
+        <div class="hamburger" id="hamburger">
             <div class="bar"></div>
             <div class="bar"></div>
             <div class="bar"></div>
@@ -94,15 +125,15 @@ if ($result->num_rows > 0) {
                 <tr>
                     <td style="padding:10px" colspan="2">
                         <table border="0" class="profile-container">
-                        <tr>
-                            <td width="30%" style="padding-left:20px">
-                                <img src="../img/user.png" alt="" width="100%" style="border-radius:50%">
-                            </td>
-                            <td style="padding:0px;margin:0px;">
-                                <p class="profile-title"><?php echo $username  ?></p>
-                                <p class="profile-subtitle"><?php echo $patientEmail; ?></p> <!-- Display admin email here -->
-                            </td>
-                        </tr>
+                            <tr>
+                                <td width="30%" style="padding-left:20px">
+                                    <img src="../img/user.png" alt="" width="100%" style="border-radius:50%">
+                                </td>
+                                <td style="padding:0px;margin:0px;">
+                                    <p class="profile-title"><?php echo $username  ?></p>
+                                    <p class="profile-subtitle"><?php echo $patientEmail; ?></p> <!-- Display admin email here -->
+                                </td>
+                            </tr>
 
                             <tr>
                                 <td colspan="2">
@@ -112,57 +143,48 @@ if ($result->num_rows > 0) {
                         </table>
                     </td>
                 </tr>
-            <?php
+                <?php
                 $currentPage = basename($_SERVER['PHP_SELF']); // Get the current script's file name
-            ?>
-            <tr class="menu-row">
-                <td class="menu-btn menu-icon-dashbord <?php echo ($currentPage == 'index.php') ? 'menu-active menu-icon-dashbord-active' : ''; ?>">
-                    <a href="index.php" class="non-style-link-menu <?php echo ($currentPage == 'index.php') ? 'non-style-link-menu-active' : ''; ?>"><div><p class="menu-text">Dashboard</p></a></div></a>
-                </td>
-            </tr>
-            <tr class="menu-row">
-                <td class="menu-btn menu-icon-doctor <?php echo ($currentPage == 'doctors.php') ? 'menu-active menu-icon-doctor-active' : ''; ?>">
-                    <a href="doctors.php" class="non-style-link-menu <?php echo ($currentPage == 'doctors.php') ? 'non-style-link-menu-active' : ''; ?>"><div><p class="menu-text">Doctors</p></a></div>
-                </td>
-            </tr>
-            <tr class="menu-row">
-                <td class="menu-btn menu-icon-schedule <?php echo ($currentPage == 'schedule.php') ? 'menu-active menu-icon-schedule-active' : ''; ?>">
-                    <a href="schedule.php" class="non-style-link-menu <?php echo ($currentPage == 'schedule.php') ? 'non-style-link-menu-active' : ''; ?>"><div><p class="menu-text">Schedule</p></div></a>
-                </td>
-            </tr>
-            <tr class="menu-row">
-                <td class="menu-btn menu-icon-appoinment <?php echo ($currentPage == 'appointment.php') ? 'menu-active menu-icon-appoinment-active' : ''; ?>">
-                    <a href="appointment.php" class="non-style-link-menu <?php echo ($currentPage == 'appointment.php') ? 'non-style-link-menu-active' : ''; ?>"><div><p class="menu-text">Appointment</p></a></div>
-                </td>
-            </tr>
+                ?>
+                <tr class="menu-row">
+                    <td class="menu-btn menu-icon-dashbord <?php echo ($currentPage == 'index.php') ? 'menu-active menu-icon-dashbord-active' : ''; ?>">
+                        <a href="index.php" class="non-style-link-menu <?php echo ($currentPage == 'index.php') ? 'non-style-link-menu-active' : ''; ?>"><div><p class="menu-text">Dashboard</p></a></div></a>
+                    </td>
+                </tr>
+                <tr class="menu-row">
+                    <td class="menu-btn menu-icon-doctor <?php echo ($currentPage == 'doctors.php') ? 'menu-active menu-icon-doctor-active' : ''; ?>">
+                        <a href="doctors.php" class="non-style-link-menu <?php echo ($currentPage == 'doctors.php') ? 'non-style-link-menu-active' : ''; ?>"><div><p class="menu-text">Doctors</p></a></div>
+                    </td>
+                </tr>
+                <tr class="menu-row">
+                    <td class="menu-btn menu-icon-schedule <?php echo ($currentPage == 'schedule.php') ? 'menu-active menu-icon-schedule-active' : ''; ?>">
+                        <a href="schedule.php" class="non-style-link-menu <?php echo ($currentPage == 'schedule.php') ? 'non-style-link-menu-active' : ''; ?>"><div><p class="menu-text">Schedule</p></div></a>
+                    </td>
+                </tr>
+                <tr class="menu-row">
+                    <td class="menu-btn menu-icon-appoinment <?php echo ($currentPage == 'appointment.php') ? 'menu-active menu-icon-appoinment-active' : ''; ?>">
+                        <a href="appointment.php" class="non-style-link-menu <?php echo ($currentPage == 'appointment.php') ? 'non-style-link-menu-active' : ''; ?>"><div><p class="menu-text">Appointment</p></a></div>
+                    </td>
+                </tr>
 
-                            <tr class="menu-row" >
+                <tr class="menu-row">
                     <td class="menu-btn menu-icon-settings">
                         <a href="settings.php" class="non-style-link-menu"><div><p class="menu-text">Settings</p></a></div>
                     </td>
                 </tr>
-            <!-- <tr class="menu-row">
-                <td class="menu-btn menu-icon-patient <?php echo ($currentPage == 'patient.php') ? 'menu-active menu-icon-patient-active' : ''; ?>">
-                    <a href="patient.php" class="non-style-link-menu <?php echo ($currentPage == 'patient.php') ? 'non-style-link-menu-active' : ''; ?>"><div><p class="menu-text">Patients</p></a></div>
-                </td>
-            </tr> -->
-
             </table>
         </div>
-        <script>
-            const hamburger = document.getElementById('hamburger');
-            const menu = document.getElementById('menu');
-            hamburger.addEventListener('click', () => {
-            console.log("Hamburger clicked!"); // Debugging line
-            menu.classList.toggle('show');
+
+    <!-- JavaScript -->
+    <script>
+        const hamburger = document.getElementById('hamburger');
+        const menu = document.getElementById('menu');
+        
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active'); // Transform hamburger to X
+            menu.classList.toggle('show'); // Show/hide menu
         });
-
     </script>
-
-
-
-
-
 
 
             <div class="dash-body" style="margin-top: 15px">
@@ -244,7 +266,7 @@ if ($result->num_rows > 0) {
 
 
                 ?>
-                  
+                      </div>
                 <tr>
                    <td colspan="4">
                        <center>

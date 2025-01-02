@@ -401,7 +401,7 @@ if ($result->num_rows > 0) {
                                                         <td style="text-align: center;padding:30px;font-size:25px;font-weight:700;"> &nbsp;'.
                                                         $apponum
                                                         .'</td>
-                                                       <td style= "text-align: center;"> &nbsp;'.
+                                                          <td style= "text-align: center;"> &nbsp;'.
                                                         substr($title,0,30)
                                                         .'</td>
                                                         <td style= "text-align: center;">

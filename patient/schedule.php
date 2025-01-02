@@ -134,21 +134,21 @@ if ($result->num_rows > 0) {
                     </td>
                 </tr>
                 <tr class="menu-row">
-                    <td class="menu-btn menu-icon-doctor <?php if ($currentPage == 'schedule.php') echo 'menu-active menu-icon-doctor-active'; ?>">
+                    <td class="menu-btn menu-icon-schedule <?php if ($currentPage == 'schedule.php') echo 'menu-active menu-icon-schedule-active'; ?>">
                         <a href="schedule.php" class="non-style-link-menu <?php if ($currentPage == 'schedule.php') echo 'non-style-link-menu-active'; ?>">
                             <div><p class="menu-text">Schedule</p></div>
                         </a>
                     </td>
                 </tr>
                 <tr class="menu-row">
-                    <td class="menu-btn menu-icon-doctor <?php if ($currentPage == 'appointment.php') echo 'menu-active menu-icon-doctor-active'; ?>">
+                    <td class="menu-btn menu-icon-appoinment <?php if ($currentPage == 'appointment.php') echo 'menu-active menu-icon-appointment-active'; ?>">
                         <a href="appointment.php" class="non-style-link-menu <?php if ($currentPage == 'appointment.php') echo 'non-style-link-menu-active'; ?>">
                             <div><p class="menu-text">Appointment</p></div>
                         </a>
                     </td>
                 </tr>
                 <tr class="menu-row">
-                    <td class="menu-btn menu-icon-doctor <?php if ($currentPage == 'settings.php') echo 'menu-active menu-icon-doctor-active'; ?>">
+                    <td class="menu-btn menu-icon-settings <?php if ($currentPage == 'settings.php') echo 'menu-active menu-icon-settings-active'; ?>">
                         <a href="settings.php" class="non-style-link-menu <?php if ($currentPage == 'settings.php') echo 'non-style-link-menu-active'; ?>">
                             <div><p class="menu-text">Settings</p></div>
                         </a>
