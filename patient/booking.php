@@ -300,75 +300,104 @@ if (isset($_GET["id"])) {
                     </div>
                 </td>
             </tr>
-            <tr>
-                <td style="width: 100%;">
-                    <div class="dashboard-items search-items">
-                        <div style="width:100%">
-                            <div class="h1-search" style="font-size:25px;">
-                                Book For:
-                            </div><br><br>
-                            <div class="h3-search" style="font-size:18px;line-height:30px">
-                                <label for="is_self">Choose an option:</label><br>
-                                <input type="radio" id="self" name="is_self" value="0" onclick="toggleOtherPatientForm()" checked> Myself<br>
-                                <input type="radio" id="others" name="is_self" value="1" onclick="toggleOtherPatientForm()"> Someone Else<br><br>
-                            </div>
-                            <div id="otherPatientForm" style="display: none;">
-                                <label for="other_patient_name">Other Patient Name:</label><br>
-                                <input type="text" id="other_patient_name" name="other_patient_name"><br><br>
+<tr>
+    <td style="width: 100%;">
+        <div class="dashboard-items search-items">
+            <div style="width:100%">
+                <div class="h1-search" style="font-size:25px;">
+                    Book For:
+                </div><br><br>
+                <div class="h3-search" style="font-size:18px;line-height:30px">
+                    <label for="is_self">Choose an option:</label><br>
+                    <input type="radio" id="self" name="is_self" value="0" onclick="toggleOtherPatientForm()" checked> Myself<br>
+                    <input type="radio" id="others" name="is_self" value="1" onclick="toggleOtherPatientForm()"> Someone Else<br><br>
+                </div>
+                <div id="otherPatientForm" style="display: none;">
+                    <label for="other_patient_name">Other Patient Name:</label><br>
+                    <input type="text" id="other_patient_name" name="other_patient_name"><br><br>
 
-                                <label for="philhealth_id">PhilHealth ID:</label><br>
-                                <input type="text" id="philhealth_id" name="philhealth_id"><br><br>
+                    <label for="philhealth_id">PhilHealth ID:</label><br>
+                    <input type="text" id="philhealth_id" name="philhealth_id" maxlength="12"><br><br>
 
-                                <label for="age">Age:</label><br>
-                                <input type="number" id="age" name="age"><br><br>
+                    <label for="age">Age:</label><br>
+                    <input type="number" id="age" name="age" max="999"><br><br>
 
-                                <label for="description">Description:</label><br>
-                                <textarea id="description" name="description"></textarea><br><br>
-                            </div>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <input type="submit" class="login-btn btn-primary btn btn-book" style="margin-left:10px;padding-left: 25px;padding-right: 25px;padding-top: 10px;padding-bottom: 10px;width:95%;text-align: center;" value="Book now" name="booknow" onclick="validateForm(event)">
-                </td>
-            </tr>
-        </table>
-    </form>
+                    <label for="description">Description:</label><br>
+                    <textarea id="description" name="description"></textarea><br><br>
+                </div>
+            </div>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <input type="submit" class="login-btn btn-primary btn btn-book" style="margin-left:10px;padding-left: 25px;padding-right: 25px;padding-top: 10px;padding-bottom: 10px;width:95%;text-align: center;" value="Book now" name="booknow" onclick="validateForm(event)">
+    </td>
+</tr>
+</table>
+</form>
 
-    <script>
-        function toggleOtherPatientForm() {
-            const isSelf = document.getElementById("self").checked;
-            const otherPatientForm = document.getElementById("otherPatientForm");
-            if (isSelf) {
-                otherPatientForm.style.display = "none";
-            } else {
-                otherPatientForm.style.display = "block";
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    function toggleOtherPatientForm() {
+        const isSelf = document.getElementById("self").checked;
+        const otherPatientForm = document.getElementById("otherPatientForm");
+        if (isSelf) {
+            otherPatientForm.style.display = "none";
+        } else {
+            otherPatientForm.style.display = "block";
+        }
+    }
+
+    function validateForm(event) {
+        const isSelf = document.getElementById("self").checked;
+        if (!isSelf) {
+            const otherPatientName = document.getElementById("other_patient_name").value.trim();
+            const philhealthId = document.getElementById("philhealth_id").value.trim();
+            const age = document.getElementById("age").value.trim();
+            const description = document.getElementById("description").value.trim();
+
+            // Validate PhilHealth ID (must be exactly 12 digits)
+            const philhealthPattern = /^\d{12}$/;
+            if (!philhealthPattern.test(philhealthId)) {
+                event.preventDefault();
+                Swal.fire({
+                    title: "Invalid PhilHealth ID",
+                    text: "PhilHealth ID must be exactly 12 digits.",
+                    icon: "error",
+                    confirmButtonText: "OK"
+                });
+                return;
+            }
+
+            // Validate Age (must not exceed 3 digits)
+            if (age < 1 || age > 100) {
+                event.preventDefault();
+                Swal.fire({
+                    title: "Invalid Age",
+                    text: "Age must be a number between 1 and 100.",
+                    icon: "error",
+                    confirmButtonText: "OK"
+                });
+                return;
+            }
+
+            // Check if all fields are filled
+            if (!otherPatientName || !philhealthId || !age || !description) {
+                event.preventDefault();
+                Swal.fire({
+                    title: "All Information Needs to be Filled",
+                    text: "Please fill in all the required fields before proceeding.",
+                    icon: "warning",
+                    confirmButtonText: "OK"
+                });
+                return;
             }
         }
+    }
+</script>
 
-        function validateForm(event) {
-            const isSelf = document.getElementById("self").checked;
-            if (!isSelf) {
-                const otherPatientName = document.getElementById("other_patient_name").value.trim();
-                const philhealthId = document.getElementById("philhealth_id").value.trim();
-                const age = document.getElementById("age").value.trim();
-                const description = document.getElementById("description").value.trim();
-
-                if (!otherPatientName || !philhealthId || !age || !description) {
-                    event.preventDefault();
-
-                    Swal.fire({
-                        title: "All Information Needs to be Filled",
-                        text: "Please fill in all the required fields before proceeding.",
-                        icon: "warning",
-                        confirmButtonText: "OK"
-                    });
-                }
-            }
-        }
-    </script>
     ';
 } else {
     echo "Invalid appointment ID.";
