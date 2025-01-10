@@ -187,7 +187,7 @@ if ($result->num_rows > 0) {
                                     <td width="5%" style="text-align: center;">Date:</td>
                                     <td width="30%">
                                         <form action="" method="post">
-                                            <input type="date" name="sheduledate" id="date" class="input-text filter-container-items" style="margin: 0;width: 95%;">
+                                            <input type="date" name="scheduledate" id="date" class="input-text filter-container-items" style="margin: 0;width: 95%;">
                                     </td>
                                     <td width="12%">
                                         <input type="submit" name="filter" value=" Filter" class="btn-primary-soft btn button-icon btn-filter" style="padding: 15px; margin:0;width:100%">
@@ -222,7 +222,7 @@ if ($result->num_rows > 0) {
                 <tbody>
                 <?php
                 // Determine if a date filter is applied
-                $filter_date = isset($_POST['sheduledate']) && !empty($_POST['sheduledate']) ? $_POST['sheduledate'] : $today;
+                $filter_date = isset($_POST['scheduledate']) && !empty($_POST['scheduledate']) ? $_POST['scheduledate'] : $today;
 
                 // Update the query to use the filtered date
                 $sqlmain = "SELECT * FROM schedule 
@@ -259,65 +259,72 @@ if ($result->num_rows > 0) {
                 }
 
                // Function to display sessions
-function display_sessions($sessions, $database, $current_datetime, $is_future) {
-    foreach ($sessions as $row) {
-        $scheduleid = $row["scheduleid"];
-        $title = $row["title"];
-        $docname = $row["docname"];
-        $scheduledate = $row["scheduledate"];
-        $scheduletime = $row["scheduletime"];
-        $schedule_datetime = $scheduledate . ' ' . $scheduletime;
-
-        // Get the maximum number of patients (nop) from the schedule
-        $sql_schedule = $database->query("SELECT nop FROM schedule WHERE scheduleid = '$scheduleid'");
-        $schedule_data = $sql_schedule->fetch_assoc();
-        $max_patients = $schedule_data['nop'];
-
-        // Check how many patients have already booked
-        $patient_count = $database->query("SELECT COUNT(*) AS patient_count FROM appointment WHERE scheduleid = '$scheduleid'")->fetch_assoc();
-        $patient_count_value = $patient_count['patient_count']; // Current number of booked patients
-
-// Generate button based on conditions
-if (!$is_future || $patient_count_value >= $max_patients) {
-    // Add a specific class for Session Full
-    if ($is_future) {
-        // If the session is full
-        $button_disabled = '<button class="cancel-booking-btn btn-primary-soft btn btn-session-full" style="width:97%;" disabled>Session Full</button>';
-    } else {
-        // If the session has passed
-        $button_disabled = '<button class="cancel-booking-btn btn-primary-soft btn btn-session-passed" style="width:97%;" disabled>Session Passed</button>';
-    }
-} else {
-    // Logic for showing "Book Now" button or already booked status
-    $booking_check = $database->query("SELECT * FROM appointment WHERE pid = (SELECT pid FROM patient WHERE pemail = '" . $_SESSION["user"] . "') AND scheduleid = '$scheduleid'");
-    if ($booking_check->num_rows > 0) {
-        // If already booked
-        $button_disabled = '<button class="cancel-booking-btn btn-primary-soft btn btn-booked" style="width:97%;" disabled>Already Booked</button>';
-    } else {
-        // If not booked yet
-        $button_disabled = '<a href="booking.php?id=' . $scheduleid . '"><button class="cancel-booking-btn btn-primary-soft btn btn-book-now" style="width:95%;">Book Now</button></a>';
-    }
-}
-
-
-                        
-                        
-                        
-
-                        // Display the session row
-                        echo '
-                        <tr>
-                            <td colspan="4">
-                                <div class="sub-table">
-                                    <div class="table-row" style="text-align: center;">
-                                        <p class="tn-in-text-title">' . $docname . '</p>
-                                        <p class="tn-in-text">' . $scheduledate . ' | ' . $scheduletime . '</p>
-                                        <p class="tn-in-text">Session title: ' . $title . '</p>
-                                        <div class="sub-btn">' . $button_disabled . '</div>
-                                    </div>
+               function display_sessions($sessions, $database, $current_datetime, $is_future) {
+                foreach ($sessions as $row) {
+                    $scheduleid = $row["scheduleid"];
+                    $title = $row["title"];
+                    $docname = $row["docname"];
+                    $scheduledate = $row["scheduledate"];
+                    $scheduletime = $row["scheduletime"];
+                    $session_duration = $row["session_duration"]; // Duration in minutes
+                    
+                    // Calculate the end time by adding session duration to the scheduled time
+                    $start_datetime = new DateTime($scheduledate . ' ' . $scheduletime);
+                    $end_datetime = clone $start_datetime;
+                    $end_datetime->modify('+' . $session_duration . ' minutes');
+                    $end_time = $end_datetime->format('Y-m-d H:i:s'); // end_time for comparison
+                    
+                    // Check how many patients have already booked
+                    $sql_schedule = $database->query("SELECT nop FROM schedule WHERE scheduleid = '$scheduleid'");
+                    $schedule_data = $sql_schedule->fetch_assoc();
+                    $max_patients = $schedule_data['nop'];
+                    
+                    // Check how many patients have already booked
+                    $patient_count = $database->query("SELECT COUNT(*) AS patient_count FROM appointment WHERE scheduleid = '$scheduleid'")->fetch_assoc();
+                    $patient_count_value = $patient_count['patient_count']; // Current number of booked patients
+                    
+                    // Get the current time
+                    $current_time = new DateTime($current_datetime);
+                    
+                    // Check for session passed first
+                    if ($current_time >= new DateTime($end_time)) {
+                        // Session passed (both full and ongoing will be converted to passed when the time has passed)
+                        $button_disabled = '<button class="cancel-booking-btn btn-primary-soft btn btn-session-passed" style="width:97%;" disabled>Session Passed</button>';
+                    } elseif ($current_time >= $start_datetime && $current_time <= $end_datetime) {
+                        // Session is ongoing
+                        $button_disabled = '<button class="cancel-booking-btn btn-primary-soft btn btn-session-ongoing" style="width:97%;" disabled>Session is Still Ongoing</button>';
+                    } else {
+                        // Session is in the future
+                        if ($patient_count_value >= $max_patients) {
+                            // Session is full and still in the future
+                            $button_disabled = '<button class="cancel-booking-btn btn-primary-soft btn btn-session-full" style="width:97%;" disabled>Session Full</button>';
+                        } else {
+                            // Logic for showing "Book Now" button or already booked status
+                            $booking_check = $database->query("SELECT * FROM appointment WHERE pid = (SELECT pid FROM patient WHERE pemail = '" . $_SESSION["user"] . "') AND scheduleid = '$scheduleid'");
+                            if ($booking_check->num_rows > 0) {
+                                // If already booked
+                                $button_disabled = '<button class="cancel-booking-btn btn-primary-soft btn btn-booked" style="width:97%;" disabled>Already Booked</button>';
+                            } else {
+                                // If not booked yet
+                                $button_disabled = '<a href="booking.php?id=' . $scheduleid . '"><button class="cancel-booking-btn btn-primary-soft btn btn-book-now" style="width:95%;">Book Now</button></a>';
+                            }
+                        }
+                    }
+                    
+                    // Display the session row
+                    echo '
+                    <tr>
+                        <td colspan="4">
+                            <div class="sub-table">
+                                <div class="table-row" style="text-align: center;">
+                                    <p class="tn-in-text-title">' . $docname . '</p>
+                                    <p class="tn-in-text">' . $scheduledate . ' | ' . $scheduletime . '</p>
+                                    <p class="tn-in-text">Session title: ' . $title . '</p>
+                                    <div class="sub-btn">' . $button_disabled . '</div>
                                 </div>
-                            </td>
-                        </tr>';
+                            </div>
+                        </td>
+                    </tr>';
                     }
                 }
 

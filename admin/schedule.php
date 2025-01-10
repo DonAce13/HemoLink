@@ -23,9 +23,9 @@ $sqlmain = "SELECT schedule.scheduleid, schedule.title, doctor.docname, schedule
 $sqlConditions = [];
 
 // Check if the date filter is applied
-if (!empty($_POST["sheduledate"])) {
-    $sheduledate = $_POST["sheduledate"];
-    $sqlConditions[] = "schedule.scheduledate = '$sheduledate'";
+if (!empty($_POST["scheduledate"])) {
+    $scheduledate = $_POST["scheduledate"];
+    $sqlConditions[] = "schedule.scheduledate = '$scheduledate'";
 }
 
 // Check if the doctor filter is applied
@@ -194,7 +194,7 @@ $list110 = $database->query($sqlmain);
                         <td width="30%">
                         <form action="" method="post">
                             
-                            <input type="date" name="sheduledate" id="date" class="input-text filter-container-items" style="margin: 0;width: 95%;">
+                            <input type="date" name="scheduledate" id="date" class="input-text filter-container-items" style="margin: 0;width: 95%;">
 
                         </td>
                         <td width="5%" style="text-align: center;">
@@ -237,9 +237,9 @@ $list110 = $database->query($sqlmain);
                     if($_POST){
                         //print_r($_POST);
                         $sqlpt1="";
-                        if(!empty($_POST["sheduledate"])){
-                            $sheduledate=$_POST["sheduledate"];
-                            $sqlpt1=" schedule.scheduledate='$sheduledate' ";
+                        if(!empty($_POST["scheduledate"])){
+                            $scheduledate=$_POST["scheduledate"];
+                            $sqlpt1=" schedule.scheduledate='$scheduledate' ";
                         }
 
 
@@ -477,6 +477,30 @@ if ($_GET) {
                             </td>
                         </tr>
 
+                        <!-- New field for session duration -->
+                        <tr>
+                            <td class="label-td" colspan="2">
+                                <label for="duration" class="form-label">Session Duration (in minutes): </label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label-td" colspan="2">
+                                <input type="number" name="duration" class="input-text" min="1" placeholder="Session Duration in Minutes" required><br>
+                            </td>
+                        </tr>
+
+                        <!-- End Time (will be calculated from duration and start time) -->
+                        <tr>
+                            <td class="label-td" colspan="2">
+                                <label for="end_time" class="form-label">End Time (Calculated): </label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label-td" colspan="2">
+                                <input type="text" id="end_time" class="input-text" readonly><br>
+                            </td>
+                        </tr>
+
                         <tr>
                             <td colspan="2">
                                 <input type="reset" value="Reset" class="login-btn btn-primary-soft btn" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -492,7 +516,28 @@ if ($_GET) {
             <br><br>
         </div>
         </div>';
-    } elseif ($action == 'session-added') {
+
+        // Add JavaScript to calculate end time dynamically based on start time and duration
+        echo '
+        <script>
+        document.querySelector("input[name=\'time\']").addEventListener("change", calculateEndTime);
+        document.querySelector("input[name=\'duration\']").addEventListener("change", calculateEndTime);
+
+        function calculateEndTime() {
+            var startTime = document.querySelector("input[name=\'time\']").value;
+            var duration = document.querySelector("input[name=\'duration\']").value;
+
+            if (startTime && duration) {
+                var startDate = new Date("1970-01-01T" + startTime + "Z");  // Use a dummy date
+                startDate.setMinutes(startDate.getMinutes() + parseInt(duration));
+
+                var hours = startDate.getUTCHours().toString().padStart(2, "0");
+                var minutes = startDate.getUTCMinutes().toString().padStart(2, "0");
+
+                document.getElementById("end_time").value = hours + ":" + minutes;
+            }
+        }
+        </script>';} elseif ($action == 'session-added') {
         $titleget = $_GET["title"];
         echo '
         <div id="popup1" class="overlay">

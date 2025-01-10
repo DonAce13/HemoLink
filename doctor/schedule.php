@@ -155,7 +155,7 @@
                         <td width="30%">
                         <form action="" method="post">
                             
-                            <input type="date" name="sheduledate" id="date" class="input-text filter-container-items" style="margin: 0;width: 95%;">
+                            <input type="date" name="scheduledate" id="date" class="input-text filter-container-items" style="margin: 0;width: 95%;">
 
                         </td>
                         
@@ -178,9 +178,9 @@
                     if($_POST){
                         //print_r($_POST);
                         $sqlpt1="";
-                        if(!empty($_POST["sheduledate"])){
-                            $sheduledate=$_POST["sheduledate"];
-                            $sqlmain.=" and schedule.scheduledate='$sheduledate' ";
+                        if(!empty($_POST["scheduledate"])){
+                            $scheduledate=$_POST["scheduledate"];
+                            $sqlmain.=" and schedule.scheduledate='$scheduledate' ";
                         }
 
                     }

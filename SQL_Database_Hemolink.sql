@@ -147,25 +147,35 @@ INSERT INTO `patient` (`pid`, `pemail`, `pname`, `ppassword`, `paddress`, `pnic`
 (1, 'patient@gmail.com', 'Test Patient', '123', '87, Otero Avenue', '0000000000', '2000-01-01', '0120000000');
 
 -- --------------------------------------------------------
--- Table structure for table `schedule`
 DROP TABLE IF EXISTS `schedule`;
 CREATE TABLE IF NOT EXISTS `schedule` (
-  `scheduleid` int(11) NOT NULL AUTO_INCREMENT,
-  `docid` varchar(255) DEFAULT NULL,
-  `title` varchar(255) DEFAULT NULL,
-  `scheduledate` date DEFAULT NULL,
-  `scheduletime` time DEFAULT NULL,
-  `nop` int(4) DEFAULT NULL,
-  `deleted_at` TIMESTAMP NULL DEFAULT NULL,
+  `scheduleid` int(11) NOT NULL AUTO_INCREMENT,  -- Primary key
+  `docid` varchar(255) DEFAULT NULL,  -- Doctor ID
+  `title` varchar(255) DEFAULT NULL,  -- Title of the session
+  `scheduledate` date DEFAULT NULL,  -- Date of the session
+  `scheduletime` time DEFAULT NULL,  -- Start time of the session
+  `session_duration` int(4) DEFAULT NULL,  -- Session duration (in minutes)
+  `end_time` time DEFAULT NULL,  -- End time of the session
+  `nop` int(4) DEFAULT NULL,  -- Number of patients
+  `deleted_at` TIMESTAMP NULL DEFAULT NULL,  -- Soft delete flag
   PRIMARY KEY (`scheduleid`),
   KEY `docid` (`docid`),
   KEY `idx_scheduledate_time` (`scheduledate`, `scheduletime`),
   KEY `idx_docid_date` (`docid`, `scheduledate`)
 ) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
 
--- Insert data with dynamic current date and time
-INSERT INTO `schedule` (`docid`, `title`, `scheduledate`, `scheduletime`, `nop`) VALUES
-('1', 'Current Test Session 1', CURDATE(), CURTIME(), 10);
+
+-- Insert data with dynamic current date, time, session duration, and calculated end time
+INSERT INTO `schedule` (`docid`, `title`, `scheduledate`, `scheduletime`, `session_duration`, `end_time`, `nop`) 
+VALUES
+('1', 
+ 'Current Test Session 1', 
+ CURDATE(), 
+ CURTIME(), 
+ 60,  -- Session duration in minutes
+ ADDTIME(CURTIME(), SEC_TO_TIME(60 * 60)),  -- End time (adding session duration in seconds)
+ 10);  -- Number of patients
+
 
 -- --------------------------------------------------------
 -- Create table `archived_schedule` for soft-deleted sessions

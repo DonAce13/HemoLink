@@ -19,10 +19,14 @@ if ($_POST) {
     $nop = $_POST["nop"];
     $date = $_POST["date"];
     $time = $_POST["time"];
+    $duration = $_POST["duration"];  // New: retrieve session duration from the form
+
+    // Calculate the end time by adding the session duration to the start time
+    $end_time = date('H:i', strtotime($time) + $duration * 60);  // End time calculated from start time + duration
 
     // Use prepared statements to avoid SQL injection
-    $stmt = $database->prepare("INSERT INTO schedule (docid, title, scheduledate, scheduletime, nop) VALUES (?, ?, ?, ?, ?)");
-    $stmt->bind_param("isssi", $docid, $title, $date, $time, $nop);  // i for integer, s for string
+    $stmt = $database->prepare("INSERT INTO schedule (docid, title, scheduledate, scheduletime, nop, session_duration, end_time) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("isssiss", $docid, $title, $date, $time, $nop, $duration, $end_time);  // Bind all parameters
 
     if ($stmt->execute()) {
         header("location: schedule.php?action=session-added&title=$title");
