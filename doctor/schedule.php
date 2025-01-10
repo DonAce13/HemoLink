@@ -221,63 +221,64 @@
                         </thead>
                         <tbody>
                         
-                            <?php
+                        <?php
+$result = $database->query($sqlmain);
 
-                                
-                                $result= $database->query($sqlmain);
+if ($result->num_rows == 0) {
+    echo '<tr>
+            <td colspan="4">
+                <br><br><br><br>
+                <center>
+                    <img src="../img/notfound.svg" width="25%">
+                    <br>
+                    <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">We cannot find anything related to your keywords!</p>
+                    <a class="non-style-link" href="schedule.php"><button class="login-btn btn-primary-soft btn" style="display: flex;justify-content: center;align-items: center;margin-left:20px;">&nbsp; Show all Sessions &nbsp;</button></a>
+                </center>
+                <br><br><br><br>
+            </td>
+        </tr>';
+} else {
+    for ($x = 0; $x < $result->num_rows; $x++) {
+        $row = $result->fetch_assoc();
+        $scheduleid = $row["scheduleid"];
+        $title = $row["title"];
+        $docname = $row["docname"];
+        $scheduledate = $row["scheduledate"];
+        $scheduletime = $row["scheduletime"];
+        $nop = $row["nop"];
 
-                                if($result->num_rows==0){
-                                    echo '<tr>
-                                    <td colspan="4">
-                                    <br><br><br><br>
-                                    <center>
-                                    <img src="../img/notfound.svg" width="25%">
-                                    
-                                    <br>
-                                    <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">We cannot find anything related to your keywords !</p>
-                                    <a class="non-style-link" href="schedule.php"><button  class="login-btn btn-primary-soft btn"  style="display: flex;justify-content: center;align-items: center;margin-left:20px;">&nbsp; Show all Sessions &nbsp;</font></button>
-                                    </a>
-                                    </center>
-                                    <br><br><br><br>
-                                    </td>
-                                    </tr>';
-                                    
-                                }
-                                else{
-                                for ( $x=0; $x<$result->num_rows;$x++){
-                                    $row=$result->fetch_assoc();
-                                    $scheduleid=$row["scheduleid"];
-                                    $title=$row["title"];
-                                    $docname=$row["docname"];
-                                    $scheduledate=$row["scheduledate"];
-                                    $scheduletime=$row["scheduletime"];
-                                    $nop=$row["nop"];
-                                    echo '<tr>
-                                        <td> &nbsp;'.
-                                        substr($title,0,30)
-                                        .'</td>
-                                        
-                                        <td style="text-align:center;">
-                                            '.substr($scheduledate,0,10).' '.substr($scheduletime,0,5).'
-                                        </td>
-                                        <td style="text-align:center;">
-                                            '.$nop.'
-                                        </td>
+        // Check if the session time has passed
+        $session_datetime = $scheduledate . ' ' . $scheduletime;
+        $current_datetime = date('Y-m-d H:i'); // Current time in the same format
 
-                                        <td>
-                                        <div style="display:flex;justify-content: center;">
-                                        
-                                        <a href="?action=view&id='.$scheduleid.'" class="non-style-link"><button  class="btn-primary-soft btn button-icon btn-view"  style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">View</font></button></a>
-                                       &nbsp;&nbsp;&nbsp;
-                                       <a href="?action=drop&id='.$scheduleid.'&name='.$title.'" class="non-style-link"><button  class="btn-primary-soft btn button-icon btn-delete"  style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">Cancel Session</font></button></a>
-                                        </div>
-                                        </td>
-                                    </tr>';
-                                    
-                                }
-                            }
-                                 
-                            ?>
+        $is_past = strtotime($session_datetime) < strtotime($current_datetime);
+
+        echo '<tr>
+                <td>&nbsp;' . substr($title, 0, 30) . '</td>
+                <td style="text-align:center;">
+                    ' . substr($scheduledate, 0, 10) . ' ' . substr($scheduletime, 0, 5) . '
+                </td>
+                <td style="text-align:center;">
+                    ' . $nop . '
+                </td>
+                <td>
+                    <div style="display:flex;justify-content: center;">';
+
+        echo '<a href="?action=view&id=' . $scheduleid . '" class="non-style-link"><button class="btn-primary-soft btn button-icon btn-view" style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">View</font></button></a>&nbsp;&nbsp;&nbsp;';
+
+        if ($is_past) {
+            // If the session has passed, show "Session Passed" and disable the button
+            echo '<button class="btn-session-passed" style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;" disabled><font class="tn-in-text">Session Passed</font></button>';
+        } else {
+            // Otherwise, show "Cancel Session"
+            echo '<a href="?action=drop&id=' . $scheduleid . '&name=' . $title . '" class="non-style-link"><button class="btn-primary-soft btn button-icon btn-delete" style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">Cancel Session</font></button></a>';
+        }
+
+        echo '</div></td></tr>';
+    }
+}
+?>
+
  
                             </tbody>
 

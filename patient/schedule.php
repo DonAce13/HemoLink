@@ -258,38 +258,51 @@ if ($result->num_rows > 0) {
                     }
                 }
 
-                // Function to display sessions
-                function display_sessions($sessions, $database, $current_datetime, $is_future) {
-                    foreach ($sessions as $row) {
-                        $scheduleid = $row["scheduleid"];
-                        $title = $row["title"];
-                        $docname = $row["docname"];
-                        $scheduledate = $row["scheduledate"];
-                        $scheduletime = $row["scheduletime"];
-                        $schedule_datetime = $scheduledate . ' ' . $scheduletime;
+               // Function to display sessions
+function display_sessions($sessions, $database, $current_datetime, $is_future) {
+    foreach ($sessions as $row) {
+        $scheduleid = $row["scheduleid"];
+        $title = $row["title"];
+        $docname = $row["docname"];
+        $scheduledate = $row["scheduledate"];
+        $scheduletime = $row["scheduletime"];
+        $schedule_datetime = $scheduledate . ' ' . $scheduletime;
 
-                        // Get the maximum number of patients (nop) from the schedule
-                        $sql_schedule = $database->query("SELECT nop FROM schedule WHERE scheduleid = '$scheduleid'");
-                        $schedule_data = $sql_schedule->fetch_assoc();
-                        $max_patients = $schedule_data['nop'];
+        // Get the maximum number of patients (nop) from the schedule
+        $sql_schedule = $database->query("SELECT nop FROM schedule WHERE scheduleid = '$scheduleid'");
+        $schedule_data = $sql_schedule->fetch_assoc();
+        $max_patients = $schedule_data['nop'];
 
-                        // Check how many patients have already booked
-                        $patient_count = $database->query("SELECT COUNT(*) AS patient_count FROM appointment WHERE scheduleid = '$scheduleid'")->fetch_assoc();
-                        $patient_count_value = $patient_count['patient_count']; // Current number of booked patients
+        // Check how many patients have already booked
+        $patient_count = $database->query("SELECT COUNT(*) AS patient_count FROM appointment WHERE scheduleid = '$scheduleid'")->fetch_assoc();
+        $patient_count_value = $patient_count['patient_count']; // Current number of booked patients
 
-                        // Generate button based on conditions
-                        if (!$is_future || $patient_count_value >= $max_patients) {
-                            $button_disabled = '<button class="cancel-booking-btn btn-primary-soft btn" style="width:97%;" disabled>' . 
-                                            ($is_future ? 'Session Full' : 'Session Passed') . '</button>';
-                        } else {
-                            // Logic for showing "Book Now" button or already booked status
-                            $booking_check = $database->query("SELECT * FROM appointment WHERE pid = (SELECT pid FROM patient WHERE pemail = '" . $_SESSION["user"] . "') AND scheduleid = '$scheduleid'");
-                            if ($booking_check->num_rows > 0) {
-                                $button_disabled = '<button class="cancel-booking-btn btn-primary-soft btn" style="width:97%;" disabled>Already Booked</button>';
-                            } else {
-                                $button_disabled = '<a href="booking.php?id=' . $scheduleid . '"><button class="cancel-booking-btn btn-primary-soft btn" style="width:95%;">Book Now</button></a>';
-                            }
-                        }
+// Generate button based on conditions
+if (!$is_future || $patient_count_value >= $max_patients) {
+    // Add a specific class for Session Full
+    if ($is_future) {
+        // If the session is full
+        $button_disabled = '<button class="cancel-booking-btn btn-primary-soft btn btn-session-full" style="width:97%;" disabled>Session Full</button>';
+    } else {
+        // If the session has passed
+        $button_disabled = '<button class="cancel-booking-btn btn-primary-soft btn btn-session-passed" style="width:97%;" disabled>Session Passed</button>';
+    }
+} else {
+    // Logic for showing "Book Now" button or already booked status
+    $booking_check = $database->query("SELECT * FROM appointment WHERE pid = (SELECT pid FROM patient WHERE pemail = '" . $_SESSION["user"] . "') AND scheduleid = '$scheduleid'");
+    if ($booking_check->num_rows > 0) {
+        // If already booked
+        $button_disabled = '<button class="cancel-booking-btn btn-primary-soft btn btn-booked" style="width:97%;" disabled>Already Booked</button>';
+    } else {
+        // If not booked yet
+        $button_disabled = '<a href="booking.php?id=' . $scheduleid . '"><button class="cancel-booking-btn btn-primary-soft btn btn-book-now" style="width:95%;">Book Now</button></a>';
+    }
+}
+
+
+                        
+                        
+                        
 
                         // Display the session row
                         echo '

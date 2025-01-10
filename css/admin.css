@@ -548,9 +548,74 @@
     height: 300px; /* Adjust to your needs */
 }
 
+/* Styles for the "Session Passed" button */
+.btn-session-passed {
+    background-color: #dcdcdc; /* Light gray for passed sessions */
+    color: #aaa; /* Light gray text color */
+    cursor: not-allowed; /* Disable cursor interaction */
+    padding: 10px 20px; /* Padding around the button */
+    border: 1px solid #ccc; /* Light border */
+    border-radius: 4px; /* Rounded corners */
+    font-size: 16px; /* Font size */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition on hover */
+}
 
+/* Hover effect for Session Passed */
+.btn-session-passed:hover {
+    background-color: #28a745; /* Green color when hovered */
+    color: white; /* Text color changes to white when hovered */
+}
 
+/* Styles for the "Session Full" button */
+.btn-session-full {
+    background-color: #dcdcdc; /* Red color for full sessions */
+    color: #aaa; /* White text color */
+    cursor: not-allowed; /* Disable cursor interaction */
+    padding: 10px 20px; /* Padding around the button */
+    border: 1px solid #ccc; /* Light border */
+    border-radius: 4px; /* Rounded corners */
+    font-size: 16px; /* Font size */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition on hover */
+}
 
+/* Hover effect for Session Full */
+.btn-session-full:hover {
+    background-color: #c82333; /* Darker red when hovered */
+    color: white; /* Text color stays white when hovered */
+}
 
+/* Styles for the "Book Now" button */
+.btn-book-now {
+    background-color: #4F7DF1; /* Blue color for "Book Now" */
+    color: #fff; /* White text color */
+    cursor: pointer; /* Pointer cursor for interactiveness */
+    padding: 10px 20px; /* Padding around the button */
+    border: 1px solid #007bffe1; /* Blue border */
+    border-radius: 4px; /* Rounded corners */
+    font-size: 16px; /* Font size */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition on hover */
+}
 
+/* Hover effect for Book Now */
+.btn-book-now:hover {
+    background-color: #003f83; /* Darker blue when hovered */
+    color: #fff; /* Text color stays white when hovered */
+}
 
+/* Styles for "Already Booked" button */
+.btn-booked {
+    background-color: #6c757d; /* Gray for already booked sessions */
+    color: #fff; /* White text color */
+    cursor: not-allowed; /* Disable cursor interaction */
+    padding: 10px 20px; /* Padding around the button */
+    border: 1px solid #ccc; /* Light border */
+    border-radius: 4px; /* Rounded corners */
+    font-size: 16px; /* Font size */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition on hover */
+}
+
+/* Hover effect for Already Booked */
+.btn-booked:hover {
+    background-color: #4F7DF1; /* Darker gray when hovered */
+    color: white; /* Text color stays white when hovered */
+}
