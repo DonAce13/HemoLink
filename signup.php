@@ -37,7 +37,7 @@ $_SESSION["user"] = "";
 $_SESSION["usertype"] = "";
 
 // Set the timezone
-date_default_timezone_set('Asia/Kolkata');
+date_default_timezone_set('Asia/Manila');
 $date = date('Y-m-d');
 $_SESSION["date"] = $date;
 

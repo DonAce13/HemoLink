@@ -185,7 +185,7 @@ if ($result->num_rows > 0) {
                                     </p>
                                     <p class="heading-sub12" style="margin: 0;">
                                         <?php 
-                                            date_default_timezone_set('Asia/Kolkata');
+                                            date_default_timezone_set('Asia/Manila');
                                             $today = date('Y-m-d');
                                             echo $today;
 
@@ -397,14 +397,15 @@ if ($result->num_rows > 0) {
                                                     $scheduledate=$row["scheduledate"];
                                                     $scheduletime=$row["scheduletime"];
                                                    
-                                                    echo '<tr>
-                                                        <td style="text-align: center;padding:30px;font-size:25px;font-weight:700;"> &nbsp;'.
+                                                    echo '
+                                                    <tr>
+                                                        <td style="padding:30px;font-size:25px;font-weight:700;"> &nbsp;'.
                                                         $apponum
                                                         .'</td>
-                                                          <td style= "text-align: center;"> &nbsp;'.
+                                                        <td style="padding:20px;"> &nbsp;'.
                                                         substr($title,0,30)
                                                         .'</td>
-                                                        <td style= "text-align: center;">
+                                                        <td>
                                                         '.substr($docname,0,20).'
                                                         </td>
                                                         <td style="text-align:center;">

@@ -80,7 +80,7 @@ if ($result->num_rows > 0) {
     $userid = $userfetch["pid"];
     $username = $userfetch["pname"];
 
-    date_default_timezone_set('Asia/Kolkata');
+    date_default_timezone_set('Asia/Manila');
     $today = date('Y-m-d');
     ?>
     <div class="container">
@@ -236,7 +236,12 @@ if ($result->num_rows > 0) {
                 $schedulerow = $stmt->get_result();
 
                 // Current datetime for comparison
+                
                 $current_datetime = date("Y-m-d H:i:s");
+
+
+                // Debugging: Print current time
+                echo "Current System Time: " . $current_datetime . "<br>";
 
                 // Separate sessions into future and past
                 $future_sessions = [];
@@ -311,16 +316,24 @@ if ($result->num_rows > 0) {
                         }
                     }
                     
-                    // Display the session row
+                    // Display the session row with the modified div structure
                     echo '
                     <tr>
-                        <td colspan="4">
-                            <div class="sub-table">
-                                <div class="table-row" style="text-align: center;">
-                                    <p class="tn-in-text-title">' . $docname . '</p>
-                                    <p class="tn-in-text">' . $scheduledate . ' | ' . $scheduletime . '</p>
-                                    <p class="tn-in-text">Session title: ' . $title . '</p>
-                                    <div class="sub-btn">' . $button_disabled . '</div>
+                        <td style="width: 25%;">
+                            <div class="dashboard-items search-items">
+                                <div style="width:100%;">
+                                    <div class="h1-search">
+                                        ' . substr($title, 0, 21) . '
+                                    </div><br>
+                                    <div class="h3-search">
+                                        ' . substr($docname, 0, 30) . '
+                                    </div>
+                                    <div class="h4-search">
+                                        ' . $scheduledate . '<br>Starts: <b>@' . substr($scheduletime, 0, 5) . '</b> (24h)
+                                        ' . '<br>Ends: <b>@' . substr($end_time, 11, 5) . '</b> (24h)
+                                    </div>
+                                    <br>
+                                    <div>' . $button_disabled . '</div>
                                 </div>
                             </div>
                         </td>

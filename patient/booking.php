@@ -77,7 +77,7 @@
     $userid = $userfetch["pid"];
     $username = $userfetch["pname"];
 
-    date_default_timezone_set('Asia/Kolkata');
+    date_default_timezone_set('Asia/Manila');
     $today = date('Y-m-d');
     ?>
     <div class="container">

@@ -223,7 +223,7 @@ if ($result->num_rows == 0) {
                         </p>
                         <p class="heading-sub12" style="padding: 0;margin: 0;">
                             <?php 
-                        date_default_timezone_set('Asia/Kolkata');
+                        date_default_timezone_set('Asia/Manila');
 
                         $date = date('Y-m-d');
                         echo $date;

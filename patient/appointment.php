@@ -24,6 +24,7 @@ $stmt->bind_param("s", $useremail);
 $stmt->execute();
 $userrow = $stmt->get_result();
 
+
 if ($userrow->num_rows > 0) {
     $userfetch = $userrow->fetch_assoc();
     $userid = $userfetch["pid"];
@@ -204,7 +205,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'drop') {
                         <p class="heading-sub12" style="margin: 0;">
                     
                     <?php 
-                        date_default_timezone_set('Asia/Kolkata');
+                        date_default_timezone_set('Asia/Manila');
                         $today = date('Y-m-d');
                         echo $today;
 
@@ -267,6 +268,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'drop') {
                 <td colspan="4" style="padding-top:10px;width: 100%;" >
                     
                     <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)">My Bookings (<?php echo $result->num_rows; ?>)</p>
+                    
                 </td>
                   
                 <tr>
@@ -278,74 +280,115 @@ if (isset($_GET['action']) && $_GET['action'] == 'drop') {
                         <tbody>
                         
                         <?php
-                if ($result->num_rows == 0) {
-                    echo '<tr>
-                    <td colspan="7">
-                        <br><br><br><br>
-                        <center>
-                            <img src="../img/notfound.svg" width="25%">
-                            <br>
-                            <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">
-                                We couldn\'t find anything related to your keywords!
-                            </p>
-                            <a class="non-style-link" href="appointment.php">
-                                <button class="login-btn btn-primary-soft btn" 
-                                        style="display: flex;justify-content: center;align-items: center;margin-left:20px;">
-                                    &nbsp; Show all Appointments &nbsp;
-                                </button>
-                            </a>
-                        </center>
-                        <br><br><br><br>
-                    </td>
-                    </tr>';
-                } else {
-                    while ($row = $result->fetch_assoc()) {
-                        $scheduleid = $row["scheduleid"];
-                        $title = $row["title"];
-                        $docname = $row["docname"];
-                        $scheduledate = $row["scheduledate"];
-                        $scheduletime = $row["scheduletime"];
-                        $apponum = $row["apponum"];
-                        $appodate = $row["appodate"];
-                        $appoid = $row["appoid"];
+// Set the correct time zone to Philippine Time (PHT)
+date_default_timezone_set('Asia/Manila');
 
-                        echo '
-                        <tr>
-                            <td style="width: 25%;">
-                                <div class="dashboard-items search-items">
-                                    <div style="width:100%;">
-                                        <div class="h3-search">
-                                            Booking Date: ' . substr($appodate, 0, 30) . '<br>
-                                            Reference Number: HemoLink ' . $appoid . '
-                                        </div>
-                                        <div class="h1-search">
-                                            ' . substr($title, 0, 21) . '<br>
-                                        </div>
-                                        <div class="h3-search">
-                                            Appointment Number: <div class="h1-search">0' . $apponum . '</div>
-                                        </div>
-                                        <div class="h3-search">
-                                            ' . substr($docname, 0, 30) . '
-                                        </div>
-                                        <div class="h4-search">
-                                            Scheduled Date: ' . $scheduledate . '<br>Starts: <b>@' . substr($scheduletime, 0, 5) . '</b> (24h)
-                                        </div>
-                                        <br>
-                                        <button class="cancel-booking-btn btn-primary-soft btn" 
-                                                style="padding-top:11px;padding-bottom:11px;width:100%" 
-                                                data-id="' . $appoid . '" 
-                                                data-title="' . $title . '" 
-                                                data-doc="' . $docname . '">
-                                            <font class="tn-in-text">Cancel Booking</font>
-                                        </button>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>';
-                    }
-                }
-                    // SweetAlert script for Cancel Booking
-                    ?>
+// Get the current time
+$current_datetime = date('Y-m-d H:i'); // Current time in Philippine time zone
+echo "Current System Time: " . $current_datetime . "<br>";
+
+if ($result->num_rows == 0) {
+    echo '<tr>
+    <td colspan="7">
+        <br><br><br><br>
+        <center>
+            <img src="../img/notfound.svg" width="25%">
+            <br>
+            <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">
+                We couldn\'t find anything related to your keywords!
+            </p>
+            <a class="non-style-link" href="appointment.php">
+                <button class="login-btn btn-primary-soft btn" 
+                        style="display: flex;justify-content: center;align-items: center;margin-left:20px;">
+                    &nbsp; Show all Appointments &nbsp;
+                </button>
+            </a>
+        </center>
+        <br><br><br><br>
+    </td>
+    </tr>';
+} else {
+    while ($row = $result->fetch_assoc()) {
+        $scheduleid = $row["scheduleid"];
+        $title = $row["title"];
+        $docname = $row["docname"];
+        $scheduledate = $row["scheduledate"];
+        $scheduletime = $row["scheduletime"];
+        $apponum = $row["apponum"];
+        $appodate = $row["appodate"];
+        $appoid = $row["appoid"];
+
+        // Check if session_duration exists and is not NULL, set default if necessary
+        $session_duration = isset($row["session_duration"]) && !is_null($row["session_duration"]) ? (int)$row["session_duration"] : 60; // Default to 60 minutes if NULL or missing
+
+        // Ensure session_duration is valid
+        if ($session_duration <= 0) {
+            $session_duration = 60; // Default to 60 minutes if the value is invalid
+        }
+
+        // Combine scheduled date and time into one string to compare
+        $schedule_datetime = $scheduledate . ' ' . $scheduletime;
+
+        // Get session end time by adding session duration to the scheduled start time
+        $start_datetime = new DateTime($schedule_datetime);
+        $end_datetime = clone $start_datetime;
+        $end_datetime->modify('+' . $session_duration . ' minutes');
+        $end_time = $end_datetime->format('Y-m-d H:i'); // End time for comparison
+
+        // Initialize the button variable
+        $button_disabled = '';
+
+        // Check if the current time is after the end time (session passed)
+        if ($current_datetime >= $end_time) {
+            $button_disabled = '<button class="cancel-booking-btn btn-primary-soft btn btn-session-passed" style="width:100%;" disabled>Session Passed</button>';
+        }
+        // Check if the current time is between the scheduled start time and end time (session ongoing)
+        elseif ($current_datetime >= $schedule_datetime && $current_datetime < $end_time) {
+            $button_disabled = '<button class="cancel-booking-btn btn-primary-soft btn btn-session-ongoing" style="width:100%;" disabled>Session Ongoing</button>';
+        } else {
+            // If the session is still upcoming, show other options
+            $button_disabled = '<button class="cancel-booking-btn btn-primary-soft btn" style="padding-top:11px;padding-bottom:11px;width:100%" data-id="' . $appoid . '" data-title="' . $title . '" data-doc="' . $docname . '">
+                                <font class="tn-in-text">Cancel Booking</font>
+                            </button>';
+        }
+
+        // Display the session row with debug information for start and end times
+        echo '
+        <tr>
+            <td style="width: 25%;">
+                <div class="dashboard-items search-items">
+                    <div style="width:100%;">
+                        <div class="h3-search">
+                            Booking Date: ' . substr($appodate, 0, 30) . '<br>
+                            Reference Number: HemoLink ' . $appoid . '
+                        </div>
+                        <div class="h1-search">
+                            ' . substr($title, 0, 21) . '<br>
+                        </div>
+                        <div class="h3-search">
+                            Appointment Number: <div class="h1-search">0' . $apponum . '</div>
+                        </div>
+                        <div class="h3-search">
+                            ' . substr($docname, 0, 30) . '
+                        </div>
+                        <div class="h4-search">
+                            Scheduled Date: ' . $scheduledate . '<br>Starts: <b>@' . substr($scheduletime, 0, 5) . '</b> (24h)<br>
+                            Ends: <b>@' . substr($end_time, 11, 5) . '</b> (24h)  <!-- End time for debugging -->
+                        </div>
+                        <br>
+                        <div>' . $button_disabled . '</div>
+                    </div>
+                </div>
+            </td>
+        </tr>';
+    }
+}
+?>
+
+
+
+
+
                     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
                     <script>
                         document.querySelectorAll('.cancel-booking-btn').forEach(function(button) {

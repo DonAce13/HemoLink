@@ -160,7 +160,7 @@ include("../connection.php");
                     <p class="heading-sub12" style="margin: 0;">
                 
                 <?php 
-                    date_default_timezone_set('Asia/Kolkata');
+                    date_default_timezone_set('Asia/Manila');
                     $today = date('Y-m-d');
                     echo $today;
 
