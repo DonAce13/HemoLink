@@ -260,7 +260,7 @@ if (isset($_GET["id"])) {
 
     // Display the booking form
     echo '
-    <form action="booking-complete.php" method="post">
+    <form action="booking-complete" method="post">
         <input type="hidden" name="scheduleid" value="' . $scheduleid . '" >
         <input type="hidden" name="apponum" value="' . $apponum . '" >
 

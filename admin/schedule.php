@@ -414,7 +414,7 @@ if ($_GET) {
                         </tr>
                         <tr>
                             <td class="label-td" colspan="2">
-                            <form action="add-session.php" method="POST" class="add-new-form">
+                            <form action="add-session" method="POST" class="add-new-form">
                                 <label for="title" class="form-label">Session Title : </label>
                             </td>
                         </tr>
@@ -559,7 +559,16 @@ if ($_GET) {
             </div>
         </div>';
     } elseif ($action == 'drop') {
-        $nameget = $_GET["name"];
+        // Get the session details passed through GET
+        $nameget = isset($_GET["name"]) ? $_GET["name"] : '';
+        $id = isset($_GET["id"]) ? $_GET["id"] : '';
+    
+        // Ensure id is valid and not empty
+        if (empty($id)) {
+            echo "Invalid session ID!";
+            exit();
+        }
+    
         echo '
         <div id="popup1" class="overlay">
             <div class="popup">
@@ -570,11 +579,13 @@ if ($_GET) {
                         You want to cancel or delete this session<br>(' . substr($nameget, 0, 40) . ').
                     </div>
                     <div style="display: flex;justify-content: center;">
+                        <!-- Cancel Session Button -->
                         <a href="cancel-session.php?id=' . $id . '" class="non-style-link">
                             <button class="btn-primary btn" style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;">
                                 <font class="tn-in-text">&nbsp;Cancel Session&nbsp;</font>
                             </button>
                         </a>&nbsp;&nbsp;&nbsp;
+                        <!-- Delete Session Button -->
                         <a href="delete-session.php?id=' . $id . '" class="non-style-link">
                             <button class="btn-primary btn" style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;">
                                 <font class="tn-in-text">&nbsp;Delete Session&nbsp;</font>
@@ -584,6 +595,7 @@ if ($_GET) {
                 </center>
             </div>
         </div>';
+    
     } elseif ($action == 'view') {
         $sqlmain = "select schedule.scheduleid,schedule.title,doctor.docname,schedule.scheduledate,schedule.scheduletime,schedule.nop from schedule inner join doctor on schedule.docid=doctor.docid where schedule.scheduleid=$id";
         $result = $database->query($sqlmain);

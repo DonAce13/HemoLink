@@ -619,3 +619,51 @@
     background-color: #4F7DF1; /* Darker gray when hovered */
     color: white; /* Text color stays white when hovered */
 }
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+    gap: 10px;
+    font-family: Arial, sans-serif;
+}
+
+.pagination a {
+    text-decoration: none;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    color: #333;
+    font-size: 14px;
+    background-color: #f9f9f9;
+    transition: all 0.3s ease;
+}
+
+.pagination a:hover {
+    background-color: #007bff;
+    color: #fff;
+    border-color: #007bff;
+    cursor: pointer;
+}
+
+.pagination a.active {
+    background-color: #007bff;
+    color: #fff;
+    border-color: #007bff;
+    font-weight: bold;
+    pointer-events: none; /* Prevent click on active page */
+}
+
+.pagination a.disabled {
+    background-color: #f1f1f1;
+    color: #ccc;
+    border-color: #ddd;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.pagination a.prev, .pagination a.next {
+    font-weight: bold;
+}
+

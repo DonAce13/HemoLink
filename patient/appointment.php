@@ -25,6 +25,7 @@ $stmt->execute();
 $userrow = $stmt->get_result();
 
 
+
 if ($userrow->num_rows > 0) {
     $userfetch = $userrow->fetch_assoc();
     $userid = $userfetch["pid"];
@@ -46,7 +47,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'drop') {
     $stmt->execute();
 
     // Redirect to show confirmation
-    header("Location: appointment.php?action=canceled&id=$appoid");
+    header("Location: appointment?action=canceled&id=$appoid");
     exit;
 }
 ?>
@@ -279,14 +280,62 @@ if (isset($_GET['action']) && $_GET['action'] == 'drop') {
                         
                         <tbody>
                         
+                        <tbody>
                         <?php
 // Set the correct time zone to Philippine Time (PHT)
 date_default_timezone_set('Asia/Manila');
 
+// Set the number of records per page
+$records_per_page = 3;
+
+// Get the current page number from the query string, defaulting to 1 if not set
+$current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+
+// Calculate the offset for the SQL query
+$offset = ($current_page - 1) * $records_per_page;
+
+// Modify the SQL query to apply pagination
+$sqlmain = "SELECT appointment.appoid, schedule.scheduleid, schedule.title, doctor.docname, patient.pname, 
+            schedule.scheduledate, schedule.scheduletime, appointment.apponum, appointment.appodate 
+            FROM schedule 
+            INNER JOIN appointment ON schedule.scheduleid = appointment.scheduleid 
+            INNER JOIN patient ON patient.pid = appointment.pid 
+            INNER JOIN doctor ON schedule.docid = doctor.docid 
+            WHERE patient.pid = $userid";
+
+// Apply additional filters if POST data is present
+if ($_POST) {
+    if (!empty($_POST["scheduledate"])) {
+        $scheduledate = $_POST["scheduledate"];
+        $sqlmain .= " AND schedule.scheduledate = '$scheduledate' ";
+    }
+}
+
+// Add LIMIT and OFFSET for pagination
+$sqlmain .= " ORDER BY appointment.appodate ASC LIMIT $records_per_page OFFSET $offset";
+
+// Execute the query
+$result = $database->query($sqlmain);
+
 // Get the current time
 $current_datetime = date('Y-m-d H:i'); // Current time in Philippine time zone
-echo "Current System Time: " . $current_datetime . "<br>";
 
+// Debugging: Output current time
+echo '<br>Current Time: ' . $current_datetime . '<br>';
+
+// Fetch total number of appointments for pagination
+$sqlcount = "SELECT COUNT(*) AS total_records FROM schedule 
+             INNER JOIN appointment ON schedule.scheduleid = appointment.scheduleid 
+             INNER JOIN patient ON patient.pid = appointment.pid 
+             WHERE patient.pid = $userid";
+$total_result = $database->query($sqlcount);
+$total_row = $total_result->fetch_assoc();
+$total_records = $total_row['total_records'];
+
+// Calculate total number of pages
+$total_pages = ceil($total_records / $records_per_page);
+
+// Check if no records are found
 if ($result->num_rows == 0) {
     echo '<tr>
     <td colspan="7">
@@ -308,6 +357,7 @@ if ($result->num_rows == 0) {
     </td>
     </tr>';
 } else {
+    // Display records
     while ($row = $result->fetch_assoc()) {
         $scheduleid = $row["scheduleid"];
         $title = $row["title"];
@@ -318,41 +368,49 @@ if ($result->num_rows == 0) {
         $appodate = $row["appodate"];
         $appoid = $row["appoid"];
 
-        // Check if session_duration exists and is not NULL, set default if necessary
-        $session_duration = isset($row["session_duration"]) && !is_null($row["session_duration"]) ? (int)$row["session_duration"] : 60; // Default to 60 minutes if NULL or missing
-
-        // Ensure session_duration is valid
+        // Session duration logic
+        $session_duration = isset($row["session_duration"]) && !is_null($row["session_duration"]) ? (int)$row["session_duration"] : 60;
         if ($session_duration <= 0) {
-            $session_duration = 60; // Default to 60 minutes if the value is invalid
+            $session_duration = 60;
         }
 
-        // Combine scheduled date and time into one string to compare
         $schedule_datetime = $scheduledate . ' ' . $scheduletime;
 
-        // Get session end time by adding session duration to the scheduled start time
+        // Debugging: Output the scheduled time
+        echo 'Scheduled Time: ' . $schedule_datetime . '<br>';
+
         $start_datetime = new DateTime($schedule_datetime);
         $end_datetime = clone $start_datetime;
         $end_datetime->modify('+' . $session_duration . ' minutes');
-        $end_time = $end_datetime->format('Y-m-d H:i'); // End time for comparison
+        $end_time = $end_datetime->format('Y-m-d H:i');
 
-        // Initialize the button variable
+        // Debugging: Output the end time
+        echo 'End Time: ' . $end_time . '<br>';
+
+        // Debugging: Check if current datetime is before the scheduled datetime
+        echo 'Is current datetime before scheduled datetime? ';
+        if ($current_datetime < $schedule_datetime) {
+            echo 'YES<br>';
+        } else {
+            echo 'NO<br>';
+        }
+
         $button_disabled = '';
 
-        // Check if the current time is after the end time (session passed)
+        // Comparison logic to disable button
         if ($current_datetime >= $end_time) {
+            // If current time is after the end time, session has passed
             $button_disabled = '<button class="cancel-booking-btn btn-primary-soft btn btn-session-passed" style="width:100%;" disabled>Session Passed</button>';
-        }
-        // Check if the current time is between the scheduled start time and end time (session ongoing)
-        elseif ($current_datetime >= $schedule_datetime && $current_datetime < $end_time) {
+        } elseif ($current_datetime >= $schedule_datetime && $current_datetime < $end_time) {
+            // If current time is between the start and end time, session is ongoing
             $button_disabled = '<button class="cancel-booking-btn btn-primary-soft btn btn-session-ongoing" style="width:100%;" disabled>Session Ongoing</button>';
         } else {
-            // If the session is still upcoming, show other options
+            // If current time is before the scheduled time, button is enabled
             $button_disabled = '<button class="cancel-booking-btn btn-primary-soft btn" style="padding-top:11px;padding-bottom:11px;width:100%" data-id="' . $appoid . '" data-title="' . $title . '" data-doc="' . $docname . '">
                                 <font class="tn-in-text">Cancel Booking</font>
                             </button>';
         }
 
-        // Display the session row with debug information for start and end times
         echo '
         <tr>
             <td style="width: 25%;">
@@ -373,7 +431,7 @@ if ($result->num_rows == 0) {
                         </div>
                         <div class="h4-search">
                             Scheduled Date: ' . $scheduledate . '<br>Starts: <b>@' . substr($scheduletime, 0, 5) . '</b> (24h)<br>
-                            Ends: <b>@' . substr($end_time, 11, 5) . '</b> (24h)  <!-- End time for debugging -->
+                            Ends: <b>@' . substr($end_time, 11, 5) . '</b> (24h)
                         </div>
                         <br>
                         <div>' . $button_disabled . '</div>
@@ -387,131 +445,119 @@ if ($result->num_rows == 0) {
 
 
 
+</tbody>
 
 
-                    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-                    <script>
-                        document.querySelectorAll('.cancel-booking-btn').forEach(function(button) {
-                            button.addEventListener('click', function() {
-                                const appoid = this.getAttribute('data-id');
-                                const title = this.getAttribute('data-title');
-                                const docname = this.getAttribute('data-doc');
-                                
-                                Swal.fire({
-                                    title: 'Are you sure?',
-                                    text: 'You are about to cancel this booking!',
-                                    icon: 'warning',
-                                    showCancelButton: true,
-                                    confirmButtonColor: '#d33',
-                                    cancelButtonColor: '#3085d6',
-                                    confirmButtonText: 'Yes, cancel it!',
-                                    cancelButtonText: 'No, keep it'
-                                }).then((result) => {
-                                    if (result.isConfirmed) {
-                                        window.location.href = '?action=drop&id=' + appoid + '&title=' + encodeURIComponent(title) + '&doc=' + encodeURIComponent(docname);
-                                        
-                                    }
-                                });
-                            });
-                        });
-                    </script>
-
-                    
-
-
-
-                        </table>
-                        </div>
-                        </center>
-                   </td> 
-                </tr>
-                       
-                        
-                        
             </table>
+            <?php
+// Display pagination controls
+echo '<div class="pagination">';
+
+// Previous button
+if ($current_page > 1) {
+    echo '<a href="?page=' . ($current_page - 1) . '" class="pagination-btn">&laquo; Previous</a>';
+}
+
+// Page numbers
+for ($page = 1; $page <= $total_pages; $page++) {
+    if ($page == $current_page) {
+        echo '<span class="pagination-active">' . $page . '</span>';
+    } else {
+        echo '<a href="?page=' . $page . '" class="pagination-btn">' . $page . '</a>';
+    }
+}
+
+// Next button
+if ($current_page < $total_pages) {
+    echo '<a href="?page=' . ($current_page + 1) . '" class="pagination-btn">Next &raquo;</a>';
+}
+
+echo '</div>';
+?>
+
+            
+
         </div>
+        
     </div>
+    
     <?php
     
-    if($_GET){
-        $id=$_GET["id"];
-        $action=$_GET["action"];
-        if($action=='booking-added'){
-            
+    if(isset($_GET['id']) && isset($_GET['action'])) {
+        $id = $_GET['id'];
+        $action = $_GET['action'];
+        
+        if($action == 'booking-added') {
             echo '
             <div id="popup1" class="overlay">
                     <div class="popup">
                     <center>
                     <br><br>
                         <h2>Booking Successfully.</h2>
-                        <a class="close" href="appointment.php">&times;</a>
+                        <a class="close" href="appointment">&times;</a>
                         <div class="content">
                         Your Appointment number is '.$id.'.<br><br>
-                            
                         </div>
                         <div style="display: flex;justify-content: center;">
-                        
-                        <a href="appointment.php" class="non-style-link"><button  class="btn-primary btn"  style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"><font class="tn-in-text">&nbsp;&nbsp;OK&nbsp;&nbsp;</font></button></a>
+                        <a href="appointment.php" class="non-style-link"><button class="btn-primary btn" style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"><font class="tn-in-text">&nbsp;&nbsp;OK&nbsp;&nbsp;</font></button></a>
                         <br><br><br><br>
                         </div>
                     </center>
             </div>
             </div>
             ';
-        }elseif($action=='drop'){
-            $title=$_GET["title"];
-            $docname=$_GET["doc"];
+        } elseif($action == 'drop') {
+            $title = $_GET["title"];
+            $docname = $_GET["doc"];
             
             echo '
             <div id="popup1" class="overlay">
                     <div class="popup">
                     <center>
                         <h2>Are you sure?</h2>
-                        <a class="close" href="appointment.php">&times;</a>
+                        <a class="close" href="appointment">&times;</a>
                         <div class="content">
                             You want to Cancel this Appointment?<br><br>
-                            Session Name: &nbsp;<b>'.substr($title,0,40).'</b><br>
-                            Doctor name&nbsp; : <b>'.substr($docname,0,40).'</b><br><br>
-                            
+                            Session Name: &nbsp;<b>'.substr($title, 0, 40).'</b><br>
+                            Doctor name&nbsp; : <b>'.substr($docname, 0, 40).'</b><br><br>
                         </div>
                         <div style="display: flex;justify-content: center;">
-                        <a href="delete-appointment.php?id='.$id.'" class="non-style-link"><button  class="btn-primary btn"  style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"<font class="tn-in-text">&nbsp;Yes&nbsp;</font></button></a>&nbsp;&nbsp;&nbsp;
-                        <a href="appointment.php" class="non-style-link"><button  class="btn-primary btn"  style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"><font class="tn-in-text">&nbsp;&nbsp;No&nbsp;&nbsp;</font></button></a>
-
+                        <a href="delete-appointment?id='.$id.'" class="non-style-link"><button class="btn-primary btn" style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"<font class="tn-in-text">&nbsp;Yes&nbsp;</font></button></a>&nbsp;&nbsp;&nbsp;
+                        <a href="appointment" class="non-style-link"><button class="btn-primary btn" style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"><font class="tn-in-text">&nbsp;&nbsp;No&nbsp;&nbsp;</font></button></a>
                         </div>
                     </center>
             </div>
             </div>
             '; 
-        }elseif($action=='view'){
-            $sqlmain= "select * from doctor where docid=?";
+        } elseif($action == 'view') {
+            $sqlmain = "SELECT * FROM doctor WHERE docid=?";
             $stmt = $database->prepare($sqlmain);
-            $stmt->bind_param("i",$id);
+            $stmt->bind_param("i", $id);
             $stmt->execute();
             $result = $stmt->get_result();
-            $row=$result->fetch_assoc();
-            $name=$row["docname"];
-            $email=$row["docemail"];
-            $spe=$row["specialties"];
+            $row = $result->fetch_assoc();
+            $name = $row["docname"];
+            $email = $row["docemail"];
+            $spe = $row["specialties"];
             
-            $sqlmain= "select sname from specialties where id=?";
+            $sqlmain = "SELECT sname FROM specialties WHERE id=?";
             $stmt = $database->prepare($sqlmain);
-            $stmt->bind_param("s",$spe);
+            $stmt->bind_param("s", $spe);
             $stmt->execute();
             $spcil_res = $stmt->get_result();
-            $spcil_array= $spcil_res->fetch_assoc();
-            $spcil_name=$spcil_array["sname"];
-            $nic=$row['docnic'];
-            $tele=$row['doctel'];
+            $spcil_array = $spcil_res->fetch_assoc();
+            $spcil_name = $spcil_array["sname"];
+            $nic = $row['docnic'];
+            $tele = $row['doctel'];
+
             echo '
             <div id="popup1" class="overlay">
                     <div class="popup">
                     <center>
                         <h2></h2>
-                        <a class="close" href="doctors.php">&times;</a>
+                        <a class="close" href="doctors">&times;</a>
                         <div class="content">
                             HemoLink <br> App<br>
-                            
                         </div>
                         <div style="display: flex;justify-content: center;">
                         <table width="80%" class="sub-table scrolldown add-doc-form-container" border="0">
@@ -521,10 +567,8 @@ if ($result->num_rows == 0) {
                                     <p style="padding: 0;margin: 0;text-align: left;font-size: 25px;font-weight: 500;">View Details.</p><br><br>
                                 </td>
                             </tr>
-                            
-                            <tr>
-                                
-                                <td class="label-td" colspan="2">
+                             <tr>
+                                 <td class="label-td" colspan="2">
                                     <label for="name" class="form-label">Name: </label>
                                 </td>
                             </tr>
@@ -532,8 +576,7 @@ if ($result->num_rows == 0) {
                                 <td class="label-td" colspan="2">
                                     '.$name.'<br><br>
                                 </td>
-                                
-                            </tr>
+                             </tr>
                             <tr>
                                 <td class="label-td" colspan="2">
                                     <label for="Email" class="form-label">Email: </label>
@@ -567,24 +610,18 @@ if ($result->num_rows == 0) {
                             <tr>
                                 <td class="label-td" colspan="2">
                                     <label for="spec" class="form-label">Specialties: </label>
-                                    
                                 </td>
                             </tr>
                             <tr>
-                            <td class="label-td" colspan="2">
-                            '.$spcil_name.'<br><br>
-                            </td>
+                                <td class="label-td" colspan="2">
+                                '.$spcil_name.'<br><br>
+                                </td>
                             </tr>
                             <tr>
                                 <td colspan="2">
-                                    <a href="doctors.php"><input type="button" value="OK" class="login-btn btn-primary-soft btn" ></a>
-                                
-                                    
+                                    <a href="doctors"><input type="button" value="OK" class="login-btn btn-primary-soft btn"></a>
                                 </td>
-                
                             </tr>
-                           
-
                         </table>
                         </div>
                     </center>
@@ -592,11 +629,14 @@ if ($result->num_rows == 0) {
             </div>
             </div>
             ';  
+        }
     }
-}
+?>
 
-    ?>
+
+    
     </div>
+    
 
 </body>
 </html>

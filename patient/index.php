@@ -259,60 +259,65 @@ if ($result->num_rows > 0) {
                 </tr>
                 <tr>
                     <td colspan="4">
-                        <table border="0" width="100%"">
-                        <tr class="menu-row">
-                        <td class="menu-btn stats1">
-                            <a href="doctors.php" class="non-style-link">
-                                <div class="dashboard-items">
-                                    <div>
-                                        <div class="h1-dashboard">
-                                            <?php echo $doctorrow->num_rows; ?>
-                                        </div><br>
-                                        <div class="h3-dashboard">
-                                            All Doctors &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        </div>
-                                    </div>
-                                    <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/doctors-hover.svg');"></div>
-                                </div>
-                            </a>
-                        </td>
+                    <table class="filter-container" style="border: none;" border="0">
+                            <tr>
+                                <td colspan="4">
+                                    <p style="font-size: 20px;font-weight:600;padding-left: 12px;">Status</p>
+                                </td>
+                            </tr>
 
-                        <td class="menu-btn stats1">
-                            <a href="schedule.php" class="non-style-link">
-                                <div class="dashboard-items">
-                                    <div>
-                                        <div class="h1-dashboard">
-                                            <?php echo $schedulerow->num_rows; ?>
-                                        </div><br>
-                                        <div class="h3-dashboard">
-                                            Today Sessions
+                            <tr class="status-report">
+                                <td class="stats1">
+                                    <a href="doctors.php" class="non-style-link">
+                                        <div class="dashboard-items">
+                                            <div>
+                                                <div class="h1-dashboard">
+                                                    <?php echo $doctorrow->num_rows; ?>
+                                                </div><br>
+                                                <div class="h3-dashboard">
+                                                    Doctors &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                </div>
+                                            </div>
+                                            <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/doctors-hover.svg');"></div>
                                         </div>
-                                    </div>
-                                    <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/session-iceblue.svg');"></div>
-                                </div>
-                            </a>
-                        </td>
-                    </tr>
+                                    </a>
+                            </td>
 
-                    <tr class="menu-row">
-                        <td class="menu-btn stats2">
-                            <a href="appointment.php" class="non-style-link">
-                                <div class="dashboard-items">
-                                    <div>
-                                        <div class="h1-dashboard">
-                                            <?php echo $appointmentrow->num_rows; ?>
-                                        </div><br>
-                                        <div class="h3-dashboard">
-                                            New Booking &nbsp;&nbsp;
+
+                                <td class="stats2">
+                                    <a href="appointment.php" class="non-style-link">
+                                        <div class="dashboard-items">
+                                            <div>
+                                                <div class="h1-dashboard">
+                                                    <?php echo $appointmentrow->num_rows; ?>
+                                                </div><br>
+                                                <div class="h3-dashboard">
+                                                    New Booking &nbsp;&nbsp;
+                                                </div>
+                                            </div>
+                                            <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/book-hover.svg');"></div>
                                         </div>
-                                    </div>
-                                    <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/book-hover.svg');"></div>
-                                </div>
-                            </a>
-                        </td>
-                    </tr>
+                                    </a>
+                            </td>
 
-                                        </table>
+                                <td class="stats2">
+                                    <a href="schedule.php" class="non-style-link">
+                                        <div class="dashboard-items">
+                                            <div>
+                                                <div class="h1-dashboard">
+                                                    <?php echo $schedulerow->num_rows; ?>
+                                                </div><br>
+                                                <div class="h3-dashboard">
+                                                    All Sessions
+                                                </div>
+                                            </div>
+                                            <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/session-iceblue.svg');"></div>
+                                        </div>
+                                    </a>
+                            </td>
+                        </tr>
+
+                        </table>
                                     </center>
 
 

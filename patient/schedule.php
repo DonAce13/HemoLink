@@ -164,212 +164,258 @@ if ($result->num_rows > 0) {
             });
         </script>
 
+<?php
+// Query to get today's schedule
+$sqlmain = "SELECT * FROM schedule INNER JOIN doctor ON schedule.docid=doctor.docid WHERE schedule.scheduledate >= '$today' ORDER BY schedule.scheduledate ASC";
+$schedulerow = $database->query($sqlmain);
+?>
+
+<div class="dash-body">
+    <table border="0" width="100%" style="border-spacing: 0;margin:0;padding:0;margin-top:25px;">
+        <tr class="date-container">
+            <td width="100%">
+                <p style="font-size: 14px;color: rgb(119, 119, 119);padding: 0;margin: 0;">Today's Date</p>
+                <p class="heading-sub12" style="margin: 0;"><?php echo $today; ?></p>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4" style="padding-top:0px;width: 100%;">
+                <center>
+                    <table class="filter-container" border="0">
+                        <tr>
+                            <td width="10%"></td>
+                            <td width="5%" style="text-align: center;">Date:</td>
+                            <td width="30%">
+                                <form action="" method="post">
+                                    <input type="date" name="scheduledate" id="date" class="input-text filter-container-items" style="margin: 0;width: 95%;">
+                            </td>
+                            <td width="12%">
+                                <input type="submit" name="filter" value=" Filter" class="btn-primary-soft btn button-icon btn-filter" style="padding: 15px; margin:0;width:100%">
+                                </form>
+                            </td>
+                        </tr>
+                    </table>
+                    <tr>
+                        <td colspan="4" class="nav-bar">
+                            <form action="doctors.php" method="post" class="header-search">
+                                <input type="search" name="search" class="input-text header-searchbar" placeholder="Search Doctor name or Email" list="doctors">&nbsp;&nbsp;
+                                <?php
+                                echo '<datalist id="doctors">';
+                                $list11 = $database->query("SELECT docname, docemail FROM doctor;");
+                                for ($y = 0; $y < $list11->num_rows; $y++) {
+                                    $row00 = $list11->fetch_assoc();
+                                    $d = $row00["docname"];
+                                    $c = $row00["docemail"];
+                                    echo "<option value='$d'><br/>";
+                                    echo "<option value='$c'><br/>";
+                                }
+                                echo '</datalist>';
+                                ?>
+                                <input type="Submit" value="Search" class="btn-primary-soft btn button-icon btn-search" style="padding-left: 25px;padding-right: 25px;padding-top: 10px;padding-bottom: 10px;">
+                            </form>
+                        </td>
+                    </tr>
+                </center>
+            </td>
+        </tr>
+
+        <tbody>
         <?php
-            // Query to get today's schedule
-            $sqlmain = "SELECT * FROM schedule INNER JOIN doctor ON schedule.docid=doctor.docid WHERE schedule.scheduledate >= '$today' ORDER BY schedule.scheduledate ASC";
-            $schedulerow = $database->query($sqlmain);
-        ?>
+        // Number of records per page
+        $records_per_page = 3;
 
-        <div class="dash-body">
-            <table border="0" width="100%" style="border-spacing: 0;margin:0;padding:0;margin-top:25px;">
-                <tr class="date-container">
-                    <td width="100%">
-                        <p style="font-size: 14px;color: rgb(119, 119, 119);padding: 0;margin: 0;">Today's Date</p>
-                        <p class="heading-sub12" style="margin: 0;"><?php echo $today; ?></p>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="4" style="padding-top:0px;width: 100%;">
-                        <center>
-                            <table class="filter-container" border="0">
-                                <tr>
-                                    <td width="10%"></td>
-                                    <td width="5%" style="text-align: center;">Date:</td>
-                                    <td width="30%">
-                                        <form action="" method="post">
-                                            <input type="date" name="scheduledate" id="date" class="input-text filter-container-items" style="margin: 0;width: 95%;">
-                                    </td>
-                                    <td width="12%">
-                                        <input type="submit" name="filter" value=" Filter" class="btn-primary-soft btn button-icon btn-filter" style="padding: 15px; margin:0;width:100%">
-                                        </form>
-                                    </td>
-                                </tr>
-                               
-                            </table>
-                            <tr>
-                                    <td colspan="4" class="nav-bar">
-                                        <form action="doctors.php" method="post" class="header-search">
-                                            <input type="search" name="search" class="input-text header-searchbar" placeholder="Search Doctor name or Email" list="doctors">&nbsp;&nbsp;
-                                            <?php
-                                            echo '<datalist id="doctors">';
-                                            $list11 = $database->query("SELECT docname, docemail FROM doctor;");
-                                            for ($y = 0; $y < $list11->num_rows; $y++) {
-                                                $row00 = $list11->fetch_assoc();
-                                                $d = $row00["docname"];
-                                                $c = $row00["docemail"];
-                                                echo "<option value='$d'><br/>";
-                                                echo "<option value='$c'><br/>";
-                                            }
-                                            echo '</datalist>';
-                                            ?>
-                                            <input type="Submit" value="Search" class="btn-primary-soft btn button-icon btn-search" style="padding-left: 25px;padding-right: 25px;padding-top: 10px;padding-bottom: 10px;">
-                                        </form>
-                                    </td>
-                                </tr>
-                        </center>
-                    </td>
-                </tr>
-                <tbody>
-                <?php
-                // Determine if a date filter is applied
-                $filter_date = isset($_POST['scheduledate']) && !empty($_POST['scheduledate']) ? $_POST['scheduledate'] : $today;
+        // Get the current page from the URL, default to 1
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 
-                // Update the query to use the filtered date
-                $sqlmain = "SELECT * FROM schedule 
-                            INNER JOIN doctor ON schedule.docid = doctor.docid 
-                            WHERE schedule.scheduledate = ? 
-                            ORDER BY schedule.scheduledate DESC";
+        // Calculate the starting record for the query
+        $start_from = ($page - 1) * $records_per_page;
 
-                $stmt = $database->prepare($sqlmain);
-                $stmt->bind_param("s", $filter_date);
-                $stmt->execute();
-                $schedulerow = $stmt->get_result();
+        // Determine if a date filter is applied, otherwise show all sessions
+        $filter_date = isset($_POST['scheduledate']) && !empty($_POST['scheduledate']) ? $_POST['scheduledate'] : '';
 
-                // Current datetime for comparison
+        // Modify the query to handle both filtered and non-filtered cases
+        $sqlmain = "SELECT * FROM schedule 
+                    INNER JOIN doctor ON schedule.docid = doctor.docid ";
+
+        // Apply the filter if a date is provided
+        if ($filter_date) {
+            $sqlmain .= "WHERE schedule.scheduledate = ? ";
+        }
+
+        // Add ordering and pagination
+        $sqlmain .= "ORDER BY schedule.scheduledate DESC LIMIT ?, ?";
+
+        // Prepare the statement and bind parameters
+        $stmt = $database->prepare($sqlmain);
+
+        // If a date is set, bind the date parameter
+        if ($filter_date) {
+            $stmt->bind_param("sii", $filter_date, $start_from, $records_per_page);
+        } else {
+            // If no filter, bind with NULL for the date parameter
+            $stmt->bind_param("ii", $start_from, $records_per_page);
+        }
+
+        $stmt->execute();
+        $schedulerow = $stmt->get_result();
+
+        // Current datetime for comparison
+        $current_datetime = date("Y-m-d H:i:s");
+
+        // Separate sessions into future and past
+        $future_sessions = [];
+        $past_sessions = [];
+
+        while ($row = $schedulerow->fetch_assoc()) {
+            $scheduleid = $row["scheduleid"];
+            $scheduledate = $row["scheduledate"];
+            $scheduletime = $row["scheduletime"];
+
+            // Combine scheduled date and time
+            $schedule_datetime = $scheduledate . ' ' . $scheduletime;
+
+            // Categorize the session based on the current datetime
+            if (strtotime($schedule_datetime) >= strtotime($current_datetime)) {
+                $future_sessions[] = $row; // Future session
+            } else {
+                $past_sessions[] = $row; // Past session
+            }
+        }
+
+        // Function to display sessions
+        function display_sessions($sessions, $database, $current_datetime, $is_future) {
+            foreach ($sessions as $row) {
+                $scheduleid = $row["scheduleid"];
+                $title = $row["title"];
+                $docname = $row["docname"];
+                $scheduledate = $row["scheduledate"];
+                $scheduletime = $row["scheduletime"];
+                $session_duration = $row["session_duration"]; // Duration in minutes
                 
-                $current_datetime = date("Y-m-d H:i:s");
-
-
-                // Debugging: Print current time
-                echo "Current System Time: " . $current_datetime . "<br>";
-
-                // Separate sessions into future and past
-                $future_sessions = [];
-                $past_sessions = [];
-
-                while ($row = $schedulerow->fetch_assoc()) {
-                    $scheduleid = $row["scheduleid"];
-                    $scheduledate = $row["scheduledate"];
-                    $scheduletime = $row["scheduletime"];
-
-                    // Combine scheduled date and time
-                    $schedule_datetime = $scheduledate . ' ' . $scheduletime;
-
-                    // Categorize the session based on the current datetime
-                    if (strtotime($schedule_datetime) >= strtotime($current_datetime)) {
-                        $future_sessions[] = $row; // Future session
+                // Calculate the end time by adding session duration to the scheduled time
+                $start_datetime = new DateTime($scheduledate . ' ' . $scheduletime);
+                $end_datetime = clone $start_datetime;
+                $end_datetime->modify('+' . $session_duration . ' minutes');
+                $end_time = $end_datetime->format('Y-m-d H:i:s'); // end_time for comparison
+                
+                // Check how many patients have already booked
+                $sql_schedule = $database->query("SELECT nop FROM schedule WHERE scheduleid = '$scheduleid'");
+                $schedule_data = $sql_schedule->fetch_assoc();
+                $max_patients = $schedule_data['nop'];
+                
+                // Check how many patients have already booked
+                $patient_count = $database->query("SELECT COUNT(*) AS patient_count FROM appointment WHERE scheduleid = '$scheduleid'")->fetch_assoc();
+                $patient_count_value = $patient_count['patient_count']; // Current number of booked patients
+                
+                // Get the current time
+                $current_time = new DateTime($current_datetime);
+                
+                // Check for session passed first
+                if ($current_time >= new DateTime($end_time)) {
+                    // Session passed
+                    $button_disabled = '<button class="cancel-booking-btn btn-primary-soft btn btn-session-passed" style="width:97%;" disabled>Session Passed</button>';
+                } elseif ($current_time >= $start_datetime && $current_time <= $end_datetime) {
+                    // Session is ongoing
+                    $button_disabled = '<button class="cancel-booking-btn btn-primary-soft btn btn-session-ongoing" style="width:97%;" disabled>Session is Still Ongoing</button>';
+                } else {
+                    // Session is in the future
+                    if ($patient_count_value >= $max_patients) {
+                        // Session is full
+                        $button_disabled = '<button class="cancel-booking-btn btn-primary-soft btn btn-session-full" style="width:97%;" disabled>Session Full</button>';
                     } else {
-                        $past_sessions[] = $row; // Past session
-                    }
-                }
-
-               // Function to display sessions
-               function display_sessions($sessions, $database, $current_datetime, $is_future) {
-                foreach ($sessions as $row) {
-                    $scheduleid = $row["scheduleid"];
-                    $title = $row["title"];
-                    $docname = $row["docname"];
-                    $scheduledate = $row["scheduledate"];
-                    $scheduletime = $row["scheduletime"];
-                    $session_duration = $row["session_duration"]; // Duration in minutes
-                    
-                    // Calculate the end time by adding session duration to the scheduled time
-                    $start_datetime = new DateTime($scheduledate . ' ' . $scheduletime);
-                    $end_datetime = clone $start_datetime;
-                    $end_datetime->modify('+' . $session_duration . ' minutes');
-                    $end_time = $end_datetime->format('Y-m-d H:i:s'); // end_time for comparison
-                    
-                    // Check how many patients have already booked
-                    $sql_schedule = $database->query("SELECT nop FROM schedule WHERE scheduleid = '$scheduleid'");
-                    $schedule_data = $sql_schedule->fetch_assoc();
-                    $max_patients = $schedule_data['nop'];
-                    
-                    // Check how many patients have already booked
-                    $patient_count = $database->query("SELECT COUNT(*) AS patient_count FROM appointment WHERE scheduleid = '$scheduleid'")->fetch_assoc();
-                    $patient_count_value = $patient_count['patient_count']; // Current number of booked patients
-                    
-                    // Get the current time
-                    $current_time = new DateTime($current_datetime);
-                    
-                    // Check for session passed first
-                    if ($current_time >= new DateTime($end_time)) {
-                        // Session passed (both full and ongoing will be converted to passed when the time has passed)
-                        $button_disabled = '<button class="cancel-booking-btn btn-primary-soft btn btn-session-passed" style="width:97%;" disabled>Session Passed</button>';
-                    } elseif ($current_time >= $start_datetime && $current_time <= $end_datetime) {
-                        // Session is ongoing
-                        $button_disabled = '<button class="cancel-booking-btn btn-primary-soft btn btn-session-ongoing" style="width:97%;" disabled>Session is Still Ongoing</button>';
-                    } else {
-                        // Session is in the future
-                        if ($patient_count_value >= $max_patients) {
-                            // Session is full and still in the future
-                            $button_disabled = '<button class="cancel-booking-btn btn-primary-soft btn btn-session-full" style="width:97%;" disabled>Session Full</button>';
+                        // Logic for showing "Book Now" button
+                        $booking_check = $database->query("SELECT * FROM appointment WHERE pid = (SELECT pid FROM patient WHERE pemail = '" . $_SESSION["user"] . "') AND scheduleid = '$scheduleid'");
+                        if ($booking_check->num_rows > 0) {
+                            // Already booked
+                            $button_disabled = '<button class="cancel-booking-btn btn-primary-soft btn btn-booked" style="width:97%;" disabled>Already Booked</button>';
                         } else {
-                            // Logic for showing "Book Now" button or already booked status
-                            $booking_check = $database->query("SELECT * FROM appointment WHERE pid = (SELECT pid FROM patient WHERE pemail = '" . $_SESSION["user"] . "') AND scheduleid = '$scheduleid'");
-                            if ($booking_check->num_rows > 0) {
-                                // If already booked
-                                $button_disabled = '<button class="cancel-booking-btn btn-primary-soft btn btn-booked" style="width:97%;" disabled>Already Booked</button>';
-                            } else {
-                                // If not booked yet
-                                $button_disabled = '<a href="booking.php?id=' . $scheduleid . '"><button class="cancel-booking-btn btn-primary-soft btn btn-book-now" style="width:95%;">Book Now</button></a>';
-                            }
+                            // Not booked yet
+                            $button_disabled = '<a href="booking?id=' . $scheduleid . '"><button class="cancel-booking-btn btn-primary-soft btn btn-book-now" style="width:95%;">Book Now</button></a>';
                         }
                     }
-                    
-                    // Display the session row with the modified div structure
-                    echo '
-                    <tr>
-                        <td style="width: 25%;">
-                            <div class="dashboard-items search-items">
-                                <div style="width:100%;">
-                                    <div class="h1-search">
-                                        ' . substr($title, 0, 21) . '
-                                    </div><br>
-                                    <div class="h3-search">
-                                        ' . substr($docname, 0, 30) . '
-                                    </div>
-                                    <div class="h4-search">
-                                        ' . $scheduledate . '<br>Starts: <b>@' . substr($scheduletime, 0, 5) . '</b> (24h)
-                                        ' . '<br>Ends: <b>@' . substr($end_time, 11, 5) . '</b> (24h)
-                                    </div>
-                                    <br>
-                                    <div>' . $button_disabled . '</div>
-                                </div>
+                }
+                
+                // Display the session row with the modified div structure
+                echo '
+                <tr>
+                    <td style="width: 25%; padding: 15px;">
+                        <div class="dashboard-items search-items">
+                            <div style="width:100%;">
+                                <div class="h1-search">' . substr($title, 0, 21) . '</div><br>
+                                <div class="h3-search">' . substr($docname, 0, 30) . '</div>
+                                <div class="h4-search">' . $scheduledate . '<br>Starts: <b>@' . substr($scheduletime, 0, 5) . '</b> (24h)
+                                <br>Ends: <b>@' . substr($end_time, 11, 5) . '</b> (24h)</div>
+                                <br>
+                                <div>' . $button_disabled . '</div>
                             </div>
-                        </td>
-                    </tr>';
-                    }
-                }
+                        </div>
+                    </td>
+                </tr>';
+            }
+            
+        }
 
-                // Display future sessions first
-                if (!empty($future_sessions)) {
-                    display_sessions($future_sessions, $database, $current_datetime, true);
-                }
+        // Display future sessions first
+        if (!empty($future_sessions)) {
+            display_sessions($future_sessions, $database, $current_datetime, true);
+        }
 
-                // Display past sessions
-                if (!empty($past_sessions)) {
-                    display_sessions($past_sessions, $database, $current_datetime, false);
-                }
+        // Display past sessions
+        if (!empty($past_sessions)) {
+            display_sessions($past_sessions, $database, $current_datetime, false);
+        }
 
-                // If no sessions exist
-                if (empty($future_sessions) && empty($past_sessions)) {
-                    echo '<tr>
-                            <td colspan="4">
-                                <center>
-                                    <img src="../img/notfound.svg" width="25%">
-                                    <p class="heading-main12">We couldn\'t find anything related to your keywords!</p>
-                                    <a class="non-style-link" href="schedule.php">
-                                        <button class="login-btn btn-primary-soft btn">Show all Sessions</button>
-                                    </a>
-                                </center>
-                            </td>
-                        </tr>';
-                }
-                ?>
-            </tbody>
+        // If no sessions exist
+        if (empty($future_sessions) && empty($past_sessions)) {
+            echo '<tr>
+                    <td colspan="4">
+                        <center>
+                            <img src="../img/notfound.svg" width="25%">
+                            <p class="heading-main12">We couldn\'t find anything related to your keywords!</p>
+                            <a class="non-style-link" href="schedule.php">
+                                <button class="login-btn btn-primary-soft btn">Show all Sessions</button>
+                            </a>
+                        </center>
+                    </td>
+                </tr>';
+                
+        }
 
 
-                                </table>
+       
+        ?>
+    </tbody>
+    
+</table>
+<?php
+    // Pagination logic
+    // Pagination logic: Adjusting query based on filter
+    if ($filter_date) {
+        $total_records_query = $database->query("SELECT COUNT(*) FROM schedule WHERE scheduledate = '$filter_date'");
+    } else {
+        $total_records_query = $database->query("SELECT COUNT(*) FROM schedule");
+    }
+
+    $total_records = $total_records_query->fetch_row()[0];
+    $total_pages = ceil($total_records / $records_per_page);
+
+    // Display pagination only if there are more records than the records per page
+    if ($total_pages > 1) {
+        echo '<div class="pagination">';
+        if ($page > 1) {
+            echo '<a href="?page=' . ($page - 1) . '">Previous</a>';
+        }
+        for ($i = 1; $i <= $total_pages; $i++) {
+            echo '<a href="?page=' . $i . '" ' . ($i == $page ? 'class="active"' : '') . '>' . $i . '</a>';
+        }
+        if ($page < $total_pages) {
+            echo '<a href="?page=' . ($page + 1) . '">Next</a>';
+        }
+        echo '</div>';
+    }
+    ?>
+</div>
+
                             </div>
                         </center>
                     </td>
