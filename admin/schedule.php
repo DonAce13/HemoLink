@@ -580,7 +580,7 @@ if ($_GET) {
                     </div>
                     <div style="display: flex;justify-content: center;">
                         <!-- Cancel Session Button -->
-                        <a href="cancel-session.php?id=' . $id . '" class="non-style-link">
+                        <a href="cancel-session?id=' . $id . '" class="non-style-link">
                             <button class="btn-primary btn" style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;">
                                 <font class="tn-in-text">&nbsp;Cancel Session&nbsp;</font>
                             </button>

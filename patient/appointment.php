@@ -320,9 +320,6 @@ $result = $database->query($sqlmain);
 // Get the current time
 $current_datetime = date('Y-m-d H:i'); // Current time in Philippine time zone
 
-// Debugging: Output current time
-echo '<br>Current Time: ' . $current_datetime . '<br>';
-
 // Fetch total number of appointments for pagination
 $sqlcount = "SELECT COUNT(*) AS total_records FROM schedule 
              INNER JOIN appointment ON schedule.scheduleid = appointment.scheduleid 
@@ -376,24 +373,10 @@ if ($result->num_rows == 0) {
 
         $schedule_datetime = $scheduledate . ' ' . $scheduletime;
 
-        // Debugging: Output the scheduled time
-        echo 'Scheduled Time: ' . $schedule_datetime . '<br>';
-
         $start_datetime = new DateTime($schedule_datetime);
         $end_datetime = clone $start_datetime;
         $end_datetime->modify('+' . $session_duration . ' minutes');
         $end_time = $end_datetime->format('Y-m-d H:i');
-
-        // Debugging: Output the end time
-        echo 'End Time: ' . $end_time . '<br>';
-
-        // Debugging: Check if current datetime is before the scheduled datetime
-        echo 'Is current datetime before scheduled datetime? ';
-        if ($current_datetime < $schedule_datetime) {
-            echo 'YES<br>';
-        } else {
-            echo 'NO<br>';
-        }
 
         $button_disabled = '';
 
@@ -406,7 +389,7 @@ if ($result->num_rows == 0) {
             $button_disabled = '<button class="cancel-booking-btn btn-primary-soft btn btn-session-ongoing" style="width:100%;" disabled>Session Ongoing</button>';
         } else {
             // If current time is before the scheduled time, button is enabled
-            $button_disabled = '<button class="cancel-booking-btn btn-primary-soft btn" style="padding-top:11px;padding-bottom:11px;width:100%" data-id="' . $appoid . '" data-title="' . $title . '" data-doc="' . $docname . '">
+            $button_disabled = '<button class="cancel-booking-btn btn-primary-soft btn" style="padding-top:11px;padding-bottom:11px;width:100%" data-id="' . $appoid . '" data-title="' . $title . '" data-doc="' . $docname . '" onclick="cancelBooking(' . $appoid . ')">
                                 <font class="tn-in-text">Cancel Booking</font>
                             </button>';
         }
@@ -442,6 +425,31 @@ if ($result->num_rows == 0) {
     }
 }
 ?>
+
+<!-- Add the JavaScript function for canceling the booking -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    function cancelBooking(appoid) {
+        // Use SweetAlert2 to display the confirmation modal
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to cancel this booking?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, cancel it!',
+            cancelButtonText: 'No, go back'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Redirect to the cancellation page with the appropriate ID
+                window.location.href = "delete-appointment?id=" + appoid;
+            }
+        });
+    }
+</script>
+
 
 
 
@@ -483,47 +491,49 @@ echo '</div>';
     
     <?php
     
-    if(isset($_GET['id']) && isset($_GET['action'])) {
+    if (isset($_GET['id']) && isset($_GET['action'])) {
         $id = $_GET['id'];
         $action = $_GET['action'];
-        
-        if($action == 'booking-added') {
+    
+        if ($action == 'booking-added') {
             echo '
-            <div id="popup1" class="overlay">
-                    <div class="popup">
-                    <center>
-                    <br><br>
-                        <h2>Booking Successfully.</h2>
-                        <a class="close" href="appointment">&times;</a>
-                        <div class="content">
-                        Your Appointment number is '.$id.'.<br><br>
-                        </div>
-                        <div style="display: flex;justify-content: center;">
-                        <a href="appointment.php" class="non-style-link"><button class="btn-primary btn" style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"><font class="tn-in-text">&nbsp;&nbsp;OK&nbsp;&nbsp;</font></button></a>
-                        <br><br><br><br>
-                        </div>
-                    </center>
-            </div>
-            </div>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    Swal.fire({
+                        title: "Booking Successful!",
+                        html: "Your Appointment number is <strong>' . $id . '</strong>.",
+                        icon: "success",
+                        confirmButtonText: "OK",
+                        allowOutsideClick: false
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = "appointment.php";
+                        }
+                    });
+                });
+            </script>
             ';
-        } elseif($action == 'drop') {
-            $title = $_GET["title"];
-            $docname = $_GET["doc"];
+        } elseif($action=='drop'){
+            $title=$_GET["title"];
+            $docname=$_GET["doc"];
             
             echo '
             <div id="popup1" class="overlay">
                     <div class="popup">
                     <center>
                         <h2>Are you sure?</h2>
-                        <a class="close" href="appointment">&times;</a>
+                        <a class="close" href="appointment.php">&times;</a>
                         <div class="content">
                             You want to Cancel this Appointment?<br><br>
-                            Session Name: &nbsp;<b>'.substr($title, 0, 40).'</b><br>
-                            Doctor name&nbsp; : <b>'.substr($docname, 0, 40).'</b><br><br>
+                            Session Name: &nbsp;<b>'.substr($title,0,40).'</b><br>
+                            Doctor name&nbsp; : <b>'.substr($docname,0,40).'</b><br><br>
+                            
                         </div>
                         <div style="display: flex;justify-content: center;">
-                        <a href="delete-appointment?id='.$id.'" class="non-style-link"><button class="btn-primary btn" style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"<font class="tn-in-text">&nbsp;Yes&nbsp;</font></button></a>&nbsp;&nbsp;&nbsp;
-                        <a href="appointment" class="non-style-link"><button class="btn-primary btn" style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"><font class="tn-in-text">&nbsp;&nbsp;No&nbsp;&nbsp;</font></button></a>
+                        <a href="delete-appointment.php?id='.$id.'" class="non-style-link"><button  class="btn-primary btn"  style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"<font class="tn-in-text">&nbsp;Yes&nbsp;</font></button></a>&nbsp;&nbsp;&nbsp;
+                        <a href="appointment.php" class="non-style-link"><button  class="btn-primary btn"  style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"><font class="tn-in-text">&nbsp;&nbsp;No&nbsp;&nbsp;</font></button></a>
+
                         </div>
                     </center>
             </div>

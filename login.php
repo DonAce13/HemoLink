@@ -15,6 +15,8 @@
     $error = '';
     // Start session
     session_start();
+echo "Session ID: " . session_id(); // Prints the current session ID
+
 
     $_SESSION["user"] = "";
     $_SESSION["usertype"] = "";
