@@ -106,11 +106,30 @@ if ($result->num_rows > 0) {
                                 </td>
                             </tr>
 
-                            <tr>
-                                <td colspan="2">
-                                    <a href="../logout.php"><input type="button" value="Log out" class="logout-btn btn-primary-soft btn"></a>
-                                </td>
-                            </tr>
+                                                        <tr>
+    <td colspan="2">
+        <button onclick="confirmLogout()" class="logout-btn btn-primary-soft btn">Log out</button>
+    </td>
+</tr>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function confirmLogout() {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "Do you really want to log out?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, log out",
+            cancelButtonText: "No, stay logged in",
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "../logout.php";
+            }
+        });
+    }
+</script>
                         </table>
                     </td>
                 </tr>

@@ -1,5 +1,4 @@
 <?php
-
 // Start the session to check for user login
 session_start();
 
@@ -17,7 +16,7 @@ if (isset($_SESSION["user"])) {
 include("../connection.php");  // Make sure this path is correct
 
 // Assuming $patientEmail is fetched from the database
-$query = "SELECT pemail FROM patient WHERE pemail = ?";  // Use 'pemail' as per the patient table schema
+$query = "SELECT pemail, pname FROM patient WHERE pemail = ?";  // Use 'pemail' as per the patient table schema
 
 // Prepare a secure query using prepared statements
 $stmt = $database->prepare($query);
@@ -25,16 +24,16 @@ $stmt->bind_param("s", $_SESSION["user"]);
 $stmt->execute();
 $result = $stmt->get_result();
 
-// Check if query was successful and fetch the email
+// Check if query was successful and fetch the email and name
 if ($result->num_rows > 0) {
     $row = $result->fetch_assoc();
     $patientEmail = $row['pemail']; // Retrieve the patient's email
+    $patientName = $row['pname'];   // Retrieve the patient's name
 } else {
     // Handle the case where no patient is found
     echo "Error: Patient email not found in the database.";
     exit;
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -61,40 +60,61 @@ if ($result->num_rows > 0) {
     </style>
 </head>
 <body>
-<?php
-// Check if a session is already started to avoid the warning
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+    <?php
+    // Check if a session is already started to avoid the warning
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
 
-// Check if the user is logged in and is a patient
-if (!isset($_SESSION["user"]) || empty($_SESSION["user"]) || $_SESSION['usertype'] != 'p') {
-    header("location: ../login.php");
-    exit;
-}
+    // Check if the user is logged in and is a patient
+    if (!isset($_SESSION["user"]) || empty($_SESSION["user"]) || $_SESSION['usertype'] != 'p') {
+        header("location: ../login.php");
+        exit;
+    }
 
-$useremail = $_SESSION["user"];
+    $useremail = $_SESSION["user"];
 
-// Import the database connection
-include("../connection.php");
+    // Import the database connection
+    include("../connection.php");
 
-// Fetch patient details securely using prepared statements
-$sqlmain = "SELECT * FROM patient WHERE pemail = ?";
-$stmt = $database->prepare($sqlmain);
-$stmt->bind_param("s", $useremail);
-$stmt->execute();
-$result = $stmt->get_result();
+    // Fetch patient details securely using prepared statements
+    $sqlmain = "SELECT * FROM patient WHERE pemail = ?";
+    $stmt = $database->prepare($sqlmain);
+    $stmt->bind_param("s", $useremail);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-if ($result->num_rows > 0) {
-    $userfetch = $result->fetch_assoc();
-    $userid = $userfetch["pid"];
-    $username = $userfetch["pname"];
-} else {
-    // Handle the case where no patient is found
-    $username = "Unknown User";
-    $userid = 0;
-}
-?>
+    if ($result->num_rows > 0) {
+        $userfetch = $result->fetch_assoc();
+        $userid = $userfetch["pid"];
+        $username = $userfetch["pname"];
+    } else {
+        // Handle the case where no patient is found
+        $username = "Unknown User";
+        $userid = 0;
+    }
+
+    // Display SweetAlert for successful login only once
+    if (isset($_GET['action']) && $_GET['action'] == 'login_success' && !isset($_SESSION['login_alert_shown'])) {
+        // Set the session variable to indicate that the alert has been shown
+        $_SESSION['login_alert_shown'] = true;
+
+        // Display SweetAlert with the patient's name
+        echo "
+        <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+        <script>
+            setTimeout(function() {
+                Swal.fire({
+                    title: 'Login Successful',
+                    text: 'Welcome, $username to your Patient Dashboard!',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            }, 250); // Delay for 250ms
+        </script>
+        ";
+    }
+    ?>
 
 <div class="container">
 <div class="hamburger" id="hamburger">
@@ -120,9 +140,29 @@ if ($result->num_rows > 0) {
                         </tr>
 
                             <tr>
-                                <td colspan="2">
-                                    <a href="../logout.php" ><input type="button" value="Log out" class="logout-btn btn-primary-soft btn"></a>
-                                </td>
+                            <td colspan="2">
+        <button onclick="confirmLogout()" class="logout-btn btn-primary-soft btn">Log out</button>
+    </td>
+</tr>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function confirmLogout() {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "Do you really want to log out?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, log out",
+            cancelButtonText: "No, stay logged in",
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "../logout.php";
+            }
+        });
+    }
+</script>
                             </tr>
                         </table>
                     </td>
@@ -404,13 +444,13 @@ if ($result->num_rows > 0) {
                                                    
                                                     echo '
                                                     <tr>
-                                                        <td style="padding:30px;font-size:25px;font-weight:700;"> &nbsp;'.
+                                                        <td style="padding:30px;text-align:center;font-size:25px;font-weight:700;"> &nbsp;'.
                                                         $apponum
                                                         .'</td>
-                                                        <td style="padding:20px;"> &nbsp;'.
+                                                        <td style="padding:20px;text-align:center;"> &nbsp;'.
                                                         substr($title,0,30)
                                                         .'</td>
-                                                        <td>
+                                                        <td style= "text-align:center;">
                                                         '.substr($docname,0,20).'
                                                         </td>
                                                         <td style="text-align:center;">

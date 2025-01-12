@@ -57,11 +57,7 @@
                                     <p class="profile-subtitle">admin@gmail.com</p>
                                 </td>
                             </tr>
-                            <tr>
-                                <td colspan="2">
-                                    <a href="../logout.php" ><input type="button" value="Log out" class="logout-btn btn-primary-soft btn"></a>
-                                </td>
-                            </tr>
+                            
                     </table>
                     </td>
                 
@@ -297,11 +293,6 @@
                                     
                                 </th>
                                 
-                                <th class="table-headin">
-                                    
-                                    Appointment Date
-                                    
-                                </th>
                                 
                                 <th class="table-headin">
                                     
@@ -354,19 +345,16 @@
                                         '.$apponum.'
                                         
                                         </td>
-                                        <td>
-                                        '.substr($docname,0,25).'
+                                        <td style="text-align: center;"> &nbsp;'.
+                                        substr($docname,0,25).'
                                         </td>
-                                        <td>
-                                        '.substr($title,0,15).'
+                                        <td style="text-align: center;"> &nbsp;'.
+                                        substr($title,0,15).'
                                         </td>
-                                        <td style="text-align:center;font-size:12px;">
-                                            '.substr($scheduledate,0,10).' <br>'.substr($scheduletime,0,5).'
+                                        <td style="text-align:center;font-size:12px;">'
+                                        .substr($scheduledate,0,10).' <br>'.substr($scheduletime,0,5).'
                                         </td>
                                         
-                                        <td style="text-align:center;">
-                                            '.$appodate.'
-                                        </td>
 
                                         <td>
                                         <div style="display:flex;justify-content: center;">

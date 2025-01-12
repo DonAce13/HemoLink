@@ -1,16 +1,20 @@
 <?php 
 
-	session_start();
+session_start();
 
-	$_SESSION = array();
+// Clear session data
+$_SESSION = array();
 
-	if (isset($_COOKIE[session_name()])) {
-		setcookie(session_name(), '', time()-86400, '/');
-	}
+// If there are cookies related to the session, remove them
+if (isset($_COOKIE[session_name()])) {
+    setcookie(session_name(), '', time() - 86400, '/');
+}
 
-	session_destroy();
+// Destroy the session
+session_destroy();
 
-	// redirecting the user to the login page
-	header('Location: login.php?action=logout');
+// Redirect to the login page with the logout success message
+header('Location: login.php?logout=success');
+exit();
 
- ?>
+?>

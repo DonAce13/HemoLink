@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="css/animations.css">  
     <link rel="stylesheet" href="css/main.css">  
     <link rel="stylesheet" href="css/login.css">
-        
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- Include SweetAlert -->
     <title>Login</title>
 </head>
 <body>
@@ -15,9 +15,6 @@
     $error = '';
     // Start session
     session_start();
-echo "Session ID: " . session_id(); // Prints the current session ID
-
-
     $_SESSION["user"] = "";
     $_SESSION["usertype"] = "";
 
@@ -32,14 +29,14 @@ echo "Session ID: " . session_id(); // Prints the current session ID
     if ($_POST) {
         $email = $_POST['useremail'];
         $password = $_POST['userpassword'];
-        $error = '<label for="promter" class="form-label"></label>';
-    
+        $error = '';
+
         // Prepared statement to check if email exists in webuser table
         $stmt = $database->prepare("SELECT * FROM webuser WHERE email = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $result = $stmt->get_result();
-    
+
         if ($result->num_rows == 1) {
             $user = $result->fetch_assoc();
             $utype = $user['usertype'];
@@ -74,26 +71,86 @@ echo "Session ID: " . session_id(); // Prints the current session ID
                     $_SESSION['user'] = $email;
                     $_SESSION['usertype'] = $utype;
 
-                    // Redirect to the appropriate dashboard
+                    // Redirect to the appropriate dashboard with action=login_success
                     if ($utype == 'p') {
-                        header('Location: patient/index.php');
+                        header('Location: patient/index.php?action=login_success');
                     } elseif ($utype == 'd') {
-                        header('Location: doctor/index.php');
+                        header('Location: doctor/index.php?action=login_success');
                     } else {
-                        header('Location: admin/index.php');
+                        header('Location: admin/index.php?action=login_success');
                     }
                     exit();
                 } else {
-                    $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Wrong credentials: Invalid password.</label>';
+                    echo "
+                    <script>
+                        Swal.fire({
+                            title: 'Wrong Credentials',
+                            text: 'Invalid password. Please try again.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    </script>
+                    ";
                 }
             } else {
-                $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">No record found for this email.</label>';
+                echo "
+                <script>
+                    Swal.fire({
+                        title: 'No Record Found',
+                        text: 'No account found for this email.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                </script>
+                ";
             }
         } else {
-            $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">We can\'t find any account for this email.</label>';
+            echo "
+            <script>
+                Swal.fire({
+                    title: 'Account Not Found',
+                    text: 'We cannot find any account associated with this email.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            </script>
+            ";
         }
     }
+
+    // Check if logout was successful
+    if (isset($_GET['logout']) && $_GET['logout'] == 'success') {
+        echo "
+        <script>
+            Swal.fire({
+                title: 'Logout Successful',
+                text: 'You have been logged out successfully.',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }
+            });
+        </script>
+        ";
+    }
+
+    // Check if login was successful (for admin dashboard)
+    if (isset($_GET['action']) && $_GET['action'] == 'login_success') {
+        echo "
+        <script>
+            Swal.fire({
+                title: 'Login Successful',
+                text: 'Welcome to your Dashboard!',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+        </script>
+        ";
+    }
     ?>
+
     <center>
     <div class="container">
         <table border="0" style="margin: 0;padding: 0;width: 60%;">

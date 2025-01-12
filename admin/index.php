@@ -3,12 +3,14 @@
 // Start the session to check for user login
 session_start();
 
-if(isset($_SESSION["user"])){
-    if(($_SESSION["user"])=="" or $_SESSION['usertype']!='a'){
+if (isset($_SESSION["user"])) {
+    if (($_SESSION["user"]) == "" or $_SESSION['usertype'] != 'a') {
         header("location: ../login.php");
+        exit();
     }
-}else{
+} else {
     header("location: ../login.php");
+    exit();
 }
 
 // Include the database connection file
@@ -38,16 +40,15 @@ if ($result) {
     <link rel="stylesheet" href="../css/animations.css">  
     <link rel="stylesheet" href="../css/main.css">  
     <link rel="stylesheet" href="../css/admin.css">
-        
     <title>Dashboard</title>
     <style>
-        .dashbord-tables{
+        .dashbord-tables {
             animation: transitionIn-Y-over 0.5s;
         }
-        .filter-container{
+        .filter-container {
             animation: transitionIn-Y-bottom  0.5s;
         }
-        .sub-table{
+        .sub-table {
             animation: transitionIn-Y-bottom 0.5s;
         }
     </style>
@@ -55,54 +56,90 @@ if ($result) {
 <body>
 <?php
 
-// Check if a session is already started to avoid the warning
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
-
 // Check if the user is logged in and has the correct user type
-if(isset($_SESSION["user"])){
-    if(($_SESSION["user"])=="" or $_SESSION['usertype']!='a'){
+if (isset($_SESSION["user"])) {
+    if (($_SESSION["user"]) == "" or $_SESSION['usertype'] != 'a') {
         header("location: ../login.php");
+        exit();
     }
-
-}else{
+} else {
     header("location: ../login.php");
+    exit();
 }
 
-// Import the database connection
-include("../connection.php");
 
+// Check if the login_success action is passed and if the alert hasn't been shown before
+if (isset($_GET['action']) && $_GET['action'] == 'login_success' && !isset($_SESSION['login_alert_shown'])) {
+    // Set the session variable to indicate that the alert has been shown
+    $_SESSION['login_alert_shown'] = true;
+
+    // Display SweetAlert for successful login
+    echo "
+    <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+    <script>
+        setTimeout(function() {
+            Swal.fire({
+                title: 'Login Successful',
+                text: 'Welcome to your Admin Dashboard!',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+        }, 250); // Delay for 250ms
+    </script>
+    ";
+}
 ?>
 
-<div class="container">
-        <!-- Hamburger Icon  -->
-        <div class="hamburger" id="hamburger">
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-        </div>
-        
-        <!-- Menu Container -->
-        <div class="menu" id="menu">
-            <table class="menu-container" border="0">
-                <tr>
-                    <td style="padding:10px" colspan="2">
-                        <table border="0" class="profile-container">
-                        <tr>
-                            <td width="30%" style="padding-left:20px">
-                                <img src="../img/user.png" alt="" width="100%" style="border-radius:50%">
-                            </td>
-                            <td style="padding:0px;margin:0px;">
-                                <p class="profile-title">Administrator</p>
-                                <p class="profile-subtitle"><?php echo $adminEmail; ?></p> <!-- Display admin email here -->
-                            </td>
-                        </tr>
 
-                            <tr>
-                                <td colspan="2">
-                                    <a href="../logout.php" ><input type="button" value="Log out" class="logout-btn btn-primary-soft btn"></a>
-                                </td>
+<div class="container">
+    <!-- Hamburger Icon  -->
+    <div class="hamburger" id="hamburger">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+    </div>
+    
+    <!-- Menu Container -->
+    <div class="menu" id="menu">
+        <table class="menu-container" border="0">
+            <tr>
+                <td style="padding:10px" colspan="2">
+                    <table border="0" class="profile-container">
+                    <tr>
+                        <td width="30%" style="padding-left:20px">
+                            <img src="../img/user.png" alt="" width="100%" style="border-radius:50%">
+                        </td>
+                        <td style="padding:0px;margin:0px;">
+                            <p class="profile-title">Administrator</p>
+                            <p class="profile-subtitle"><?php echo $adminEmail; ?></p> <!-- Display admin email here -->
+                        </td>
+                    </tr>
+
+                    <tr>
+                    <td colspan="2">
+                        <button onclick="confirmLogout()" class="logout-btn btn-primary-soft btn">Log out</button>
+                    </td>
+                    </tr>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function confirmLogout() {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "Do you really want to log out?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, log out",
+            cancelButtonText: "No, stay logged in",
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "../logout.php";
+            }
+        });
+    }
+</script>
+
                             </tr>
                         </table>
                     </td>

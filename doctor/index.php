@@ -73,9 +73,29 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="2">
-                                    <a href="../logout.php" ><input type="button" value="Log out" class="logout-btn btn-primary-soft btn"></a>
-                                </td>
+                            <td colspan="2">
+        <button onclick="confirmLogout()" class="logout-btn btn-primary-soft btn">Log out</button>
+    </td>
+</tr>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function confirmLogout() {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "Do you really want to log out?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, log out",
+            cancelButtonText: "No, stay logged in",
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "../logout.php";
+            }
+        });
+    }
+</script>
                             </tr>
                     </table>
                     </td>
@@ -333,10 +353,10 @@
                 $scheduletime=$row["scheduletime"];
                 $nop=$row["nop"];
                 echo '<tr>
-                    <td style="padding:20px;"> &nbsp;'.
+                    <td style="padding:20px; text-align:center;"> &nbsp;'.
                     substr($title,0,30)
                     .'</td>
-                    <td style="padding:20px;font-size:13px;">
+                    <td style="font-size:13px;text-align:center;">
                     '.substr($scheduledate,0,10).'
                     </td>
                     <td style="text-align:center;">

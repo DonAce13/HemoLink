@@ -103,9 +103,31 @@ $list110 = $database->query($sqlmain);
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="2">
-                                <a href="../logout.php" ><input type="button" value="Log out" class="logout-btn btn-primary-soft btn"></a>
-                                </td>
+                                 <tr>
+                            <td colspan="2">
+        <button onclick="confirmLogout()" class="logout-btn btn-primary-soft btn">Log out</button>
+    </td>
+</tr>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function confirmLogout() {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "Do you really want to log out?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, log out",
+            cancelButtonText: "No, stay logged in",
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "../logout.php";
+            }
+        });
+    }
+</script>
+                            </tr>
                             </tr>
                     </table>
                     </td>
@@ -174,11 +196,38 @@ $list110 = $database->query($sqlmain);
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="4" style="padding-top:10px;width: 100%;" >
-                    
-                        <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)">All Sessions (<?php echo $list110->num_rows; ?>)</p>
+                    <td colspan="4" style="padding-top:10px;width: 100%;">
+                        <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)">
+                            All Sessions 
+                            <?php
+                                // Fetch the total number of sessions based on filter (if any)
+                                $sql = "SELECT scheduleid FROM schedule";
+                                $conditions = array();
+
+                                if ($_POST) {
+                                    // Add the selected filters to the query dynamically
+                                    if (!empty($_POST["scheduledate"])) {
+                                        $scheduledate = $_POST["scheduledate"];
+                                        $conditions[] = "scheduledate = '$scheduledate'";
+                                    }
+
+                                    if (!empty($_POST["docid"])) {
+                                        $docid = $_POST["docid"];
+                                        $conditions[] = "docid = $docid";
+                                    }
+
+                                    // Append conditions if they exist
+                                    if (count($conditions) > 0) {
+                                        $sql .= " WHERE " . implode(" AND ", $conditions);
+                                    }
+                                }
+
+                                // Execute the query and display the result count
+                                $result = $database->query($sql);
+                                echo $result->num_rows;  // Output the filtered count
+                            ?>
+                        </p>
                     </td>
-                    
                 </tr>
                 <tr>
                     <td colspan="4" style="padding-top:0px;width: 100%;" >
@@ -311,66 +360,89 @@ $list110 = $database->query($sqlmain);
                         </thead>
                         <tbody>
                         
-                            <?php
+                        <?php
+// Initialize base query
+$sqlmain = "SELECT scheduleid, title, docid, scheduledate, scheduletime, nop FROM schedule";
 
-                                
-                                $result= $database->query($sqlmain);
+// Add date filter if specified
+if ($_POST) {
+    if (!empty($_POST["scheduledate"])) {
+        $scheduledate = $_POST["scheduledate"];
+        $sqlmain .= " WHERE scheduledate = '$scheduledate'";
+    }
+} else {
+    // Default: Fetch all sessions ordered by scheduled date
+    $sqlmain .= " ORDER BY scheduledate DESC";
+}
 
-                                if($result->num_rows==0){
-                                    echo '<tr>
-                                    <td colspan="4">
-                                    <br><br><br><br>
-                                    <center>
-                                    <img src="../img/notfound.svg" width="25%">
-                                    
-                                    <br>
-                                    <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">We cannot find anything related to your keywords !</p>
-                                    <a class="non-style-link" href="schedule.php"><button  class="login-btn btn-primary-soft btn"  style="display: flex;justify-content: center;align-items: center;margin-left:20px;">&nbsp; Show all Sessions &nbsp;</font></button>
-                                    </a>
-                                    </center>
-                                    <br><br><br><br>
-                                    </td>
-                                    </tr>';
-                                    
-                                }
-                                else{
-                                for ( $x=0; $x<$result->num_rows;$x++){
-                                    $row=$result->fetch_assoc();
-                                    $scheduleid=$row["scheduleid"];
-                                    $title=$row["title"];
-                                    $docname=$row["docname"];
-                                    $scheduledate=$row["scheduledate"];
-                                    $scheduletime=$row["scheduletime"];
-                                    $nop=$row["nop"];
-                                    echo '<tr>
-                                        <td> &nbsp;'.
-                                        substr($title,0,30)
-                                        .'</td>
-                                        <td>
-                                        '.substr($docname,0,20).'
-                                        </td>
-                                        <td style="text-align:center;">
-                                            '.substr($scheduledate,0,10).' '.substr($scheduletime,0,5).'
-                                        </td>
-                                        <td style="text-align:center;">
-                                            '.$nop.'
-                                        </td>
+// Execute the query
+$result = $database->query($sqlmain);
 
-                                        <td>
-                                        <div style="display:flex;justify-content: center;">
-                                        
-                                        <a href="?action=view&id='.$scheduleid.'" class="non-style-link"><button  class="btn-primary-soft btn button-icon btn-view"  style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">View</font></button></a>
-                                       &nbsp;&nbsp;&nbsp;
-                                       <a href="?action=drop&id='.$scheduleid.'&name='.$title.'" class="non-style-link"><button  class="btn-primary-soft btn button-icon btn-delete"  style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">Remove</font></button></a>
-                                    
-                                        </div>
-                                        </td>
-                                    </tr>';
-                                    
-                                }
-                            }
-                                 
-                            ?>
+if ($result->num_rows == 0) {
+    echo '<tr>
+        <td colspan="4">
+        <br><br><br><br>
+        <center>
+        <img src="../img/notfound.svg" width="25%">
+        <br>
+        <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">We cannot find anything related to your keywords !</p>
+        <a class="non-style-link" href="schedule.php"><button class="login-btn btn-primary-soft btn" style="display: flex;justify-content: center;align-items: center;margin-left:20px;">&nbsp; Show all Sessions &nbsp;</button></a>
+        </center>
+        <br><br><br><br>
+        </td>
+    </tr>';
+} else {
+    $current_datetime = date("Y-m-d H:i:s");  // Get the current date and time
+    while ($row = $result->fetch_assoc()) {
+        $scheduleid = $row["scheduleid"];
+        $title = $row["title"];
+        $docid = $row["docid"];  // Use docid here instead of docname
+        $scheduledate = $row["scheduledate"];
+        $scheduletime = $row["scheduletime"];
+        $nop = $row["nop"];
+
+        // Combine scheduled date and time into a single datetime variable
+        $schedule_datetime = $scheduledate . ' ' . $scheduletime;
+
+        // Compare logic to disable the button
+        if ($current_datetime >= $schedule_datetime) {
+            // If current time is after or equal to the session time, session has passed
+            $cancel_button = '<button class="btn-session-passed btn-primary-soft" style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;" disabled>Session Passed</button>';
+        } else {
+            // If current time is before the scheduled time, button is enabled
+            $cancel_button = '<a href="?action=drop&id=' . $scheduleid . '&name=' . $title . '" class="non-style-link">
+                <button class="btn-primary-soft btn button-icon btn-delete" style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;">
+                    <font class="tn-in-text">Remove</font>
+                </button>
+            </a>';
+        }
+
+        // Display sessions normally (soft-deletes removed)
+        echo '<tr>
+            <td>' . substr($title, 0, 30) . '</td>
+            <td>' . substr($docid, 0, 20) . '</td>  <!-- Display docid instead of docname -->
+            <td style="text-align:center;">' . substr($scheduledate, 0, 10) . ' ' . substr($scheduletime, 0, 5) . '</td>
+            <td style="text-align:center;">' . $nop . '</td>
+            <td>
+                <div style="display:flex;justify-content: center;">
+                    <a href="?action=view&id=' . $scheduleid . '" class="non-style-link">
+                        <button class="btn-primary-soft btn button-icon btn-view" style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;">
+                            <font class="tn-in-text">View</font>
+                        </button>
+                    </a>
+                    &nbsp;&nbsp;&nbsp;
+                    ' . $cancel_button . '
+                </div>
+            </td>
+        </tr>';
+    }
+}
+?>
+
+
+
+
+
  
                             </tbody>
 
@@ -538,26 +610,20 @@ if ($_GET) {
             }
         }
         </script>';} elseif ($action == 'session-added') {
-        $titleget = $_GET["title"];
-        echo '
-        <div id="popup1" class="overlay">
-            <div class="popup">
-                <center>
-                    <h2>Session Placed.</h2>
-                    <a class="close" href="schedule.php">&times;</a>
-                    <div class="content">
-                        ' . substr($titleget, 0, 40) . ' was scheduled.<br><br>
-                    </div>
-                    <div style="display: flex;justify-content: center;">
-                        <a href="schedule.php" class="non-style-link">
-                            <button class="btn-primary btn" style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;">
-                                <font class="tn-in-text">&nbsp;&nbsp;OK&nbsp;&nbsp;</font>
-                            </button>
-                        </a>
-                    </div>
-                </center>
-            </div>
-        </div>';
+            $titleget = $_GET["title"];
+            echo "
+            <script>
+                Swal.fire({
+                    title: 'Session Placed.',
+                    text: '" . substr($titleget, 0, 40) . " was scheduled.',
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                    willClose: () => {
+                        window.location.href = 'schedule.php'; // Redirect after closing the popup
+                    }
+                });
+            </script>";
+            
     } elseif ($action == 'drop') {
         // Get the session details passed through GET
         $nameget = isset($_GET["name"]) ? $_GET["name"] : '';

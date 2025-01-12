@@ -103,11 +103,30 @@
                                     <p class="profile-subtitle"><?php echo substr($useremail, 0, 22) ?></p>
                                 </td>
                             </tr>
-                            <tr>
-                                <td colspan="2">
-                                    <a href="../logout.php"><input type="button" value="Log out" class="logout-btn btn-primary-soft btn"></a>
-                                </td>
-                            </tr>
+                                                        <tr>
+    <td colspan="2">
+        <button onclick="confirmLogout()" class="logout-btn btn-primary-soft btn">Log out</button>
+    </td>
+</tr>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function confirmLogout() {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "Do you really want to log out?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, log out",
+            cancelButtonText: "No, stay logged in",
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "../logout.php";
+            }
+        });
+    }
+</script>
                         </table>
                     </td>
                 </tr>
@@ -149,63 +168,49 @@
                 menu.classList.toggle('show'); // Show/hide menu
             });
         </script>
-        <div class="dash-body">
-            <table border="0" width="100%" style=" border-spacing: 0;margin:0;padding:0;margin-top:25px; ">
-                <tr >
-                    <!-- <td width="13%" >
-                    <a href="schedule.php" ><button  class="login-btn btn-primary-soft btn btn-icon-back"  style="padding-top:11px;padding-bottom:11px;margin-left:20px;width:125px"><font class="tn-in-text">Back</font></button></a>
-                    </td> -->
-                    <td >
-                            <form action="schedule.php" method="post" class="header-search">
-
-                                        <input type="search" name="search" class="input-text header-searchbar" placeholder="Search Doctor name or Email or Date (YYYY-MM-DD)" list="doctors" >&nbsp;&nbsp;
-                                        
-                                        <?php
-                                            echo '<datalist id="doctors">';
-                                            $list11 = $database->query("select DISTINCT * from  doctor;");
-                                            $list12 = $database->query("select DISTINCT * from  schedule GROUP BY title;");
-                                            
-
-                                            
-
-
-                                            for ($y=0;$y<$list11->num_rows;$y++){
-                                                $row00=$list11->fetch_assoc();
-                                                $d=$row00["docname"];
-                                               
-                                                echo "<option value='$d'><br/>";
-                                               
-                                            };
-
-
-                                            for ($y=0;$y<$list12->num_rows;$y++){
-                                                $row00=$list12->fetch_assoc();
-                                                $d=$row00["title"];
-                                               
-                                                echo "<option value='$d'><br/>";
-                                                                                         };
-
-                                        echo ' </datalist>';
-            ?>
-                                        
-                                
-                                        <input type="Submit" value="Search" class="login-btn btn-primary btn" style="padding-left: 25px;padding-right: 25px;padding-top: 10px;padding-bottom: 10px;">
-                                        </form>
-                    </td>
-                    <td width="15%">
-                        <p style="font-size: 14px;color: rgb(119, 119, 119);padding: 0;margin: 0;text-align: right;">
-                            Today's Date
-                        </p>
-                        <p class="heading-sub12" style="padding: 0;margin: 0;">
-                            <?php 
-
-                                
-                                echo $today;
-
-                                
-
-                        ?>
-                        </p>
+<div class="dash-body">
+    <table border="0" width="100%" style="border-spacing: 0;margin:0;padding:0;margin-top:25px;">
+        <tr class="date-container">
+            <td width="100%">
+                <p style="font-size: 14px;color: rgb(119, 119, 119);padding: 0;margin: 0;">Today's Date</p>
+                <p class="heading-sub12" style="margin: 0;"><?php echo $today; ?></p>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4" style="padding-top:0px;width: 100%;">
+                <center>
+                    <table class="filter-container" border="0">
+                        <tr>
+                            <td width="10%"></td>
+                            <td width="5%" style="text-align: center;">Date:</td>
+                            <td width="30%">
+                                <form action="" method="post">
+                                    <input type="date" name="scheduledate" id="date" class="input-text filter-container-items" style="margin: 0;width: 95%;">
+                            </td>
+                            <td width="12%">
+                                <input type="submit" name="filter" value=" Filter" class="btn-primary-soft btn button-icon btn-filter" style="padding: 15px; margin:0;width:100%">
+                                </form>
+                            </td>
+                        </tr>
+                    </table>
+                    <tr>
+                        <td colspan="4" class="nav-bar">
+                            <form action="doctors.php" method="post" class="header-search">
+                                <input type="search" name="search" class="input-text header-searchbar" placeholder="Search Doctor name or Email" list="doctors">&nbsp;&nbsp;
+                                <?php
+                                echo '<datalist id="doctors">';
+                                $list11 = $database->query("SELECT docname, docemail FROM doctor;");
+                                for ($y = 0; $y < $list11->num_rows; $y++) {
+                                    $row00 = $list11->fetch_assoc();
+                                    $d = $row00["docname"];
+                                    $c = $row00["docemail"];
+                                    echo "<option value='$d'><br/>";
+                                    echo "<option value='$c'><br/>";
+                                }
+                                echo '</datalist>';
+                                ?>
+                                <input type="Submit" value="Search" class="btn-primary-soft btn button-icon btn-search" style="padding-left: 25px;padding-right: 25px;padding-top: 10px;padding-bottom: 10px;">
+                            </form>
                     </td>
                     <td width="10%">
                         <button  class="btn-label"  style="display: flex;justify-content: center;align-items: center;"><img src="../img/calendar.svg" width="100%"></button>
