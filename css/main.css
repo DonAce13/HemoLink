@@ -17,10 +17,19 @@ body{
 font.logo{
   margin-left: 2vh;
   color: var(--primarycolorhover);
-  font-weight: 800;
+  font-weight: 550;
+  font-size: 30px;
+  background-color: var(--primarycolor);
+  border-radius: 15px;
+  padding: 5px;
 }
 font.logo-sub{
-  color: var(--primarycolor);
+  color: #fff;
+  font-weight: 400;
+  font-size: 20px;
+  background-color: var(--primarycolor);
+  border-radius: 15px; /* Rounded corners for the background */
+  padding: 5px;
 }
 *, ::after, ::before{
     box-sizing: border-box;
@@ -34,7 +43,7 @@ font.logo-sub{
   background-color: var(--primarycolor); /* Semi-transparent white background */
   padding: 5px; /* Padding around the text */
   display: inline-block; /* Ensures the background only applies to the text */
-  border-radius: 10px; /* Rounded corners for the background */
+  border-radius: 15px; /* Rounded corners for the background */
   max-width: 80%; /* Restricts the width of the text */
   word-wrap: break-word; /* Ensures long words break and don't overflow */
 }
@@ -137,6 +146,7 @@ font.logo-sub{
     transition: all 0.3s;
     border-radius: 5px;
     font-family: 'Inter', sans-serif;
+    border-radius: 15px;
 }
 
 
@@ -153,6 +163,7 @@ font.logo-sub{
     background-color: var(--primarycolor) ;
     border: 1px solid var(--primarycolor) ;
     color: #fff ;
+    border-radius: 15px;
     box-shadow: 0 3px 5px 0 rgba(57,108,240,0.3);
 }
 

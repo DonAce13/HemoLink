@@ -1,79 +1,169 @@
-body{
-    background-image: url(../img/bg01.jpg);
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-size: cover;
-    height: 100%;
+/* Reset the default margin and padding */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
+/* Set full height for the body and HTML */
 html, body {
     height: 100%;
     margin: 0;
-  }
-  
+}
+
+/* Background image for full-screen background */
+body {
+    background-image: url('../img/bg01.jpg');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+/* Full height container with a dark overlay */
 .full-height {
     background: rgba(26, 26, 26, 0.548);
     background-attachment: fixed;
-    max-height: 100vh;
-    height: 100vh;
-
-
+    height: 100vh; /* Set to full viewport height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
-table{
+
+/* Ensure the content fits nicely in the center */
+.content-wrapper {
+    text-align: center;
+    padding: 20px;
     width: 100%;
-    padding-top: 5px;
-    
+    max-width: 1200px;
 }
-.heading-text{
+
+/* Logo and subtitle styling */
+.logo {
+    font-size: 3rem;
+    font-weight: 300;
+    color: white;
+}
+
+.logo-sub {
+    font-size: 3rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 300;
+}
+
+/* Heading text with larger font and centered alignment */
+.heading-text {
     color: white;
     font-size: 42px;
     font-weight: 700;
-    line-height: 63px;
-    margin-top: 15%;
+    line-height: 1.5;
+    margin-top: 5%;
     text-align: center;
-    margin-bottom: 0;
+    margin-bottom: 10px;
 }
 
-.sub-text2{
-    color: rgb(255, 255, 255);
+/* Sub-text paragraph styling */
+.sub-text2 {
+    color: white;
     font-size: 17px;
-    line-height: 27px;
+    line-height: 1.6;
     font-weight: 400;
     text-align: center;
-    margin-top: 0;
+    margin-top: 20px;
 }
 
+/* Button styles */
+button {
+    padding: 10px 25px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
 
-.register-btn{
+/* Primary button styles */
+.login-btn.btn-primary {
+    background-color: #007bff;
+    color: white;
+}
+
+.login-btn.btn-primary:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+/* Secondary button styles (for register, etc.) */
+.register-btn {
     background-color: rgba(240, 248, 255, 0.589);
     color: #345cc4;
 }
 
-
-.edoc-logo{
-    color: white;
-    font-weight: bolder;
-    font-size: 20px;
-    padding-left: 20px;
-    animation: transitionIn-Y-over 0.5s;
+.register-btn:hover {
+    background-color: #cce7ff;
 }
 
-.edoc-logo-sub{
-    color: rgba(255, 255, 255, 0.733);
+/* Container for CTA buttons */
+.cta-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+/* Adding space around the logo and buttons */
+.action-buttons a {
+    margin: 0 10px;
+}
+
+/* Footer or bottom padding if needed */
+footer {
+    margin-top: 50px;
     font-size: 12px;
-
+    color: rgba(255, 255, 255, 0.6);
 }
 
+/* Responsive Styles */
+@media screen and (max-width: 768px) {
+    .logo {
+        font-size: 2.5rem;
+    }
 
-.nav-item{
-    color: var(--primarycolor);
-    text-align: center;
-    font-size: 15px;
-    font-weight: 500;
-    animation: transitionIn-Y-over 1s;
+    .logo-sub {
+        font-size: 1rem;
+    }
+
+    .heading-text {
+        font-size: 30px;
+    }
+
+    .sub-text2 {
+        font-size: 15px;
+        line-height: 1.4;
+    }
+
+    .cta-buttons {
+        flex-direction: column;
+    }
+
+    /* Adjust the buttons for small screens */
+    button {
+        padding: 12px 20px;
+        font-size: 14px;
+    }
 }
 
-.nav-item:hover{
-    color: var(--primarycolorhover);
-    font-weight: 1000;
+@media screen and (max-width: 480px) {
+    .heading-text {
+        font-size: 24px;
+    }
+
+    .sub-text2 {
+        font-size: 14px;
+    }
+
+    .logo {
+        font-size: 2rem;
+    }
 }

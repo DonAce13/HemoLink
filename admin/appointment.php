@@ -57,6 +57,31 @@
                                     <p class="profile-subtitle">admin@gmail.com</p>
                                 </td>
                             </tr>
+                            <tr>
+                            <td colspan="2">
+        <button onclick="confirmLogout()" class="logout-btn btn-primary-soft btn">Log out</button>
+    </td>
+</tr>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function confirmLogout() {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "Do you really want to log out?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, log out",
+            cancelButtonText: "No, stay logged in",
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "../logout.php";
+            }
+        });
+    }
+</script>
+                            </tr>
                             
                     </table>
                     </td>
@@ -302,74 +327,95 @@
                         </thead>
                         <tbody>
                         
-                            <?php
+                        <?php
+// Initialize the SQL query
+$sqlmain = "SELECT appointment.appoid, schedule.scheduleid, schedule.title, doctor.docname, patient.pname, schedule.scheduledate, schedule.scheduletime, appointment.apponum, appointment.appodate
+            FROM schedule
+            INNER JOIN appointment ON schedule.scheduleid = appointment.scheduleid
+            INNER JOIN patient ON patient.pid = appointment.pid
+            INNER JOIN doctor ON schedule.docid = doctor.docid";
 
-                                
-                                $result= $database->query($sqlmain);
+// Initialize an array to hold filter conditions
+$filters = [];
 
-                                if($result->num_rows==0){
-                                    echo '<tr>
-                                    <td colspan="7">
-                                    <br><br><br><br>
-                                    <center>
-                                    <img src="../img/notfound.svg" width="25%">
-                                    
-                                    <br>
-                                    <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">We cannot find anything related to your keywords !</p>
-                                    <a class="non-style-link" href="appointment.php"><button  class="login-btn btn-primary-soft btn"  style="display: flex;justify-content: center;align-items: center;margin-left:20px;">&nbsp; Show all Appointments &nbsp;</font></button>
-                                    </a>
-                                    </center>
-                                    <br><br><br><br>
-                                    </td>
-                                    </tr>';
-                                    
-                                }
-                                else{
-                                for ( $x=0; $x<$result->num_rows;$x++){
-                                    $row=$result->fetch_assoc();
-                                    $appoid=$row["appoid"];
-                                    $scheduleid=$row["scheduleid"];
-                                    $title=$row["title"];
-                                    $docname=$row["docname"];
-                                    $scheduledate=$row["scheduledate"];
-                                    $scheduletime=$row["scheduletime"];
-                                    $pname=$row["pname"];
-                                    $apponum=$row["apponum"];
-                                    $appodate=$row["appodate"];
-                                    echo '<tr >
-                                        <td style="font-weight:600;"> &nbsp;'.
-                                        
-                                        substr($pname,0,25)
-                                        .'</td >
-                                        <td style="text-align:center;font-size:23px;font-weight:500; color: var(--btnnicetext);">
-                                        '.$apponum.'
-                                        
-                                        </td>
-                                        <td style="text-align: center;"> &nbsp;'.
-                                        substr($docname,0,25).'
-                                        </td>
-                                        <td style="text-align: center;"> &nbsp;'.
-                                        substr($title,0,15).'
-                                        </td>
-                                        <td style="text-align:center;font-size:12px;">'
-                                        .substr($scheduledate,0,10).' <br>'.substr($scheduletime,0,5).'
-                                        </td>
-                                        
+// Check if a date filter is applied
+if (!empty($_POST["scheduledate"])) {
+    $scheduledate = $_POST["scheduledate"];
+    $filters[] = "schedule.scheduledate = '$scheduledate'";
+}
 
-                                        <td>
-                                        <div style="display:flex;justify-content: center;">
-                                        
-                                        <!--<a href="?action=view&id='.$appoid.'" class="non-style-link"><button  class="btn-primary-soft btn button-icon btn-view"  style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">View</font></button></a>
-                                       &nbsp;&nbsp;&nbsp;-->
-                                       <a href="?action=drop&id='.$appoid.'&name='.$pname.'&session='.$title.'&apponum='.$apponum.'" class="non-style-link"><button  class="btn-primary-soft btn button-icon btn-delete"  style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">Cancel</font></button></a>
-                                       &nbsp;&nbsp;&nbsp;</div>
-                                        </td>
-                                    </tr>';
-                                    
-                                }
-                            }
-                                 
-                            ?>
+// Check if a doctor filter is applied
+if (!empty($_POST["docid"])) {
+    $docid = $_POST["docid"];
+    $filters[] = "doctor.docid = $docid";
+}
+
+// Append filters to the SQL query if any
+if (!empty($filters)) {
+    $sqlmain .= " WHERE " . implode(" AND ", $filters);
+}
+
+// Execute the query
+$result = $database->query($sqlmain);
+
+// Check if any appointments were found
+if ($result->num_rows == 0) {
+    echo '<tr>
+            <td colspan="7">
+                <br><br><br><br>
+                <center>
+                    <img src="../img/notfound.svg" width="25%">
+                    <br>
+                    <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">We cannot find anything related to your keywords!</p>
+                    <a class="non-style-link" href="appointment.php"><button class="login-btn btn-primary-soft btn" style="display: flex;justify-content: center;align-items: center;margin-left:20px;">&nbsp; Show all Appointments &nbsp;</button></a>
+                </center>
+                <br><br><br><br>
+            </td>
+          </tr>';
+} else {
+    date_default_timezone_set('Asia/Manila'); // Set to your desired timezone
+    $currentDateTime = new DateTime();
+
+    while ($row = $result->fetch_assoc()) {
+        $appoid = $row["appoid"];
+        $scheduleid = $row["scheduleid"];
+        $title = $row["title"];
+        $docname = $row["docname"];
+        $scheduledate = $row["scheduledate"];
+        $scheduletime = $row["scheduletime"];
+        $pname = $row["pname"];
+        $apponum = $row["apponum"];
+        $appodate = $row["appodate"];
+
+        // Combine scheduledate and scheduletime into a single DateTime object
+        $scheduledDateTime = new DateTime("$scheduledate $scheduletime");
+
+        // Determine the button label based on the comparison
+        if ($currentDateTime >= $scheduledDateTime) {
+            $buttonLabel = '<button class="btn-session-passed btn-primary-soft" style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;" disabled>Session Passed</button>';
+        } else {
+            $buttonLabel = '<a href="?action=drop&id=' . $appoid . '&name=' . $pname . '&session=' . $title . '&apponum=' . $apponum . '" class="non-style-link"><button class="btn-primary-soft btn button-icon btn-delete" style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">Cancel</font></button></a>';
+        }
+
+        echo '<tr>
+                <td style="font-weight:600;"> &nbsp;' . substr($pname, 0, 25) . '</td>
+                <td style="text-align:center;font-size:23px;font-weight:500; color: var(--btnnicetext);">' . $apponum . '</td>
+                <td style="text-align: center;"> &nbsp;' . substr($docname, 0, 25) . '</td>
+                <td style="text-align: center;"> &nbsp;' . substr($title, 0, 15) . '</td>
+                <td style="text-align:center;font-size:12px;">' . substr($scheduledate, 0, 10) . ' <br>' . substr($scheduletime, 0, 5) . '</td>
+                <td>
+                    <div style="display:flex;justify-content: center;">
+                        ' . $buttonLabel . '
+                        &nbsp;&nbsp;&nbsp;
+                    </div>
+                </td>
+              </tr>';
+    }
+}
+?>
+
+
+
  
                             </tbody>
 
