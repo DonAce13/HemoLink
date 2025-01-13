@@ -198,7 +198,7 @@ $list110 = $database->query($sqlmain);
                 <tr>
                     <td colspan="4" style="padding-top:10px;width: 100%;">
                         <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)">
-                            All Sessions 
+                            All Sessions
                             <?php
                                 // Fetch the total number of sessions based on filter (if any)
                                 $sql = "SELECT scheduleid FROM schedule";
@@ -222,10 +222,9 @@ $list110 = $database->query($sqlmain);
                                     }
                                 }
 
-                                // Execute the query and display the result count
                                 $result = $database->query($sql);
-                                echo $result->num_rows;  // Output the filtered count
-                            ?>
+                                echo($result->num_rows); // Output the filtered count
+                                ?>
                         </p>
                     </td>
                 </tr>

@@ -327,7 +327,7 @@
                         </thead>
                         <tbody>
                         
-                        <?php
+<?php
 // Initialize the SQL query
 $sqlmain = "SELECT appointment.appoid, schedule.scheduleid, schedule.title, doctor.docname, patient.pname, schedule.scheduledate, schedule.scheduletime, appointment.apponum, appointment.appodate
             FROM schedule
