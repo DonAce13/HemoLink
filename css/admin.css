@@ -251,7 +251,7 @@
     position: sticky;
     top: 0;
     display: block; /* Show the menu by default */
-    min-height: 750px;
+    min-height: 1000px;
 }
 
 /* Hamburger Icon styles (hidden by default) */
@@ -598,7 +598,7 @@
 
 /* Hover effect for Book Now */
 .btn-book-now:hover {
-    background-color: #003f83; /* Darker blue when hovered */
+    background-color: #2d6a4f; /* Darker blue when hovered */
     color: #fff; /* Text color stays white when hovered */
 }
 

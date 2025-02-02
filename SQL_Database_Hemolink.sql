@@ -29,8 +29,10 @@ INSERT INTO `admin` (`aemail`, `apassword`) VALUES
 -- --------------------------------------------------------
 
 
--- Table structure for table `appointment`
+-- Drop the existing appointment table if it exists
 DROP TABLE IF EXISTS `appointment`;
+
+-- Create the revised appointment table with the is_confirmed column
 CREATE TABLE IF NOT EXISTS `appointment` (
   `appoid` int(11) NOT NULL AUTO_INCREMENT,  -- Primary key
   `pid` int(10) DEFAULT NULL,  -- Patient ID (foreign key to patient table)
@@ -44,6 +46,7 @@ CREATE TABLE IF NOT EXISTS `appointment` (
   `philhealth_id` VARCHAR(20) DEFAULT NULL,  -- PhilHealth ID (for other patients)
   `age` INT(3) DEFAULT NULL,  -- Age of the patient (for other patients)
   `status` ENUM('scheduled', 'done', 'canceled', 'ongoing') DEFAULT 'scheduled',  -- Appointment status
+  `is_confirmed` BOOLEAN NOT NULL DEFAULT 0,  -- Confirmation status by admin
   PRIMARY KEY (`appoid`),
   KEY `pid` (`pid`),
   KEY `scheduleid` (`scheduleid`),
@@ -76,19 +79,19 @@ END $$
 
 DELIMITER ;
 
--- Sample data for appointments
+-- Sample data for appointments with the is_confirmed column
 
 -- Sample appointment for self (is_self = 0)
-INSERT INTO `appointment` (`pid`, `apponum`, `scheduleid`, `appodate`, `scheduletime`, `is_self`, `status`) 
+INSERT INTO `appointment` (`pid`, `apponum`, `scheduleid`, `appodate`, `scheduletime`, `is_self`, `status`, `is_confirmed`) 
 VALUES
-  (1, 1, 1, '2024-12-17', '10:00:00', 0, 'scheduled');
+  (1, 1, 1, '2024-12-17', '10:00:00', 0, 'scheduled', 0);
 
 -- Sample appointment for others (is_self = 1)
-INSERT INTO `appointment` (`pid`, `apponum`, `scheduleid`, `appodate`, `scheduletime`, `is_self`, `other_patient_name`, `description`, `philhealth_id`, `age`, `status`) 
+INSERT INTO `appointment` (`pid`, `apponum`, `scheduleid`, `appodate`, `scheduletime`, `is_self`, `other_patient_name`, `description`, `philhealth_id`, `age`, `status`, `is_confirmed`) 
 VALUES
-  (2, 2, 2, '2024-12-18', '14:00:00', 1, 'John Doe', 'General checkup', 'PH987654321', 30, 'scheduled');
+  (2, 2, 2, '2024-12-18', '14:00:00', 1, 'John Doe', 'General checkup', 'PH987654321', 30, 'scheduled', 0);
 
-
+  
 -- --------------------------------------------------------
 -- Table structure for table `doctor`
 DROP TABLE IF EXISTS `doctor`;
@@ -134,17 +137,18 @@ CREATE TRIGGER validate_address_format
 BEFORE INSERT ON `patient`
 FOR EACH ROW
 BEGIN
-  IF NOT NEW.paddress REGEXP '^[0-9]+, [A-Za-z ]+$' THEN
-    SIGNAL SQLSTATE '45000'
-    SET MESSAGE_TEXT = 'Invalid address format. Address must start with a number followed by a comma and space, and then the street name.';
-  END IF;
+    -- Updated regex pattern to match the new format more precisely
+    IF NOT NEW.paddress REGEXP '^#[0-9]+[a-zA-Z]? [A-Za-z]+ Avenue, Mabayuan, Olongapo City$' THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Invalid address format. Address must be in the format: #12a Street Avenue, Mabayuan, Olongapo City';
+    END IF;
 END $$
 
 DELIMITER ;
 
 -- Sample data insertion
 INSERT INTO `patient` (`pid`, `pemail`, `pname`, `ppassword`, `paddress`, `pnic`, `pdob`, `ptel`) VALUES
-(1, 'patient@gmail.com', 'Test Patient', '123', '87, Otero Avenue', '0000000000', '2000-01-01', '0120000000');
+(1, 'patient@gmail.com', 'Test Patient', '123', '#87 Otero Avenue, Mabayuan, Olongapo City', '0000000000', '2000-01-01', '0120000000');
 
 -- --------------------------------------------------------
 DROP TABLE IF EXISTS `schedule`;

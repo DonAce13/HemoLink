@@ -1,7 +1,7 @@
 @import url('font-inter.css');
 :root {
-  --primarycolor: #DC7E7E;
-  --primarycolorhover: #8E1F1F;
+  --primarycolor: #2d6a4f;
+  --primarycolorhover: #40916c;
   --btnice:#D8EBFA;
   --btnnicetext:#4F7DF1;
 }
@@ -192,7 +192,7 @@ font.logo-sub{
 
 .non-style-link:link{
     text-decoration: none;
-    color: var(--primarycolorhover) ;
+    color: #333 ;
 }
 
 .non-style-link:visited, 
@@ -225,14 +225,7 @@ font.logo-sub{
     
 }
 
-.filter-container{
-  width: 92.5%;
-  border: 1px solid #ebebeb;
-  border-radius: 8px;
-  margin-bottom: 20px;
-  border-spacing: 0;
-  padding: 0;
-}
+
 
 .filter-container-items{
   margin-top: 7.5px;
@@ -543,46 +536,101 @@ input[type=search]:focus {
 
 
 
-.dashboard-items{
-  
+
+
+
+
+/* Status cards styling */
+.filter-container {
+  width: 100%;
+  margin: 0;
+  padding: 15px;
+}
+
+.status-report {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 20px;
+  width: 100%;
+}
+
+.stats1, .stats2 {
+  flex: 1;
+  min-width: 200px;
+}
+
+.dashboard-items {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
   border: 2px solid #c9cbce9f;
-  border-radius: 7px;
-  color: var(--primarycolor);
-  /*background-color: #d8ebfa25 ;*/
-  /*box-shadow: 0 3px 5px 0 rgba(95, 95, 97, 0.3);*/
-  
-}
-.dashboard-items{
-  padding:20px;margin:auto;display: flex;padding-bottom:26px;
+  height: 100%;
 }
 
-
-
-.h1-dashboard{
-  margin: 0;
-  padding: 0;
-  font-size: 25px;
+.h1-dashboard {
+  font-size: 30px;
   font-weight: 600;
-  line-height: 0;
-  padding-top: 20px;
+  color: #2d6a4f;
 }
 
-.h3-dashboard{
-  margin: 0;
-  padding: 0;
-  font-size: 20px;
-  font-weight: 500;
+.h3-dashboard {
+  font-size: 16px;
   color: #212529e3;
+  white-space: nowrap;
 }
 
-.dashboard-icons{
-  background-color: rgba(184, 184, 184, 0.247);
-  padding-top: 30px;
-  padding-bottom: 30px;
-  border-radius: 7px;
-  margin-left: 90px;
-  margin-right: 0px;
-  
+.dashboard-icons {
+  width: 50px;
+  height: 50px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+  .status-report {
+      flex-direction: row;
+      overflow-x: auto;
+      padding: 10px;
+      gap: 10px;
+  }
+
+  .stats1, .stats2 {
+      min-width: 150px;
+      margin: 0;
+  }
+
+  .dashboard-items {
+      padding: 15px;
+  }
+
+  .h1-dashboard {
+      font-size: 24px;
+  }
+
+  .h3-dashboard {
+      font-size: 14px;
+  }
+
+  .dashboard-icons {
+      width: 40px;
+      height: 40px;
+  }
+}
+
+
+/* Hide scrollbar but keep functionality */
+.status-report::-webkit-scrollbar {
+  display: none;
+}
+
+.status-report {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 .dashboard-icons-setting{
   background-color: rgba(184, 184, 184, 0.247);

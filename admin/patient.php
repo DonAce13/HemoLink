@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../img/bg01.png">
+    <link rel="icon" type="image/png" href="../img/bg01.png">
+    <link rel="shortcut icon" type="image/png" href="../img/bg01.png">
     <link rel="stylesheet" href="../css/animations.css">  
     <link rel="stylesheet" href="../css/main.css">  
     <link rel="stylesheet" href="../css/admin.css">
@@ -179,7 +182,7 @@
                 
                 <tr>
                     <td colspan="4" style="padding-top:10px;">
-                        <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)">All Patients (<?php echo $list11->num_rows; ?>)</p>
+                        <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)">All Patients </p>
                     </td>
                     
                 </tr>
@@ -253,7 +256,7 @@
                                     $pid=$row["pid"];
                                     $name=$row["pname"];
                                     $email=$row["pemail"];
-                                    $nic=$row["pnic"];
+                                    $nic = empty($row["pnic"]) ? 'None' : $row["pnic"];
                                     $dob=$row["pdob"];
                                     $tel=$row["ptel"];
                                     
@@ -310,7 +313,7 @@
             $row=$result->fetch_assoc();
             $name=$row["pname"];
             $email=$row["pemail"];
-            $nic=$row["pnic"];
+            $nic = empty($row["pnic"]) ? 'None' : $row["pnic"];
             $dob=$row["pdob"];
             $tele=$row["ptel"];
             $address=$row["paddress"];

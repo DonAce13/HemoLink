@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../img/bg01.png">
+    <link rel="icon" type="image/png" href="../img/bg01.png">
+    <link rel="shortcut icon" type="image/png" href="../img/bg01.png">
     <link rel="stylesheet" href="../css/animations.css">  
     <link rel="stylesheet" href="../css/main.css">  
     <link rel="stylesheet" href="../css/admin.css">
@@ -271,12 +274,12 @@ if (isset($_GET["id"])) {
 
         <table>
             <tr>
-                <td style="width: 100%;">
+                <td style="width: 50%;">
                     <div class="dashboard-items search-items">
                         <div style="width:100%">
                             <div class="h1-search" style="font-size:25px;">
                                 Session Details
-                            </div><br><br>
+                            </div><br>
                             <div class="h3-search" style="font-size:18px;line-height:30px">
                                 Doctor name:  &nbsp;&nbsp;<b>' . $docname . '</b><br>
                                 Doctor Email:  &nbsp;&nbsp;<b>' . $docemail . '</b>
@@ -285,26 +288,27 @@ if (isset($_GET["id"])) {
                                 Session Title: ' . $title . '<br>
                                 Session Scheduled Date: ' . $scheduledate . '<br>
                                 Session Starts: ' . $scheduletime . '<br>
-                            </div>
-                            <br>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td style="width: 100%;">
+                                
                     <div class="dashboard-items search-items">
-                        <div style="width:100%;padding-top: 15px;padding-bottom: 15px;">
                             <div class="h1-search" style="font-size:20px;line-height: 35px;margin-left:8px;text-align:center;">
                                 Your Appointment Number
                             </div>
                             <center>
                                 <div class="dashboard-icons" style="margin-left: 0px;width:90%;font-size:70px;font-weight:800;text-align:center;color:var(--btnnictext);background-color: var(--btnice)">' . $apponum . '</div>
                             </center>
-                        </div><br>
+                        </div>
                     </div>
                 </td>
+                            </div>
+                                            <tr>
+
             </tr>
+                        </div>
+                    </div>
+                </td>
+
+            </tr>
+            
 <tr>
     <td style="width: 100%;">
         <div class="dashboard-items search-items">

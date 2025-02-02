@@ -1,62 +1,79 @@
+<?php
+session_start();
+
+if (isset($_SESSION["user"])) {
+    if (($_SESSION["user"]) == "" or $_SESSION['usertype'] != 'd') {
+        header("location: ../login.php");
+        exit();
+    } else {
+        $useremail = $_SESSION["user"];
+    }
+} else {
+    header("location: ../login.php");
+    exit();
+}
+
+// Import database
+include("../connection.php");
+$userrow = $database->query("SELECT * FROM doctor WHERE docemail = '$useremail'");
+$userfetch = $userrow->fetch_assoc();
+$userid = $userfetch["docid"];
+$username = $userfetch["docname"];
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../css/animations.css">  
-    <link rel="stylesheet" href="../css/main.css">  
+    <link rel="icon" type="image/png" href="../img/bg01.png">
+    <link rel="icon" type="image/png" href="../img/bg01.png">
+    <link rel="shortcut icon" type="image/png" href="../img/bg01.png">
+    <link rel="stylesheet" href="../css/animations.css">
+    <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/admin.css">
-        
     <title>Dashboard</title>
     <style>
-        .dashbord-tables,.doctor-heade{
+        .dashbord-tables, .doctor-heade {
             animation: transitionIn-Y-over 0.5s;
         }
-        .filter-container{
-            animation: transitionIn-Y-bottom  0.5s;
-        }
-        .sub-table,#anim{
+        .filter-container {
             animation: transitionIn-Y-bottom 0.5s;
         }
-        .doctor-heade{
+        .sub-table, #anim {
+            animation: transitionIn-Y-bottom 0.5s;
+        }
+        .doctor-heade {
             animation: transitionIn-Y-over 0.5s;
         }
     </style>
-    
-    
 </head>
 <body>
-    <?php
 
-    //learn from w3schools.com
+<?php
+// Check if login_success action is passed in the URL
+if (isset($_GET['action']) && $_GET['action'] == 'login_success' && !isset($_SESSION['login_alert_shown'])) {
+    // Set the session variable to indicate the alert has been shown
+    $_SESSION['login_alert_shown'] = true;
 
-    session_start();
+    // Display SweetAlert for successful login
+    echo "
+    <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+    <script>
+        setTimeout(function() {
+            Swal.fire({
+                title: 'Login Successful',
+                text: 'Welcome Dr. " . $username . "!',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+        }, 250); // Delay for 250ms
+    </script>
+    ";
+}
+?>
 
-    if(isset($_SESSION["user"])){
-        if(($_SESSION["user"])=="" or $_SESSION['usertype']!='d'){
-            header("location: ../login.php");
-        }else{
-            $useremail=$_SESSION["user"];
-        }
-
-    }else{
-        header("location: ../login.php");
-    }
-    
-
-    //import database
-    include("../connection.php");
-    $userrow = $database->query("select * from doctor where docemail='$useremail'");
-    $userfetch=$userrow->fetch_assoc();
-    $userid= $userfetch["docid"];
-    $username=$userfetch["docname"];
-
-
-    //echo $userid;
-    //echo $username;
-    
-    ?>
     <div class="container">
         <div class="menu">
             <table class="menu-container" border="0">

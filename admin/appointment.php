@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../img/bg01.png">
+    <link rel="icon" type="image/png" href="../img/bg01.png">
+    <link rel="shortcut icon" type="image/png" href="../img/bg01.png">
     <link rel="stylesheet" href="../css/animations.css">  
     <link rel="stylesheet" href="../css/main.css">  
     <link rel="stylesheet" href="../css/admin.css">
@@ -398,11 +401,11 @@ if ($result->num_rows == 0) {
         }
 
         echo '<tr>
-                <td style="font-weight:600;"> &nbsp;' . substr($pname, 0, 25) . '</td>
-                <td style="text-align:center;font-size:23px;font-weight:500; color: var(--btnnicetext);">' . $apponum . '</td>
+                <td style="text-align: center;font-weight:600;"> &nbsp;' . substr($pname, 0, 25) . '</td>
+                <td style="text-align: center;font-size:23px;font-weight:500; color: var(--btnnicetext);">' . $apponum . '</td>
                 <td style="text-align: center;"> &nbsp;' . substr($docname, 0, 25) . '</td>
                 <td style="text-align: center;"> &nbsp;' . substr($title, 0, 15) . '</td>
-                <td style="text-align:center;font-size:12px;">' . substr($scheduledate, 0, 10) . ' <br>' . substr($scheduletime, 0, 5) . '</td>
+                <td style="text-align: center;font-size:12px;">' . substr($scheduledate, 0, 10) . ' <br>' . substr($scheduletime, 0, 5) . '</td>
                 <td>
                     <div style="display:flex;justify-content: center;">
                         ' . $buttonLabel . '
@@ -562,7 +565,7 @@ if ($_GET) {
                         <h2>Are you sure?</h2>
                         <a class="close" href="appointment.php">&times;</a>
                         <div class="content">
-                            You want to delete this record<br><br>
+                            You want to cancel this record<br><br>
                             Patient Name: &nbsp;<b>'.substr($nameget,0,40).'</b><br>
                             Appointment number &nbsp; : <b>'.substr($apponum,0,40).'</b><br><br>
                             
@@ -678,6 +681,38 @@ if ($_GET) {
             </div>
             </div>
             ';  
+    }
+    elseif ($action == 'approve') {
+        // New code to approve an appointment
+        $appointmentId = $_GET["appointmentId"];
+        
+        $updateQuery = "UPDATE appointment SET is_confirmed = 1 WHERE appoid = $appointmentId";
+        $result = $database->query($updateQuery);
+        
+        if ($result) {
+            echo '
+            <div id="popup1" class="overlay">
+                <div class="popup">
+                    <center>
+                        <h2>Appointment Approved</h2>
+                        <a class="close" href="schedule.php">&times;</a>
+                        <div class="content">
+                            The appointment has been successfully approved.<br><br>
+                        </div>
+                        <div style="display: flex; justify-content: center;">
+                            <a href="schedule.php" class="non-style-link">
+                                <button class="btn-primary btn" style="display: flex; justify-content: center; align-items: center; margin: 10px; padding: 10px;">
+                                    OK
+                                </button>
+                            </a>
+                        </div>
+                    </center>
+                </div>
+            </div>
+            ';
+        } else {
+            echo "Error updating record: " . $database->error;
+        }
     }
 }
 
