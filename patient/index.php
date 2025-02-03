@@ -301,65 +301,7 @@ if ($result->num_rows > 0) {
                 </td>
                 </tr>
                 <tr>
-    <td colspan="4">
-        <table class="filter-container" style="border: none;" border="0">
-            <tr>
-                <td colspan="4">
-                    <p style="font-size: 20px;font-weight:600;padding-left: 12px;">Status</p>
-                </td>
-            </tr>
-            <tr class="status-report">
-                <td class="stats1">
-                    <a href="doctors.php" class="non-style-link">
-                        <div class="dashboard-items">
-                            <div>
-                                <div class="h1-dashboard">
-                                    <?php echo $doctorrow->num_rows; ?>
-                                </div>
-                                <div class="h3-dashboard">
-                                    Doctors
-                                </div>
-                            </div>
-                            <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/doctors-hover.svg');"></div>
-                        </div>
-                    </a>
-                </td>
-                <td class="stats2">
-                    <a href="appointment.php" class="non-style-link">
-                        <div class="dashboard-items">
-                            <div>
-                                <div class="h1-dashboard">
-                                    <?php echo $appointmentrow->num_rows; ?>
-                                </div>
-                                <div class="h3-dashboard">
-                                    New Booking
-                                </div>
-                            </div>
-                            <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/book-hover.svg');"></div>
-                        </div>
-                    </a>
-                </td>
-                <td class="stats2">
-                    <a href="schedule.php" class="non-style-link">
-                        <div class="dashboard-items">
-                            <div>
-                                <div class="h1-dashboard">
-                                    <?php echo $schedulerow->num_rows; ?>
-                                </div>
-                                <div class="h3-dashboard">
-                                    All Sessions
-                                </div>
-                            </div>
-                            <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/session-iceblue.svg');"></div>
-                        </div>
-                    </a>
-                </td>
-            </tr>
-        </table>
-    </td>
-</tr>
 
-                        </table>
                                     </center>
 
 

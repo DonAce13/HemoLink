@@ -59,7 +59,7 @@ if ($_POST) {
         </script>";
     } else {
         try {
-            $database = new mysqli("localhost", "u667890873_Ace", "BarkForMeDog011303", "u667890873_hemolink_data");
+            $database = new mysqli("localhost", "root", "", "SQL_Database_Hemolink");
 
             if ($database->connect_error) {
                 throw new Exception("Connection failed: " . $database->connect_error);
@@ -477,8 +477,12 @@ if ($_POST) {
                     <tr>
                         <td class="label-td" colspan="2">
                             <?php
+                            // Get today's date
                             $today = date('Y-m-d');
-                            echo '<input type="date" name="dob" class="input-text" max="' . $today . '" required>';
+                            // Calculate the date 18 years ago
+                            $minDate = date('Y-m-d', strtotime('-18 years', strtotime($today)));
+                            // Output the date input with max and min attributes
+                            echo '<input type="date" name="dob" class="input-text" max="' . $minDate . '" required>';
                             ?>
                         </td>
                     </tr>
