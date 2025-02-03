@@ -310,3 +310,8 @@ END$$
 DELIMITER ;
 
 COMMIT;
+
+-- update to database for otp verification
+ALTER TABLE `patient`
+ADD COLUMN `otp` VARCHAR(6) DEFAULT NULL,
+ADD COLUMN `otp_verified` TINYINT(1) DEFAULT 0;

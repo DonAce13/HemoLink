@@ -1,4 +1,11 @@
 <?php
+// Include the Twilio SDK autoload file
+require 'vendor/autoload.php';
+
+// Use the Twilio namespace
+use Twilio\Rest\Client;
+
+// Start the session
 session_start();
 
 date_default_timezone_set('Asia/Manila');
@@ -84,10 +91,13 @@ if ($_POST) {
                     throw new Exception("This phone number is already registered");
                 }
 
-                // Insert patient data
-                $stmt = $database->prepare("INSERT INTO patient (pemail, pname, ppassword, paddress, pnic, pdob, ptel) VALUES (?, ?, ?, ?, ?, ?, ?)");
+                // Generate OTP
+                $otp = rand(100000, 999999);
+
+                // Insert patient data with OTP
+                $stmt = $database->prepare("INSERT INTO patient (pemail, pname, ppassword, paddress, pnic, pdob, ptel, otp) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
                 $fullName = $fname . ' ' . $lname;
-                $stmt->bind_param("sssssss", $email, $fullName, $newpassword, $address, $nic, $dob, $tele);
+                $stmt->bind_param("ssssssss", $email, $fullName, $newpassword, $address, $nic, $dob, $tele, $otp);
                 
                 if (!$stmt->execute()) {
                     throw new Exception("Error registering patient data");
@@ -102,6 +112,21 @@ if ($_POST) {
                     throw new Exception("Error creating user account");
                 }
 
+                // Send OTP via Twilio
+                $account_sid = 'ACbf56b173b4f3c4b0cef7f2497d30d6a5';
+                $auth_token = 'd95e0606e4591b5f251cba67d54f7628';
+                $twilio_number = '14055432932';
+
+                $client = new Client($account_sid, $auth_token);
+
+                $client->messages->create(
+                    $tele,
+                    [
+                        'from' => $twilio_number,
+                        'body' => "Your OTP is: $otp"
+                    ]
+                );
+
                 $database->commit();
 
                 // Set session variables
@@ -113,7 +138,7 @@ if ($_POST) {
                 $_SESSION["user_type"] = "Patient";
                 $_SESSION["user_name"] = $fname;
 
-                header("Location: patient.php");
+                header("Location: verify_otp.php");
                 exit();
 
             } catch (Exception $e) {
@@ -155,6 +180,7 @@ if ($_POST) {
         echo $sweet_alert;
     }
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -386,7 +412,7 @@ if ($_POST) {
         <div class="container">
             <p class="header-text">Let's Get Started</p>
             <p class="sub-text">Add Your Personal Details to Continue</p>
-            <?php if ($error) echo $error; ?>
+            
 
             <form action="" method="POST" onsubmit="prepareForm()">
                 <table>
@@ -804,14 +830,19 @@ function sendOtp() {
         })
         .then(response => response.text())
         .then(data => {
-            console.log(data); // Log response for debugging
-            showOtpInput();
+            console.log(data); // Logs response in the console
+            document.getElementById('otpMessage').innerHTML = data; // Display message on the frontend
+            showOtpInput(); // Show the OTP input if successful
         })
-        .catch(error => console.error('Error:', error));
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('otpMessage').innerHTML = "An error occurred. Please try again."; // Error message
+        });
     } else {
         alert('Invalid phone number!');
     }
 }
+
 
 // Add event listener to telephone input for enabling Send OTP button
 document.getElementById('tele').addEventListener('input', enableSendOtpButton);
@@ -839,3 +870,4 @@ document.getElementById('tele').addEventListener('input', enableSendOtpButton);
     ?>
 </body>
 </html>
+

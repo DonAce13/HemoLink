@@ -1,45 +1,57 @@
 <?php
-session_start();
+require 'vendor/autoload.php'; // Include Twilio SDK
 
-// Check if the request is a POST request
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Assuming the phone number is sent via POST request
-    $telephone = $_POST['tele'] ?? '';
+use Twilio\Rest\Client;
 
-    // Simple validation for the telephone number
-    if (preg_match('/^09\d{9}$/', $telephone)) {
-        // Generate a random 6-digit OTP
-        $otp = rand(100000, 999999);
+// Database connection
+$conn = new mysqli("localhost", "root", "password", "hemolink_database");
 
-        // Store the OTP in session for later verification
-        $_SESSION['otp'] = $otp;
-        $_SESSION['otp_expiry'] = time() + 300; // OTP expires in 5 minutes
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
 
-        // Here you would integrate with an SMS gateway to send the OTP
-        // For example, using a hypothetical SMS API
-        /*
-        $result = sendSms($telephone, "Your OTP is: $otp");
-        if ($result['success']) {
-            echo "OTP sent successfully.";
-        } else {
-            echo "Failed to send OTP.";
-        }
-        */
+// Get phone number from the form
+$tele = $_POST['tele'];
 
-        // Simulating a successful send for demonstration purposes
-        echo "OTP sent successfully to $telephone.";
-    } else {
-        echo "Invalid phone number.";
+// Convert phone number to international format (replace 09 with +63)
+if (substr($tele, 0, 2) === '09') {
+    $tele = '+63' . substr($tele, 1);
+}
+
+// Generate a 6-digit OTP
+$otp = rand(100000, 999999);
+
+// Insert the phone number and OTP into the database
+$stmt = $conn->prepare("INSERT INTO patient (ptel, otp) VALUES (?, ?)");
+$stmt->bind_param("ss", $tele, $otp);
+
+if ($stmt->execute()) {
+    // Twilio credentials
+    $account_sid = 'ACbf56b173b4f3c4b0cef7f2497d30d6a5';
+    $auth_token = 'd95e0606e4591b5f251cba67d54f7628';
+    $twilio_number = '+14055432932';
+
+    // Initialize Twilio client
+    $client = new Client($account_sid, $auth_token);
+
+    // Send SMS
+    try {
+        $client->messages->create(
+            $tele, // Phone number to send the SMS to
+            [
+                'from' => $twilio_number,
+                'body' => "Your OTP is: $otp"
+            ]
+        );
+        echo "OTP sent to your phone number.";
+    } catch (Exception $e) {
+        echo "Error sending OTP: " . $e->getMessage();
     }
 } else {
-    // Not a POST request
-    http_response_code(405);
-    echo "Method not allowed";
+    echo "Error: " . $stmt->error;
 }
 
-// Function to send SMS (hypothetical example)
-function sendSms($to, $message) {
-    // This function would interact with an SMS API
-    return ['success' => true]; // Simulate a successful send
-}
+$stmt->close();
+$conn->close();
 ?>
