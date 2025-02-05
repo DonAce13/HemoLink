@@ -1,55 +1,69 @@
 <?php
-require 'vendor/autoload.php'; // Include Twilio SDK
+require 'vendor/autoload.php'; // Twilio SDK
+require 'config.php'; // Separate file for database & Twilio credentials
 
 use Twilio\Rest\Client;
 
 // Database connection
-$conn = new mysqli("localhost", "root", "password", "hemolink_database");
-
-// Check connection
+$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
 // Get phone number from the form
+if (!isset($_POST['tele']) || empty($_POST['tele'])) {
+    die("Phone number is required.");
+}
+
 $tele = $_POST['tele'];
 
-// Convert phone number to international format (replace 09 with +63)
-if (substr($tele, 0, 2) === '09') {
-    $tele = '+63' . substr($tele, 1);
+// Validate phone number (must be 11 digits starting with 09)
+if (!preg_match('/^09\d{9}$/', $tele)) {
+    die("Invalid phone number format.");
 }
+
+// Convert to international format (+63)
+$tele = '+63' . substr($tele, 1);
 
 // Generate a 6-digit OTP
 $otp = rand(100000, 999999);
+$expires_at = date("Y-m-d H:i:s", strtotime("+5 minutes"));
 
-// Insert the phone number and OTP into the database
-$stmt = $conn->prepare("INSERT INTO patient (ptel, otp) VALUES (?, ?)");
-$stmt->bind_param("ss", $tele, $otp);
+// Check if the phone number exists in `otp_verifications`
+$stmt = $conn->prepare("SELECT id FROM otp_verifications WHERE phone_number = ?");
+$stmt->bind_param("s", $tele);
+$stmt->execute();
+$result = $stmt->get_result();
 
-if ($stmt->execute()) {
-    // Twilio credentials
-    $account_sid = 'ACbf56b173b4f3c4b0cef7f2497d30d6a5';
-    $auth_token = 'd95e0606e4591b5f251cba67d54f7628';
-    $twilio_number = '+14055432932';
-
-    // Initialize Twilio client
-    $client = new Client($account_sid, $auth_token);
-
-    // Send SMS
-    try {
-        $client->messages->create(
-            $tele, // Phone number to send the SMS to
-            [
-                'from' => $twilio_number,
-                'body' => "Your OTP is: $otp"
-            ]
-        );
-        echo "OTP sent to your phone number.";
-    } catch (Exception $e) {
-        echo "Error sending OTP: " . $e->getMessage();
-    }
+if ($result->num_rows > 0) {
+    // Update existing OTP
+    $stmt = $conn->prepare("UPDATE otp_verifications SET otp = ?, expires_at = ? WHERE phone_number = ?");
+    $stmt->bind_param("sss", $otp, $expires_at, $tele);
 } else {
-    echo "Error: " . $stmt->error;
+    // Insert new OTP entry
+    $stmt = $conn->prepare("INSERT INTO otp_verifications (phone_number, otp, expires_at) VALUES (?, ?, ?)");
+    $stmt->bind_param("sss", $tele, $otp, $expires_at);
+}
+
+// Execute query
+if (!$stmt->execute()) {
+    die("Error storing OTP: " . $stmt->error);
+}
+
+// Twilio credentials from config.php
+$client = new Client(TWILIO_SID, TWILIO_AUTH_TOKEN);
+
+try {
+    $client->messages->create(
+        $tele,
+        [
+            'from' => TWILIO_NUMBER,
+            'body' => "Your OTP is: $otp. It expires in 5 minutes."
+        ]
+    );
+    echo "OTP sent successfully.";
+} catch (Exception $e) {
+    echo "Error sending OTP: " . $e->getMessage();
 }
 
 $stmt->close();
