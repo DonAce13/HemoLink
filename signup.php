@@ -445,10 +445,7 @@ if ($_POST) {
                                 name="street_number" 
                                 id="street_number" 
                                 class="input-text" 
-                                placeholder="Enter Street Number (e.g., #12a)" 
-                                pattern="^#?\d+[a-zA-Z]?$" 
-                                title="Enter a number optionally followed by a letter (e.g., 12a or #12a)"
-                                required>
+                               >
                         </td>
                     </tr>
                     <tr>
@@ -471,22 +468,6 @@ if ($_POST) {
                             </select>
                         </td>
                     </tr>
-
-                    <!-- PhilHealth Field -->
-                    <tr>
-                        <td class="label-td" colspan="2">
-                            <label for="hasPhilhealth" class="form-label">Do you have a PhilHealth Number?</label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="label-td">
-                            <input type="radio" name="hasPhilhealth" value="yes" id="philhealth-yes" onclick="togglePhilhealthField()"> Yes
-                        </td>
-                        <td class="label-td">
-                            <input type="radio" name="hasPhilhealth" value="no" id="philhealth-no" onclick="togglePhilhealthField()"> No
-                        </td>
-                    </tr>
-
                     <!-- PhilHealth ID Input (Only Visible When "Yes" is Selected) -->
                     <tr id="philhealth-row-input" style="display: none;">
                         <td class="label-td" colspan="2">

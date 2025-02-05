@@ -4,7 +4,7 @@ require 'vendor/autoload.php'; // Include Twilio SDK
 use Twilio\Rest\Client;
 
 // Database connection
-$conn = new mysqli("localhost", "root", "password", "hemolink_database");
+$conn = new mysqli("localhost", "root", "", "hemolink_database");
 
 // Check connection
 if ($conn->connect_error) {

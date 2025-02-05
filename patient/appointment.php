@@ -165,32 +165,10 @@ if (isset($_GET['action']) && $_GET['action'] == 'drop') {
                 // Get the current script name
                 $currentPage = basename($_SERVER['PHP_SELF']);
                 ?>
-
-                <tr class="menu-row">
-                    <td class="menu-btn menu-icon-dashbord <?php if ($currentPage == 'index.php') echo 'menu-active menu-icon-dashbord-active'; ?>">
-                        <a href="index.php" class="non-style-link-menu <?php if ($currentPage == 'index.php') echo 'non-style-link-menu-active'; ?>">
-                            <div><p class="menu-text">Dashboard</p></div>
-                        </a>
-                    </td>
-                </tr>
-                <tr class="menu-row">
-                    <td class="menu-btn menu-icon-doctor <?php if ($currentPage == 'doctors.php') echo 'menu-active menu-icon-doctor-active'; ?>">
-                        <a href="doctors.php" class="non-style-link-menu <?php if ($currentPage == 'doctors.php') echo 'non-style-link-menu-active'; ?>">
-                            <div><p class="menu-text">Doctors</p></div>
-                        </a>
-                    </td>
-                </tr>
                 <tr class="menu-row">
                     <td class="menu-btn menu-icon-schedule <?php if ($currentPage == 'schedule.php') echo 'menu-active menu-icon-schedule-active'; ?>">
                         <a href="schedule.php" class="non-style-link-menu <?php if ($currentPage == 'schedule.php') echo 'non-style-link-menu-active'; ?>">
                             <div><p class="menu-text">Schedule</p></div>
-                        </a>
-                    </td>
-                </tr>
-                <tr class="menu-row">
-                    <td class="menu-btn menu-icon-appoinment <?php if ($currentPage == 'appointment.php') echo 'menu-active menu-icon-appoinment-active'; ?>">
-                        <a href="appointment.php" class="non-style-link-menu <?php if ($currentPage == 'appointment.php') echo 'non-style-link-menu-active'; ?>">
-                            <div><p class="menu-text">Appointment</p></div>
                         </a>
                     </td>
                 </tr>

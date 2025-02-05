@@ -155,13 +155,13 @@ $list110 = $database->query($sqlmain);
                     </td>
                 </tr>
                 <tr class="menu-row">
-                    <td class="menu-btn menu-icon-appoinment">
-                        <a href="appointment.php" class="non-style-link-menu"><div><p class="menu-text">Appointment</p></div></a>
+                    <td class="menu-btn menu-icon-patient">
+                        <a href="patient.php" class="non-style-link-menu"><div><p class="menu-text">Patients</p></div></a>
                     </td>
                 </tr>
                 <tr class="menu-row">
                     <td class="menu-btn menu-icon-patient">
-                        <a href="patient.php" class="non-style-link-menu"><div><p class="menu-text">Patients</p></div></a>
+                        <a href="patient.php" class="non-style-link-menu"><div><p class="menu-text">History</p></div></a>
                     </td>
                 </tr>
 
@@ -757,6 +757,7 @@ if ($_GET) {
                                                     <th class="table-headin">Patient name</th>
                                                     <th class="table-headin">Appointment number</th> 
                                                     <th class="table-headin">Patient Telephone</th>
+                                                    <th class="table-headin">Status</th>
                                                 </tr>
                                             </thead>
                                             <tbody>';
@@ -785,13 +786,22 @@ if ($_GET) {
                 $pid = $row["pid"];
                 $pname = $row["pname"];
                 $ptel = $row["ptel"];
+            
                 echo '<tr style="text-align:center;">
                         <td>' . substr($pid, 0, 15) . '</td>
                         <td style="font-weight:600;padding:25px">' . substr($pname, 0, 25) . '</td>
                         <td style="text-align:center;font-size:23px;font-weight:500; color: var(--btnnicetext);">' . $apponum . '</td>
                         <td>' . substr($ptel, 0, 25) . '</td>
+                        <td colspan="2">
+                            <div style="display: flex; justify-content: center; gap: 15px; margin-top: 10px;">
+                                <button class="confirm-btn reschedule" onclick="confirmAction(\'reschedule\', ' . $scheduleid . ')">Reschedule</button>
+                                <button class="confirm-btn approve" onclick="confirmAction(\'approve\', ' . $scheduleid . ')">Approve</button>
+                                <button class="confirm-btn decline" onclick="confirmAction(\'decline\', ' . $scheduleid . ')">Decline</button>
+                            </div>
+                        </td>
                       </tr>';
             }
+            
         }
         echo '</tbody>
             </table>

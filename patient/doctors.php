@@ -170,16 +170,6 @@ if ($result->num_rows > 0) {
                 $currentPage = basename($_SERVER['PHP_SELF']); // Get the current script's file name
                 ?>
                 <tr class="menu-row">
-                    <td class="menu-btn menu-icon-dashbord <?php echo ($currentPage == 'index.php') ? 'menu-active menu-icon-dashbord-active' : ''; ?>">
-                        <a href="index.php" class="non-style-link-menu <?php echo ($currentPage == 'index.php') ? 'non-style-link-menu-active' : ''; ?>"><div><p class="menu-text">Dashboard</p></a></div></a>
-                    </td>
-                </tr>
-                <tr class="menu-row">
-                    <td class="menu-btn menu-icon-doctor <?php echo ($currentPage == 'doctors.php') ? 'menu-active menu-icon-doctor-active' : ''; ?>">
-                        <a href="doctors.php" class="non-style-link-menu <?php echo ($currentPage == 'doctors.php') ? 'non-style-link-menu-active' : ''; ?>"><div><p class="menu-text">Doctors</p></a></div>
-                    </td>
-                </tr>
-                <tr class="menu-row">
                     <td class="menu-btn menu-icon-schedule <?php echo ($currentPage == 'schedule.php') ? 'menu-active menu-icon-schedule-active' : ''; ?>">
                         <a href="schedule.php" class="non-style-link-menu <?php echo ($currentPage == 'schedule.php') ? 'non-style-link-menu-active' : ''; ?>"><div><p class="menu-text">Schedule</p></div></a>
                     </td>

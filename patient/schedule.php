@@ -142,30 +142,9 @@ if ($result->num_rows > 0) {
                 ?>
                 <!-- Menu Items -->
                 <tr class="menu-row">
-                    <td class="menu-btn menu-icon-dashbord <?php if ($currentPage == 'index.php') echo 'menu-active menu-icon-dashbord-active'; ?>">
-                        <a href="index.php" class="non-style-link-menu <?php if ($currentPage == 'index.php') echo 'non-style-link-menu-active'; ?>">
-                            <div><p class="menu-text">Dashboard</p></div>
-                        </a>
-                    </td>
-                </tr>
-                <tr class="menu-row">
-                    <td class="menu-btn menu-icon-doctor <?php if ($currentPage == 'doctors.php') echo 'menu-active menu-icon-doctor-active'; ?>">
-                        <a href="doctors.php" class="non-style-link-menu <?php if ($currentPage == 'doctors.php') echo 'non-style-link-menu-active'; ?>">
-                            <div><p class="menu-text">Doctors</p></div>
-                        </a>
-                    </td>
-                </tr>
-                <tr class="menu-row">
                     <td class="menu-btn menu-icon-schedule <?php if ($currentPage == 'schedule.php') echo 'menu-active menu-icon-schedule-active'; ?>">
                         <a href="schedule.php" class="non-style-link-menu <?php if ($currentPage == 'schedule.php') echo 'non-style-link-menu-active'; ?>">
                             <div><p class="menu-text">Schedule</p></div>
-                        </a>
-                    </td>
-                </tr>
-                <tr class="menu-row">
-                    <td class="menu-btn menu-icon-appoinment <?php if ($currentPage == 'appointment.php') echo 'menu-active menu-icon-appointment-active'; ?>">
-                        <a href="appointment.php" class="non-style-link-menu <?php if ($currentPage == 'appointment.php') echo 'non-style-link-menu-active'; ?>">
-                            <div><p class="menu-text">Appointment</p></div>
                         </a>
                     </td>
                 </tr>
@@ -254,32 +233,37 @@ $schedulerow = $database->query($sqlmain);
 
         // Determine if a date filter is applied, otherwise show all sessions
         $filter_date = isset($_POST['scheduledate']) && !empty($_POST['scheduledate']) ? $_POST['scheduledate'] : '';
-
-        // Modify the query to handle both filtered and non-filtered cases
+       
+        echo $filter_date;
+        // Base Query
         $sqlmain = "SELECT * FROM schedule 
-                    INNER JOIN doctor ON schedule.docid = doctor.docid ";
-
+                    INNER JOIN doctor ON schedule.docid = doctor.docid 
+                    WHERE schedule.scheduledate IS NOT NULL 
+                    AND schedule.scheduletime IS NOT NULL 
+                    AND schedule.scheduletime != ''";
+        
         // Apply the filter if a date is provided
         if ($filter_date) {
-            $sqlmain .= "WHERE schedule.scheduledate = ? ";
+            $sqlmain .= " AND schedule.scheduledate = ?"; // FIX: Changed WHERE to AND
         }
-
+        
         // Add ordering and pagination
-        $sqlmain .= "ORDER BY schedule.scheduledate DESC LIMIT ?, ?";
-
-        // Prepare the statement and bind parameters
+        $sqlmain .= " ORDER BY schedule.scheduledate DESC LIMIT ?, ?";
+        
+        // Prepare the statement
         $stmt = $database->prepare($sqlmain);
-
-        // If a date is set, bind the date parameter
+        
+        // Bind parameters correctly
         if ($filter_date) {
-            $stmt->bind_param("sii", $filter_date, $start_from, $records_per_page);
+            $stmt->bind_param("sii", $filter_date, $start_from, $records_per_page); // If filtering by date
         } else {
-            // If no filter, bind with NULL for the date parameter
-            $stmt->bind_param("ii", $start_from, $records_per_page);
+            $stmt->bind_param("ii", $start_from, $records_per_page); // If no date filter
         }
-
+        
+        // Execute and fetch results
         $stmt->execute();
         $schedulerow = $stmt->get_result();
+        
 
         // Current datetime for comparison
         $current_datetime = date("Y-m-d H:i:s");
@@ -374,7 +358,6 @@ $schedulerow = $database->query($sqlmain);
                     </td>
                 </tr>';
             }
-            
         }
 
         // Display future sessions first
@@ -413,10 +396,11 @@ $schedulerow = $database->query($sqlmain);
     // Pagination logic
     // Pagination logic: Adjusting query based on filter
     if ($filter_date) {
-        $total_records_query = $database->query("SELECT COUNT(*) FROM schedule WHERE scheduledate = '$filter_date'");
+        $total_records_query = $database->query("SELECT COUNT(*) FROM schedule WHERE scheduledate = '$filter_date' AND scheduledate IS NOT NULL");
     } else {
-        $total_records_query = $database->query("SELECT COUNT(*) FROM schedule");
+        $total_records_query = $database->query("SELECT COUNT(*) FROM schedule WHERE scheduledate IS NOT NULL");
     }
+    
 
     $total_records = $total_records_query->fetch_row()[0];
     $total_pages = ceil($total_records / $records_per_page);
