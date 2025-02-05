@@ -1,8 +1,7 @@
 <?php
-require 'vendor/autoload.php'; // Twilio SDK
-require 'config.php'; // Separate file for database & Twilio credentials
-
 use Twilio\Rest\Client;
+require __DIR__ . '/vendor/autoload.php';
+require 'config.php'; // Separate file for database & Twilio credentials
 
 // Database connection
 $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
@@ -51,6 +50,7 @@ if (!$stmt->execute()) {
 }
 
 // Twilio credentials from config.php
+
 $client = new Client(TWILIO_SID, TWILIO_AUTH_TOKEN);
 
 try {

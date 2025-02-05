@@ -1,191 +1,6 @@
 <?php
-<<<<<<< HEAD
-// Include the Twilio SDK autoload file
-require 'vendor/autoload.php';
-
-// Use the Twilio namespace
-use Twilio\Rest\Client;
-
-// Start the session
-session_start();
-
-date_default_timezone_set('Asia/Manila');
-$date = date('Y-m-d');
-$_SESSION["date"] = $date;
-
-if ($_POST) {
-    $fname = $_POST['fname'];
-    $lname = $_POST['lname'];
-    
-    // Clean and format the street number
-    $street_number = trim($_POST['street_number']);
-    $street_number = ltrim($street_number, '#');
-    $street_number = '#' . $street_number;
-    
-    // Format the address
-    $address = sprintf("%s %s Avenue, Mabayuan, Olongapo City", 
-        $street_number, 
-        trim($_POST['street_name'])
-    );
-    
-    $nic = $_POST['nic'];
-    $dob = $_POST['dob'];
-    $email = $_POST['email'] ?? "";
-    $newpassword = $_POST['password'] ?? "";
-    $cpassword = $_POST['confirm_password'] ?? "";
-    $tele = $_POST['tele'] ?? "";
-
-    // Initialize SweetAlert script
-    $sweet_alert = "";
-
-    // Validation checks with SweetAlert
-    if (!preg_match("/^[a-zA-Z ]+$/", $fname) || !preg_match("/^[a-zA-Z ]+$/", $lname)) {
-        $sweet_alert = "
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                Swal.fire({
-                    title: 'Invalid Name Format',
-                    text: 'First name and last name can only contain letters and spaces.',
-                    icon: 'error',
-                    confirmButtonText: 'OK',
-                    confirmButtonColor: '#2d6a4f'
-                });
-            });
-        </script>";
-    } elseif ($newpassword !== $cpassword) {
-        $sweet_alert = "
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                Swal.fire({
-                    title: 'Password Mismatch',
-                    text: 'Password confirmation does not match! Please try again.',
-                    icon: 'error',
-                    confirmButtonText: 'OK',
-                    confirmButtonColor: '#2d6a4f'
-                });
-            });
-        </script>";
-    } else {
-        try {
-            $database = new mysqli("localhost", "root", "", "SQL_Database_Hemolink");
-
-            if ($database->connect_error) {
-                throw new Exception("Connection failed: " . $database->connect_error);
-            }
-
-            $database->begin_transaction();
-
-            try {
-                // Check if email exists
-                $stmt = $database->prepare("SELECT email FROM webuser WHERE email = ?");
-                $stmt->bind_param("s", $email);
-                $stmt->execute();
-                if ($stmt->get_result()->num_rows > 0) {
-                    throw new Exception("This email address is already registered");
-                }
-
-                // Check if phone exists
-                $stmt = $database->prepare("SELECT ptel FROM patient WHERE ptel = ?");
-                $stmt->bind_param("s", $tele);
-                $stmt->execute();
-                if ($stmt->get_result()->num_rows > 0) {
-                    throw new Exception("This phone number is already registered");
-                }
-
-                // Generate OTP
-                $otp = rand(100000, 999999);
-
-                // Insert patient data with OTP
-                $stmt = $database->prepare("INSERT INTO patient (pemail, pname, ppassword, paddress, pnic, pdob, ptel, otp) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-                $fullName = $fname . ' ' . $lname;
-                $stmt->bind_param("ssssssss", $email, $fullName, $newpassword, $address, $nic, $dob, $tele, $otp);
-                
-                if (!$stmt->execute()) {
-                    throw new Exception("Error registering patient data");
-                }
-
-                // Insert webuser data
-                $stmt = $database->prepare("INSERT INTO webuser (email, usertype) VALUES (?, ?)");
-                $userType = 'p';
-                $stmt->bind_param("ss", $email, $userType);
-                
-                if (!$stmt->execute()) {
-                    throw new Exception("Error creating user account");
-                }
-
-                // Send OTP via Twilio
-                $account_sid = 'ACbf56b173b4f3c4b0cef7f2497d30d6a5';
-                $auth_token = 'd95e0606e4591b5f251cba67d54f7628';
-                $twilio_number = '14055432932';
-
-                $client = new Client($account_sid, $auth_token);
-
-                $client->messages->create(
-                    $tele,
-                    [
-                        'from' => $twilio_number,
-                        'body' => "Your OTP is: $otp"
-                    ]
-                );
-
-                $database->commit();
-
-                // Set session variables
-                $_SESSION["user"] = $email;
-                $_SESSION["usertype"] = "p";
-                $_SESSION["username"] = $fname;
-                $_SESSION["sweet_alert"] = true;
-                $_SESSION["login_success"] = true;
-                $_SESSION["user_type"] = "Patient";
-                $_SESSION["user_name"] = $fname;
-
-                header("Location: verify_otp.php");
-                exit();
-
-            } catch (Exception $e) {
-                $database->rollback();
-                $sweet_alert = "
-                <script>
-                    document.addEventListener('DOMContentLoaded', function() {
-                        Swal.fire({
-                            title: 'Registration Error',
-                            text: '" . addslashes($e->getMessage()) . "',
-                            icon: 'error',
-                            confirmButtonText: 'OK',
-                            confirmButtonColor: '#2d6a4f'
-                        });
-                    });
-                </script>";
-            }
-
-            $database->close();
-
-        } catch (Exception $e) {
-            $sweet_alert = "
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    Swal.fire({
-                        title: 'Connection Error',
-                        text: 'Unable to connect to database. Please try again later.',
-                        icon: 'error',
-                        confirmButtonText: 'OK',
-                        confirmButtonColor: '#2d6a4f'
-                    });
-                });
-            </script>";
-        }
-    }
-    
-    // Output the SweetAlert if there's an error
-    if (!empty($sweet_alert)) {
-        echo $sweet_alert;
-    }
-}
-
-=======
 session_start(); // This must be at the top
 ob_start(); // Optional: Buffer output to prevent header errors
->>>>>>> d74e3b600e093ccdce5c5f1c1cf13eb569fa1cb8
 ?>
 
 <!DOCTYPE html>
@@ -508,12 +323,8 @@ ob_start(); // Optional: Buffer output to prevent header errors
                     <tr>
                         <td class="label-td" colspan="2">
                             <?php
-                            // Get today's date
                             $today = date('Y-m-d');
-                            // Calculate the date 18 years ago
-                            $minDate = date('Y-m-d', strtotime('-18 years', strtotime($today)));
-                            // Output the date input with max and min attributes
-                            echo '<input type="date" name="dob" class="input-text" max="' . $minDate . '" required>';
+                            echo '<input type="date" name="dob" class="input-text" max="' . $today . '" required>';
                             ?>
                         </td>
                     </tr>
@@ -538,22 +349,27 @@ ob_start(); // Optional: Buffer output to prevent header errors
                         </td>
                     </tr>
 
-                   <!-- Telephone Field with Send OTP Button -->
-                    <tr>
-                        <td class="label-td" colspan="2">
-                            <label for="tele" class="form-label">Telephone:</label>
-                            <input type="tel" name="tele" id="tele" class="input-text" placeholder="Telephone Number" required pattern="^09\d{9}$" title="The number should start at 09 and be exactly 11 digits long.">
-                            <button type="button" id="sendOtpButton" disabled onclick="sendOtp()">Send OTP</button>
-                        </td>
-                    </tr>
+                  <!-- Telephone Field with Send OTP Button -->
+<tr>
+    <td class="label-td" colspan="2">
+        <label for="tele" class="form-label">Telephone:</label>
+        <input type="tel" name="tele" id="tele" class="input-text" placeholder="Telephone Number" required pattern="^09\d{9}$" title="The number should start at 09 and be exactly 11 digits long.">
+        <button type="button" id="sendOtpButton" disabled onclick="sendOtp()">Send OTP</button>
+    </td>
+</tr>
 
-                    <!-- OTP Field (initially hidden) -->
-                    <tr id="otpRow" style="display: none;">
-                        <td class="label-td" colspan="2">
-                            <label for="otp" class="form-label">Enter OTP:</label>
-                            <input type="text" name="otp" id="otp" class="input-text" placeholder="OTP" required>
-                        </td>
-                    </tr>
+<!-- OTP Field (initially hidden) -->
+<tr id="otpRow" style="display: none;">
+    <td class="label-td" colspan="2">
+        <label for="otp" class="form-label">Enter OTP:</label>
+        <input type="text" name="otp" id="otp" class="input-text" placeholder="OTP" required>
+    </td>
+
+    <!-- Message display for OTP status -->
+    <td colspan="2">
+        <div id="otpMessage" style="color: green; font-weight: bold;"></div>
+    </td>
+</tr>   
 
                     <!-- Terms and Conditions Checkbox -->
                     <tr>
@@ -825,7 +641,6 @@ function enableSendOtpButton() {
 function sendOtp() {
     var tele = document.getElementById('tele').value;
     if (tele.match(/^09\d{9}$/)) {
-        // Assuming send_otp.php handles the sending of OTP
         fetch('send_otp.php', {
             method: 'POST',
             headers: {
@@ -913,8 +728,7 @@ if (substr($phone, 0, 1) === "0") {
         $sweet_alert = "<script>Swal.fire({title: 'Password Mismatch', text: 'Passwords do not match!', icon: 'error', confirmButtonText: 'OK'});</script>";
     } else {
         try {
-            $database = new mysqli("localhost", "root", "password", "hemolink_database");
-
+            $database = new mysqli("localhost", "root", "Ayysue", "SQL_Database_Hemolink");
             if ($database->connect_error) {
                 throw new Exception("Database connection failed: " . $database->connect_error);
             }
