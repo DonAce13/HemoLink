@@ -115,20 +115,26 @@ INSERT INTO `doctor` (`docid`, `docemail`, `docname`, `docpassword`, `docnic`, `
 -- --------------------------------------------------------
 -- Table structure for table `patient`
 DROP TABLE IF EXISTS `patient`;
+
 CREATE TABLE IF NOT EXISTS `patient` (
-  `pid` int(11) NOT NULL AUTO_INCREMENT,
-  `pemail` varchar(255) DEFAULT NULL,
-  `pname` varchar(255) DEFAULT NULL,
-  `ppassword` varchar(255) DEFAULT NULL,
-  `paddress` varchar(255) DEFAULT NULL,
-  `pnic` varchar(15) DEFAULT NULL,
-  `pdob` date DEFAULT NULL,
-  `ptel` varchar(15) DEFAULT NULL,
+  `pid` INT(11) NOT NULL AUTO_INCREMENT,
+  `pemail` VARCHAR(255) NOT NULL UNIQUE,
+  `pname` VARCHAR(255) NOT NULL,
+  `ppassword` VARCHAR(60) NOT NULL, -- Secure storage for hashed passwords
+  `paddress` VARCHAR(255) DEFAULT NULL,
+  `pnic` VARCHAR(15) UNIQUE DEFAULT NULL, -- Renamed pnic for clarity
+  `pdob` DATE DEFAULT NULL,
+  `phone_number` VARCHAR(15) NOT NULL UNIQUE, -- Prevents duplicate numbers
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `is_deleted` BOOLEAN DEFAULT 0, -- Soft delete flag
   PRIMARY KEY (`pid`),
-  KEY `idx_pemail` (`pemail`),
-  KEY `idx_ptel` (`ptel`),
-  KEY `idx_pnic` (`pnic`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+  INDEX `idx_pemail` (`pemail`),
+  INDEX `idx_phone_number` (`phone_number`),
+  INDEX `idx_pnic` (`pnic`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
 
 -- Create a trigger to enforce address format using REGEXP
 DELIMITER $$
@@ -311,7 +317,14 @@ DELIMITER ;
 
 COMMIT;
 
--- update to database for otp verification
-ALTER TABLE `patient`
-ADD COLUMN `otp` VARCHAR(6) DEFAULT NULL,
-ADD COLUMN `otp_verified` TINYINT(1) DEFAULT 0;
+DROP TABLE IF EXISTS `otp_verifications`;
+
+CREATE TABLE `otp_verifications` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `phone_number` VARCHAR(15) NOT NULL UNIQUE,
+  `otp` VARCHAR(6) NOT NULL,
+  `expires_at` DATETIME NOT NULL,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  INDEX `idx_phone_number` (`phone_number`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
