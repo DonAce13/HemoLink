@@ -233,37 +233,50 @@ $schedulerow = $database->query($sqlmain);
 
         // Determine if a date filter is applied, otherwise show all sessions
         $filter_date = isset($_POST['scheduledate']) && !empty($_POST['scheduledate']) ? $_POST['scheduledate'] : '';
-       
-        echo $filter_date;
+        // Convert the date to a day of the week number
+        $filter_day_of_week = null;
+        if (!empty($filter_date)) {
+            // Convert the filter_date string into a timestamp
+            $timestamp = strtotime($filter_date);
+
+            // Get the day of the week (1 for Monday, 7 for Sunday)
+            $filter_day_of_week = date('N', $timestamp);
+        }
+
         // Base Query
         $sqlmain = "SELECT * FROM schedule 
-                    INNER JOIN doctor ON schedule.docid = doctor.docid 
-                    WHERE schedule.scheduledate IS NOT NULL 
-                    AND schedule.scheduletime IS NOT NULL 
-                    AND schedule.scheduletime != ''";
-        
-        // Apply the filter if a date is provided
-        if ($filter_date) {
-            $sqlmain .= " AND schedule.scheduledate = ?"; // FIX: Changed WHERE to AND
+        INNER JOIN doctor ON schedule.docid = doctor.docid";
+
+        // Apply the filter based on the provided value (filter by day or by date)
+        if ($filter_day_of_week) {
+        // If the filter is by the day of the week (scheduleid)
+        $sqlmain .= " AND schedule.scheduleid = ?"; // Filter by scheduleid
+        } elseif ($filter_date) {
+        // If the filter is by a specific date (scheduledate)
+        $sqlmain .= " AND schedule.scheduledate = ?";
         }
-        
+
         // Add ordering and pagination
         $sqlmain .= " ORDER BY schedule.scheduledate DESC LIMIT ?, ?";
-        
+
         // Prepare the statement
         $stmt = $database->prepare($sqlmain);
-        
-        // Bind parameters correctly
-        if ($filter_date) {
-            $stmt->bind_param("sii", $filter_date, $start_from, $records_per_page); // If filtering by date
+
+        // Bind parameters correctly based on whether we're filtering by date or day of the week
+        if ($filter_day_of_week) {
+        // If filtering by scheduleid (day of the week)
+            $stmt->bind_param("iii", $filter_day_of_week, $start_from, $records_per_page); // Day filter and pagination
+        } elseif ($filter_date) {
+        // If filtering by scheduledate (specific date)
+        $stmt->bind_param("sii", $filter_date, $start_from, $records_per_page); // Date filter and pagination
         } else {
-            $stmt->bind_param("ii", $start_from, $records_per_page); // If no date filter
+        // If no filter is applied, just bind pagination parameters
+        $stmt->bind_param("ii", $start_from, $records_per_page); // Pagination only
         }
-        
+
         // Execute and fetch results
         $stmt->execute();
         $schedulerow = $stmt->get_result();
-        
 
         // Current datetime for comparison
         $current_datetime = date("Y-m-d H:i:s");
@@ -276,8 +289,34 @@ $schedulerow = $database->query($sqlmain);
             $scheduleid = $row["scheduleid"];
             $scheduledate = $row["scheduledate"];
             $scheduletime = $row["scheduletime"];
-
+            if (empty($scheduledate)) {
+                // Calculate the current week's Monday date (the start of the week)
+                $current_week_monday = date('Y-m-d', strtotime('monday this week')); // Current week's Monday
+                
+                // Set the scheduledate based on the scheduleid (1 = Monday, 2 = Tuesday, etc.)
+                switch ($scheduleid) {
+                    case 1:
+                        $scheduledate = $current_week_monday;  // Set Monday's date for scheduleid 1
+                        break;
+                    case 2:
+                        $scheduledate = date('Y-m-d', strtotime($current_week_monday . ' +1 day'));  // Set Tuesday's date
+                        break;
+                    case 3:
+                        $scheduledate = date('Y-m-d', strtotime($current_week_monday . ' +2 day'));  // Set Wednesday's date
+                        break;
+                    case 4:
+                        $scheduledate = date('Y-m-d', strtotime($current_week_monday . ' +3 day'));  // Set Thursday's date
+                        break;
+                    case 5:
+                        $scheduledate = date('Y-m-d', strtotime($current_week_monday . ' +4 day'));  // Set Friday's date
+                        break;
+                    default:
+                        // Default case if other scheduleid values are encountered
+                        $scheduledate = date('Y-m-d'); // Set current date as fallback
+            }
+        }
             // Combine scheduled date and time
+            $row["scheduledate"]= $scheduledate;
             $schedule_datetime = $scheduledate . ' ' . $scheduletime;
 
             // Categorize the session based on the current datetime
@@ -396,9 +435,9 @@ $schedulerow = $database->query($sqlmain);
     // Pagination logic
     // Pagination logic: Adjusting query based on filter
     if ($filter_date) {
-        $total_records_query = $database->query("SELECT COUNT(*) FROM schedule WHERE scheduledate = '$filter_date' AND scheduledate IS NOT NULL");
+        $total_records_query = $database->query("SELECT COUNT(*) FROM schedule WHERE scheduledate = '$filter_date'");
     } else {
-        $total_records_query = $database->query("SELECT COUNT(*) FROM schedule WHERE scheduledate IS NOT NULL");
+        $total_records_query = $database->query("SELECT COUNT(*) FROM schedule");
     }
     
 
