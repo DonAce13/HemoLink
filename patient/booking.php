@@ -259,6 +259,34 @@ if (isset($_GET["id"])) {
     $docname = $row["docname"];
     $docemail = $row["docemail"];
     $scheduledate = $row["scheduledate"];
+    if (empty($scheduledate)) {
+        // Calculate the current week's Monday date (the start of the week)
+        $current_week_monday = date('Y-m-d', strtotime('monday this week')); // Current week's Monday
+        
+        // Set the scheduledate based on the scheduleid (1 = Monday, 2 = Tuesday, etc.)
+        switch ($scheduleid) {
+            case 1:
+                $scheduledate = $current_week_monday;  // Set Monday's date for scheduleid 1
+                break;
+            case 2:
+                $scheduledate = date('Y-m-d', strtotime($current_week_monday . ' +1 day'));  // Set Tuesday's date
+                break;
+            case 3:
+                $scheduledate = date('Y-m-d', strtotime($current_week_monday . ' +2 day'));  // Set Wednesday's date
+                break;
+            case 4:
+                $scheduledate = date('Y-m-d', strtotime($current_week_monday . ' +3 day'));  // Set Thursday's date
+                break;
+            case 5:
+                $scheduledate = date('Y-m-d', strtotime($current_week_monday . ' +4 day'));  // Set Friday's date
+                break;
+            default:
+                // Default case if other scheduleid values are encountered
+                $scheduledate = date('Y-m-d'); // Set current date as fallback
+    }
+}
+    // Combine scheduled date and time
+    $row["scheduledate"]= $scheduledate;
     $scheduletime = $row["scheduletime"];
 
     // Get the appointment number
