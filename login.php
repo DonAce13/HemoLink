@@ -36,7 +36,7 @@ if ($_POST) {
                         $_SESSION['login_success'] = true;
                         $_SESSION['user_type'] = 'Patient';
                         $_SESSION['user_name'] = $patient['pname'];
-                        header('Location: patient/index.php');
+                        header('Location: patient/index.php?action=login_success');
                         exit();
                     }
                     break;
@@ -50,7 +50,7 @@ if ($_POST) {
                         $_SESSION['login_success'] = true;
                         $_SESSION['user_type'] = 'Administrator';
                         $_SESSION['user_name'] = $admin['aname'];
-                        header('Location: admin/index.php');
+                        header('Location: admin/index.php?action=login_success');
                         exit();
                     }
                     break;
@@ -64,7 +64,7 @@ if ($_POST) {
                         $_SESSION['login_success'] = true;
                         $_SESSION['user_type'] = 'Doctor';
                         $_SESSION['user_name'] = $doctor['docname'];
-                        header('Location: doctor/index.php');
+                        header('Location: doctor/index.php?action=login_success');
                         exit();
                     }
                     break;
@@ -118,7 +118,7 @@ if (isset($_GET['logout'])) {
 if (isset($_SESSION["welcome_alert"])) {
     $alertMessage = [
         'icon' => 'success',
-        'title' => 'Welcome to HemoLink!',
+        'title' => 'Welcome to Mabyuan Health!',
         'text' => 'Your account has been successfully created.'
     ];
     unset($_SESSION["welcome_alert"]);
@@ -134,7 +134,7 @@ if (isset($_SESSION["welcome_alert"])) {
     <link rel="icon" type="image/png" href="../img/bg01.png">
     <link rel="icon" type="image/png" href="../img/bg01.png">
     <link rel="shortcut icon" type="image/png" href="../img/bg01.png">
-    <title>Login - HemoLink</title>
+    <title>Login - Mabyuan Health</title>
     
     <!-- CSS and Scripts -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -144,240 +144,239 @@ if (isset($_SESSION["welcome_alert"])) {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
-    <style>
-        :root {
-            --primary-color: #2d6a4f;
-            --primary-light: #40916c;
-            --primary-dark: #1b4332;
-            --secondary-color: #95d5b2;
-            --background-color: #f8f9fa;
-            --text-color: #1b4332;
-            --error-color: #dc3545;
-            --success-color: #198754;
-        }
+    :root {
+        --primary-color: #2d6a4f;
+        --primary-light: #40916c;
+        --primary-dark: #1b4332;
+        --secondary-color: #95d5b2;
+        --background-color: #f8f9fa;
+        --text-color: #1b4332;
+        --error-color: #dc3545;
+        --success-color: #198754;
+    }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+    }
 
-        body {
-            background-image: url('../img/signup bg.png');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            position: relative;
-        }
+    body {
+        background-image: url('../img/bg05.png');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        position: relative;
+    }
 
-        /* Add green overlay */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(45, 106, 79, 0.85); /* Adjust opacity as needed */
-            z-index: -1;
-        }
+    /* Add green overlay */
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(45, 106, 79, 0.85); /* Adjust opacity as needed */
+        z-index: -1;
+    }
 
+    .container {
+        padding: 2rem;
+        background-color: white;
+        border-radius: 50px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        width: 100%;
+        max-width: 800px;
+        margin: 20px auto;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    }
+
+    .header-text {
+        color: var(--primary-dark);
+        font-size: 5rem;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+
+    .sub-text {
+        color:rgb(56, 56, 56);
+        font-size: 1.3rem;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .form-section {
+        background: white;
+        padding: 2rem;
+        border-radius: 15px;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .section-title {
+        color: var(--primary-dark);
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .form-label {
+        color: var(--text-color);
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control {
+        border: 2px solid #e9ecef;
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.25rem rgba(45, 106, 79, 0.25);
+    }
+
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+        background: #2d6a4f;
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background: #40916c;
+        transform: translateY(-2px);
+    }
+
+    .error-message {
+        color: var(--error-color);
+        background: rgba(220, 53, 69, 0.1);
+        padding: 1rem;
+        border-radius: 10px;
+        margin: 1rem 0;
+        text-align: center;
+    }
+
+    /* Custom radio buttons */
+    .radio-group {
+        display: flex;
+        gap: 2rem;
+        margin: 1rem 0;
+    }
+
+    .radio-label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+    }
+
+    /* Custom checkbox style */
+    .checkbox-group {
+        margin: 1rem 0;
+    }
+
+    .checkbox-label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+    }
+    .text-center {
+        text-align: center;
+        font-size: 1.5rem;
+        color: #333;
+        margin: 0;
+    }
+
+    .text-decoration-none {
+        color: #2d6a4f; /* Same as your primary button color */
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .text-decoration-none:hover {
+        color: #40916c; /* Lighter shade for hover */
+        text-decoration: underline;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
         .container {
-            padding: 2rem;
-            background-color: white;
-            border-radius: 50px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-            width: 100%;
-            max-width: 800px;
-            margin: 20px auto;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            padding: 1.5rem;
         }
 
         .header-text {
-            color: var(--primary-dark);
-            font-size: 5rem;
-            font-weight: 700;
-            text-align: center;
-            margin-bottom: 0.5rem;
-        }
-
-        .sub-text {
-            color:rgb(56, 56, 56);
-            font-size: 1.3rem;
-            text-align: center;
-            margin-bottom: 2rem;
+            font-size: 3rem;
         }
 
         .form-section {
-            background: white;
-            padding: 2rem;
-            border-radius: 15px;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
         }
+    }
 
-        .section-title {
-            color: var(--primary-dark);
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .form-label {
-            color: var(--text-color);
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-        }
-
-        .form-control {
-            border: 2px solid #e9ecef;
-            border-radius: 10px;
-            padding: 0.75rem 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .form-control:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.25rem rgba(45, 106, 79, 0.25);
-        }
-
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 10px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .btn-primary {
-            background: #2d6a4f;
-            border: none;
-        }
-
-        .btn-primary:hover {
-            background: #40916c;
-            transform: translateY(-2px);
-        }
-
-        .error-message {
-            color: var(--error-color);
-            background: rgba(220, 53, 69, 0.1);
+    @media (max-width: 480px) {
+        .container {
             padding: 1rem;
-            border-radius: 10px;
-            margin: 1rem 0;
-            text-align: center;
         }
 
-        /* Custom radio buttons */
+        .header-text {
+            font-size: 2rem;
+        }
+
+        .form-section {
+            padding: 1rem;
+        }
+
         .radio-group {
-            display: flex;
-            gap: 2rem;
-            margin: 1rem 0;
-        }
-
-        .radio-label {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            cursor: pointer;
-        }
-
-        /* Custom checkbox style */
-        .checkbox-group {
-            margin: 1rem 0;
-        }
-
-        .checkbox-label {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            cursor: pointer;
+            flex-direction: column;
+            gap: 1rem;
         }
         .text-center {
             text-align: center;
-            font-size: 1.5rem;
+            font-size: 1rem;
             color: #333;
             margin: 0;
         }
-
-        .text-decoration-none {
-            color: #2d6a4f; /* Same as your primary button color */
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
+        .sub-text {
+            color:rgb(56, 56, 56);
+            font-size: 1rem;
+            text-align: center;
+            margin-bottom: 2rem;
         }
-
-        .text-decoration-none:hover {
-            color: #40916c; /* Lighter shade for hover */
-            text-decoration: underline;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .container {
-                padding: 1.5rem;
-            }
-
-            .header-text {
-                font-size: 3rem;
-            }
-
-            .form-section {
-                padding: 1.5rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 1rem;
-            }
-
-            .header-text {
-                font-size: 2rem;
-            }
-
-            .form-section {
-                padding: 1rem;
-            }
-
-            .radio-group {
-                flex-direction: column;
-                gap: 1rem;
-            }
-            .text-center {
-                text-align: center;
-                font-size: 1rem;
-                color: #333;
-                margin: 0;
-            }
-            .sub-text {
-                color:rgb(56, 56, 56);
-                font-size: 1rem;
-                text-align: center;
-                margin-bottom: 2rem;
-            }
-        }
+    }
         
-    </style>
+</style>
 </head>
 <body>
     <?php if ($alertMessage): ?>
@@ -396,7 +395,7 @@ if (isset($_SESSION["welcome_alert"])) {
     <div class="container">
         <div class="row justify-content-center">
                     <div class="card-body p-5">
-                        <h1 class="header-text mb-4">HemoLink</h1>
+                        <h1 class="header-text mb-4">Mabyuan Health</h1>
                         <p class="sub-text mb-4">Connecting you to better health</p>
                         <p class="sub-text mb-4">Login with your details to continue</p>
                         

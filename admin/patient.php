@@ -114,6 +114,11 @@
                         <a href="patient.php" class="non-style-link-menu  non-style-link-menu-active"><div><p class="menu-text">Patients</p></a></div>
                     </td>
                 </tr>
+                <tr class="menu-row" >
+                    <td class="menu-btn menu-icon-records">
+                        <a href="records.php" class="non-style-link-menu"><div><p class="menu-text">Records</p></a></div>
+                    </td>
+                </tr>
 
             </table>
         </div>
@@ -256,9 +261,9 @@
                                     $pid=$row["pid"];
                                     $name=$row["pname"];
                                     $email=$row["pemail"];
-                                    $nic = empty($row["pnic"]) ? 'None' : $row["pnic"];
+                                    $nic = empty($row["has_philhealth"]) ? 'None' : $row["has_philhealth"];
                                     $dob=$row["pdob"];
-                                    $tel=$row["ptel"];
+                                    $tel=$row["phone_number"];
                                     
                                     echo '<tr>
                                         <td style="text-align: center;"> &nbsp;'.
@@ -313,7 +318,7 @@
             $row=$result->fetch_assoc();
             $name=$row["pname"];
             $email=$row["pemail"];
-            $nic = empty($row["pnic"]) ? 'None' : $row["pnic"];
+            $nic = empty($row["has_philhealth"]) ? 'None' : $row["has_philhealth"];
             $dob=$row["pdob"];
             $tele=$row["ptel"];
             $address=$row["paddress"];

@@ -368,7 +368,7 @@ if ($result->num_rows == 0) {
                                     $pid=$row["pid"];
                                     $name=$row["pname"];
                                     $email=$row["pemail"];
-                                    $nic=$row["pnic"];
+                                    $nic=$row["has_philhealth"];
                                     $dob=$row["pdob"];
                                     $tel=$row["ptel"];
                                     
@@ -428,7 +428,7 @@ if ($result->num_rows == 0) {
             $row=$result->fetch_assoc();
             $name=$row["pname"];
             $email=$row["pemail"];
-            $nic=$row["pnic"];
+            $nic=$row["has_philhealth"];
             $dob=$row["pdob"];
             $tele=$row["ptel"];
             $address=$row["paddress"];

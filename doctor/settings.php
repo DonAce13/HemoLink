@@ -306,7 +306,7 @@
                         <h2></h2>
                         <a class="close" href="settings.php">&times;</a>
                         <div class="content">
-                            HemoLink <br> App<br>
+                            Mabyuan Health <br> App<br>
                             
                         </div>
                         <div style="display: flex;justify-content: center;">

@@ -356,7 +356,7 @@ if ($result->num_rows > 0) {
             
            
             $dob=$row["pdob"];
-            $nic=$row['pnic'];
+            $nic=$row['has_philhealth'];
             $tele=$row['ptel'];
             echo '
             <div id="popup1" class="overlay">
@@ -365,7 +365,7 @@ if ($result->num_rows > 0) {
                         <h2></h2>
                         <a class="close" href="settings.php">&times;</a>
                         <div class="content">
-                            HemoLink <br> App<br>
+                            Mabyuan Health <br> App<br>
                             
                         </div>
                         <div style="display: flex;justify-content: center;">
@@ -471,7 +471,7 @@ if ($result->num_rows > 0) {
             
             
             $address=$row["paddress"];
-            $nic=$row['pnic'];
+            $nic=$row['has_philhealth'];
             $tele=$row['ptel'];
 
             $error_1=$_GET["error"];

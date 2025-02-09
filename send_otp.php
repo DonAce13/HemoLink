@@ -18,7 +18,7 @@ $tele = $_POST['tele'];
 
 // Validate phone number (must be 11 digits starting with 09)
 if (!preg_match('/^09\d{9}$/', $tele)) {
-    die("Invalid phone number format.");
+    die("Invalid phone number format. Please enter a valid 11-digit number starting with 09.");
 }
 
 // Convert to international format (+63)
@@ -28,42 +28,25 @@ $tele = '+63' . substr($tele, 1);
 $otp = rand(100000, 999999);
 $expires_at = date("Y-m-d H:i:s", strtotime("+5 minutes"));
 
-// Check if the phone number exists in `otp_verifications`
-$stmt = $conn->prepare("SELECT id FROM otp_verifications WHERE phone_number = ?");
-$stmt->bind_param("s", $tele);
-$stmt->execute();
-$result = $stmt->get_result();
+// Store OTP in database
+$stmt = $conn->prepare("INSERT INTO otp_verifications (phone_number, otp, expires_at) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE otp = ?, expires_at = ?");
+$stmt->bind_param("sssss", $tele, $otp, $expires_at, $otp, $expires_at);
 
-if ($result->num_rows > 0) {
-    // Update existing OTP
-    $stmt = $conn->prepare("UPDATE otp_verifications SET otp = ?, expires_at = ? WHERE phone_number = ?");
-    $stmt->bind_param("sss", $otp, $expires_at, $tele);
-} else {
-    // Insert new OTP entry
-    $stmt = $conn->prepare("INSERT INTO otp_verifications (phone_number, otp, expires_at) VALUES (?, ?, ?)");
-    $stmt->bind_param("sss", $tele, $otp, $expires_at);
-}
-
-// Execute query
 if (!$stmt->execute()) {
     die("Error storing OTP: " . $stmt->error);
 }
 
-// Twilio credentials from config.php
-
-$client = new Client(TWILIO_SID, TWILIO_AUTH_TOKEN);
+// Initialize Twilio Verify client
+$twilio = new Client(TWILIO_SID, TWILIO_AUTH_TOKEN);
 
 try {
-    $client->messages->create(
-        $tele,
-        [
-            'from' => TWILIO_NUMBER,
-            'body' => "Your OTP is: $otp. It expires in 5 minutes."
-        ]
-    );
-    echo "OTP sent successfully.";
+    $verification = $twilio->verify->v2->services(TWILIO_VERIFY_SID)
+                                       ->verifications
+                                       ->create($tele, "sms");
+    echo "OTP verification initiated. Check your phone for the code.";
 } catch (Exception $e) {
     echo "Error sending OTP: " . $e->getMessage();
+    error_log("Twilio Error: " . $e->getMessage());
 }
 
 $stmt->close();

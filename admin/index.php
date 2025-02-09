@@ -172,6 +172,11 @@ if (isset($_GET['action']) && $_GET['action'] == 'login_success' && !isset($_SES
                         <a href="patient.php" class="non-style-link-menu"><div><p class="menu-text">Patients</p></a></div>
                     </td>
                 </tr>
+                <tr class="menu-row" >
+                    <td class="menu-btn menu-icon-records">
+                        <a href="records.php" class="non-style-link-menu"><div><p class="menu-text">Records</p></a></div>
+                    </td>
+                </tr>
             </table>
         </div>
         <script>
@@ -185,7 +190,6 @@ if (isset($_GET['action']) && $_GET['action'] == 'login_success' && !isset($_SES
     </script>
 
         <!-- Main Dashboard Content -->
-        
 
 
         <div class="dash-body" style="margin-top: 15px">
@@ -397,7 +401,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'login_success' && !isset($_SES
                                             echo '<tr>
                                                   <td style="text-align:center;font-size:23px;font-weight:500;color:var(--btnnicetext);padding:15px;">' . $apponum . '</td>
                                                   <td style="text-align:center;font-weight:600;">' . substr($pname, 0, 25) . '</td>
-                                                  <td style="text-align:center;font-weight:600;">' . substr($docname, 0, 25) . '</td>
+                                                  <td style="text-align:center;font-weight:600;">'. substr($docname, 0, 25) . '</td>
                                                   <td style="text-align:center;font-weight:600;">'. substr($title, 0, 15) . '</td>
                                               </tr>';
                                         }

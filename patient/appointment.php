@@ -424,7 +424,7 @@ if ($result->num_rows == 0) {
                     <div style="width:100%;">
                         <div class="h3-search">
                             Booking Date: ' . substr($appodate, 0, 30) . '<br>
-                            Reference Number: HemoLink ' . $appoid . '
+                            Reference Number: Mabyuan Health ' . $appoid . '
                         </div>
                         <div class="h1-search">
                             ' . substr($title, 0, 21) . '<br>
@@ -591,7 +591,7 @@ echo '</div>';
                         <h2></h2>
                         <a class="close" href="doctors">&times;</a>
                         <div class="content">
-                            HemoLink <br> App<br>
+                            Mabyuan Health <br> App<br>
                         </div>
                         <div style="display: flex;justify-content: center;">
                         <table width="80%" class="sub-table scrolldown add-doc-form-container" border="0">

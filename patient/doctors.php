@@ -443,7 +443,7 @@ if ($result->num_rows > 0) {
                         <h2></h2>
                         <a class="close" href="doctors.php">&times;</a>
                         <div class="content">
-                            HemoLink <br> App<br>
+                            Mabyuan Health <br> App<br>
                             
                         </div>
                         <div style="display: flex;justify-content: center;">

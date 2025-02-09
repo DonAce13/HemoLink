@@ -164,6 +164,11 @@ $list110 = $database->query($sqlmain);
                         <a href="patient.php" class="non-style-link-menu"><div><p class="menu-text">Patients</p></div></a>
                     </td>
                 </tr>
+                <tr class="menu-row">
+                    <td class="menu-btn menu-icon-records">
+                        <a href="records.php" class="non-style-link-menu"><div><p class="menu-text">Records</p></div></a>
+                    </td>
+                </tr>
 
 
             </table>

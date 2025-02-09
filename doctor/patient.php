@@ -319,7 +319,7 @@
                                     $pid=$row["pid"];
                                     $name=$row["pname"];
                                     $email=$row["pemail"];
-                                    $nic=$row["pnic"];
+                                    $nic=$row["has_philhealth"];
                                     $dob=$row["pdob"];
                                     $tel=$row["ptel"];
                                     
@@ -376,7 +376,7 @@
             $row=$result->fetch_assoc();
             $name=$row["pname"];
             $email=$row["pemail"];
-            $nic=$row["pnic"];
+            $nic=$row["has_philhealth"];
             $dob=$row["pdob"];
             $tele=$row["ptel"];
             $address=$row["paddress"];

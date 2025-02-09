@@ -16,7 +16,7 @@ ob_start(); // Optional: Buffer output to prevent header errors
     <link rel="stylesheet" href="css/main.css">  
     <link rel="stylesheet" href="css/signup.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <title>Sign Up - HemoLink</title>
+    <title>Sign Up - Mabyuan Health</title>
     <style>
         * {
             margin: 0;
@@ -41,7 +41,6 @@ ob_start(); // Optional: Buffer output to prevent header errors
             right: 0;
             bottom: 0;
             background: url('../img/bg05.png') center/cover no-repeat;
-            opacity: 0.05;
             z-index: -1;
         }
 
@@ -300,17 +299,10 @@ ob_start(); // Optional: Buffer output to prevent header errors
                     </tr>
                     <tr>
                         <td class="label-td">
-                            <input type="radio" name="hasPhilhealth" value="yes" id="philhealth-yes" onclick="togglePhilhealthField()"> Yes
+                            <input type="radio" name="hasPhilhealth" value="yes" id="philhealth-yes"> Yes
                         </td>
                         <td class="label-td">
-                            <input type="radio" name="hasPhilhealth" value="no" id="philhealth-no" onclick="togglePhilhealthField()"> No
-                        </td>
-                    </tr>
-
-                    <!-- PhilHealth ID Input (Only Visible When "Yes" is Selected) -->
-                    <tr id="philhealth-row-input" style="display: none;">
-                        <td class="label-td" colspan="2">
-                            <input type="text" id="philhealth-input" name="nic" class="input-text" placeholder="PhilHealth ID (12 digits)" minlength="12" maxlength="12" pattern="\d{12}" title="PhilHealth ID must be exactly 12 digits">
+                            <input type="radio" name="hasPhilhealth" value="no" id="philhealth-no" checked> No
                         </td>
                     </tr>
 
@@ -324,9 +316,14 @@ ob_start(); // Optional: Buffer output to prevent header errors
                         <td class="label-td" colspan="2">
                             <?php
                             $today = date('Y-m-d');
-                            echo '<input type="date" name="dob" class="input-text" max="' . $today . '" required>';
+                            $minDate = date('Y-m-d', strtotime('-100 years', strtotime($today)));
+                            $maxDate = date('Y-m-d', strtotime('-18 years', strtotime($today)));
+                            echo '<input type="date" name="dob" class="input-text" min="' . $minDate . '" max="' . $maxDate . '" onchange="calculateAge(this.value)" required>';
                             ?>
                         </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" id="ageDisplay" style="text-align: center; padding: 10px 0; font-weight: bold; color: #2d6a4f;"></td>
                     </tr>
 
                     <!-- Email Field -->
@@ -364,10 +361,10 @@ ob_start(); // Optional: Buffer output to prevent header errors
         <label for="otp" class="form-label">Enter OTP:</label>
         <input type="text" name="otp" id="otp" class="input-text" placeholder="OTP" required>
     </td>
-
-    <!-- Message display for OTP status -->
+</tr>
+<tr>
     <td colspan="2">
-        <div id="otpMessage" style="color: green; font-weight: bold;"></div>
+        <div id="otpMessage" style="color: green; font-weight: bold; text-align: center;"></div>
     </td>
 </tr>   
 
@@ -386,6 +383,17 @@ ob_start(); // Optional: Buffer output to prevent header errors
                             <label>
                                 <input type="checkbox" id="privacyCheckbox" name="privacyAccepted" required> I accept the <a href="#" id="privacyPolicyLink">Privacy Policy</a>
                             </label>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="label-td" colspan="2">
+                            <div class="cf-turnstile" data-sitekey="0x4AAAAAAA8HgcMMy1gC84ju"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label-td" colspan="2">
+                            <div class="cf-turnstile" data-sitekey="0x4AAAAAAA8HgcMMy1gC84ju"></div>
                         </td>
                     </tr>
 
@@ -412,13 +420,13 @@ document.getElementById('termsLink').addEventListener('click', function(e) {
         html: `
             <div style="text-align: left; padding: 10px;">
                 <h3>Effective Date: January 14, 2025</h3>
-                <p>Welcome to Hemolink! By using this website or mobile app, you agree to these Terms and Conditions.</p>
+                <p>Welcome to Mabyuan Health! By using this website or mobile app, you agree to these Terms and Conditions.</p>
                 
                 <h4 style="margin-top: 15px;">1. Acceptance of Terms</h4>
-                <p>By accessing or using Hemolink, you agree to be bound by these terms.</p>
+                <p>By accessing or using Mabyuan Health, you agree to be bound by these terms.</p>
 
                 <h4 style="margin-top: 15px;">2. Service Description</h4>
-                <p>Hemolink provides an online platform for scheduling healthcare appointments and accessing medical records.</p>
+                <p>Mabyuan Health provides an online platform for scheduling healthcare appointments and accessing medical records.</p>
 
                 <h4 style="margin-top: 15px;">3. User Responsibilities</h4>
                 <ul style="margin-left: 20px;">
@@ -436,19 +444,19 @@ document.getElementById('termsLink').addEventListener('click', function(e) {
                 </ul>
 
                 <h4 style="margin-top: 15px;">5. Limitation of Liability</h4>
-                <p>Hemolink is not liable for any damages arising from use of the service.</p>
+                <p>Mabyuan Health is not liable for any damages arising from use of the service.</p>
 
                 <h4 style="margin-top: 15px;">6. Legal Rights and Priorities</h4>
-                <p>Hemolink is committed to providing equitable access to healthcare services and upholding the rights of all individuals, including senior citizens, indigenous peoples, and persons with disabilities (PWD), as protected by Philippine law.</p>
+                <p>Mabyuan Health is committed to providing equitable access to healthcare services and upholding the rights of all individuals, including senior citizens, indigenous peoples, and persons with disabilities (PWD), as protected by Philippine law.</p>
 
                 <h4style="margin-top: 15px;">6.1 Senior Citizens' Rights</h4>
-                <p>In accordance with Republic Act No. 7432, which was later amended by RA 9472, senior citizens have the right to priority services in various establishments, including healthcare facilities. Hemolink will ensure that priority is given to senior citizens during healthcare appointments, in line with the provisions of these laws.</p>
+                <p>In accordance with Republic Act No. 7432, which was later amended by RA 9472, senior citizens have the right to priority services in various establishments, including healthcare facilities. Mabyuan Health will ensure that priority is given to senior citizens during healthcare appointments, in line with the provisions of these laws.</p>
 
                 <h4 style="margin-top: 15px;">6.2 Indigenous Peoples' Rights</h4>
-                <p>In line with the Indigenous Peoples' Rights Act of 1997, Hemolink recognizes and respects the rights of indigenous peoples, ensuring that they are provided with accessible healthcare services. Indigenous individuals will not be discriminated against in any manner, and their unique cultural and health needs will be taken into account.</p>
+                <p>In line with the Indigenous Peoples' Rights Act of 1997, Mabyuan Health recognizes and respects the rights of indigenous peoples, ensuring that they are provided with accessible healthcare services. Indigenous individuals will not be discriminated against in any manner, and their unique cultural and health needs will be taken into account.</p>
 
                 <h4 style="margin-top: 15px;">6.3 Persons with Disabilities (PWD) Rights</h4>
-                <p>As per Republic Act No. 10754, which expands the benefits and privileges for persons with disabilities, Hemolink is committed to offering priority service to PWDs. This includes providing express lanes for PWDs in all healthcare appointments. In the absence of express lanes, Hemolink ensures that priority is given to persons with disabilities to ensure timely access to necessary medical services.</p>
+                <p>As per Republic Act No. 10754, which expands the benefits and privileges for persons with disabilities, Mabyuan Health is committed to offering priority service to PWDs. This includes providing express lanes for PWDs in all healthcare appointments. In the absence of express lanes, Mabyuan Health ensures that priority is given to persons with disabilities to ensure timely access to necessary medical services.</p>
 
                 <h4 style="margin-top: 15px;">7. Privacy and Data Protection</h4>
                 <p>We take your privacy seriously and comply with relevant laws on data protection. Please review our privacy policy for details on how we collect, store, and protect your personal information.</p>
@@ -513,7 +521,7 @@ document.getElementById('privacyPolicyLink').addEventListener('click', function(
         html: `
             <div style="text-align: left; padding: 10px;">
                 <h3>Effective Date: January 14, 2025</h3>
-                <p>At Hemolink, we value your privacy and are committed to protecting your personal information. Our goal is to ensure that your data is handled securely, and we take all necessary measures to protect it from unauthorized access, loss, or misuse.</p>
+                <p>At Mabyuan Health, we value your privacy and are committed to protecting your personal information. Our goal is to ensure that your data is handled securely, and we take all necessary measures to protect it from unauthorized access, loss, or misuse.</p>
                 
                 <h4 style="margin-top: 15px;">1. Information We Collect</h4>
                 <ul style="margin-left: 20px;">
@@ -532,8 +540,8 @@ document.getElementById('privacyPolicyLink').addEventListener('click', function(
 
                 <h4 style="margin-top: 15px;">3. Information Security</h4>
                 <p>Your personal information is stored securely using industry-standard encryption methods. We have implemented robust security measures to protect your data from unauthorized access, loss, or misuse.</p>
-                <p>Hemolink is fully committed to preventing unauthorized access and vulnerabilities. We employ best practices to prevent common threats like SQL injection attacks. Our system is designed with built-in protection to ensure that no SQL injection vulnerabilities can be exploited.</p>
-                <p>Additionally, all data access is secured with strict access control, ensuring that only authorized personnel within Hemolink have access to your information. This access is limited to essential personnel only, and all private personnel handling data are bound by strict confidentiality agreements.</p>
+                <p>Mabyuan Health is fully committed to preventing unauthorized access and vulnerabilities. We employ best practices to prevent common threats like SQL injection attacks. Our system is designed with built-in protection to ensure that no SQL injection vulnerabilities can be exploited.</p>
+                <p>Additionally, all data access is secured with strict access control, ensuring that only authorized personnel within Mabyuan Health have access to your information. This access is limited to essential personnel only, and all private personnel handling data are bound by strict confidentiality agreements.</p>
 
                 <h4 style="margin-top: 15px;">4. Security Tools Used</h4>
                 <p>To further enhance our security measures, we rely on three advanced tools to protect and monitor your data:</p>
@@ -544,7 +552,7 @@ document.getElementById('privacyPolicyLink').addEventListener('click', function(
                 </ul>
 
                 <h4 style="margin-top: 15px;">5. Data Disclosure</h4>
-                <p>Your personal information will only be disclosed to authorized personnel within Hemolink who are directly involved in providing healthcare services. We do not sell, share, or rent your personal data to third parties for marketing or any other purposes without your explicit consent. In certain cases, we may disclose information to legal authorities if required by law or if it is necessary to protect your safety or the safety of others.</p>
+                <p>Your personal information will only be disclosed to authorized personnel within Mabyuan Health who are directly involved in providing healthcare services. We do not sell, share, or rent your personal data to third parties for marketing or any other purposes without your explicit consent. In certain cases, we may disclose information to legal authorities if required by law or if it is necessary to protect your safety or the safety of others.</p>
 
                 <h4 style="margin-top: 15px;">6. Your Rights</h4>
                 <ul style="margin-left: 20px;">
@@ -554,7 +562,7 @@ document.getElementById('privacyPolicyLink').addEventListener('click', function(
                 </ul>
 
                 <h4 style="margin-top: 15px;">7. Contact Us</h4>
-                <p>If you have any questions or concerns about this Privacy Policy, or if you wish to exercise your rights, please contact us at hemolink@gmail.com</a>.</p>
+                <p>If you have any questions or concerns about this Privacy Policy, or if you wish to exercise your rights, please contact us at Mabyuan Health@gmail.com</a>.</p>
             </div>
         `,
         width: '600px',
@@ -640,15 +648,22 @@ function enableSendOtpButton() {
 // AJAX call to send OTP
 function sendOtp() {
     var tele = document.getElementById('tele').value;
+
+    // Validate phone number (must be 11 digits starting with 09)
     if (tele.match(/^09\d{9}$/)) {
         fetch('send_otp.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
-            body: 'tele=' + tele
+            body: 'tele=' + encodeURIComponent(tele) // Encode the phone number for safety
         })
-        .then(response => response.text())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text();
+        })
         .then(data => {
             console.log(data); // Logs response in the console
             document.getElementById('otpMessage').innerHTML = data; // Display message on the frontend
@@ -659,7 +674,7 @@ function sendOtp() {
             document.getElementById('otpMessage').innerHTML = "An error occurred. Please try again."; // Error message
         });
     } else {
-        alert('Invalid phone number!');
+        alert('Invalid phone number! Please enter a valid 11-digit number starting with 09.');
     }
 }
 
@@ -667,19 +682,30 @@ function sendOtp() {
 // Add event listener to telephone input for enabling Send OTP button
 document.getElementById('tele').addEventListener('input', enableSendOtpButton);
 </script>
-
+<script>
+function calculateAge(dob) {
+    const today = new Date();
+    const birthDate = new Date(dob);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+    document.getElementById('ageDisplay').innerText = 'Age: ' + age;
+}
+</script>
 
 <?php if (isset($_SESSION["sweet_alert"])): ?>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             Swal.fire({
-                title: 'Welcome to HemoLink!',
+                title: 'Welcome to Mabyuan Health!',
                 text: 'Your account has been successfully created.',
                 icon: 'success',
                 confirmButtonText: 'Continue'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href = 'patient.php';
+                    window.location.href = 'login.php';
                 }
             });
         });
@@ -697,6 +723,7 @@ require 'vendor/autoload.php';
 // Use the Twilio namespace
 use Twilio\Rest\Client;
 
+$secretKey = '0x4AAAAAAA8HgceQH3B41BjuaBPZYm34S_k';
 
 date_default_timezone_set('Asia/Manila');
 $date = date('Y-m-d');
@@ -707,7 +734,7 @@ if ($_POST) {
     $lname = trim($_POST['lname']);
     $street_number = '#' . ltrim(trim($_POST['street_number']), '#');
     $address = sprintf("%s %s Avenue, Mabayuan, Olongapo City", $street_number, trim($_POST['street_name']));
-    $nic = $_POST['nic'];
+    $hasPhilhealth = $_POST['hasPhilhealth'] ?? 'no';
     $dob = $_POST['dob'];
     $email = $_POST['email'] ?? "";
     $newpassword = $_POST['password'] ?? "";
@@ -728,7 +755,7 @@ if (substr($phone, 0, 1) === "0") {
         $sweet_alert = "<script>Swal.fire({title: 'Password Mismatch', text: 'Passwords do not match!', icon: 'error', confirmButtonText: 'OK'});</script>";
     } else {
         try {
-            $database = new mysqli("localhost", "root", "Ayysue", "SQL_Database_Hemolink");
+            $database = new mysqli("localhost", "u667890873_Ace", "BarkForMeDog011303", "u667890873_hemolink_data");
             if ($database->connect_error) {
                 throw new Exception("Database connection failed: " . $database->connect_error);
             }
@@ -752,10 +779,10 @@ if (substr($phone, 0, 1) === "0") {
             }
 
             // Insert patient data
-            $stmt = $database->prepare("INSERT INTO patient (pemail, pname, ppassword, paddress, pnic, pdob, phone_number) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $stmt = $database->prepare("INSERT INTO patient (pemail, pname, ppassword, paddress, has_philhealth, pdob, phone_number) VALUES (?, ?, ?, ?, ?, ?, ?)");
             $fullName = $fname . ' ' . $lname;
             $hashed_password = $newpassword;
-            $stmt->bind_param("sssssss", $email, $fullName, $hashed_password, $address, $nic, $dob, $phone);
+            $stmt->bind_param("sssssss", $email, $fullName, $hashed_password, $address, $hasPhilhealth, $dob, $phone);
             if (!$stmt->execute()) {
                 throw new Exception("Error registering patient data");
             }
