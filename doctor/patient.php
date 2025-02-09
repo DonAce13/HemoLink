@@ -378,7 +378,7 @@
             $email=$row["pemail"];
             $nic=$row["has_philhealth"];
             $dob=$row["pdob"];
-            $tele=$row["ptel"];
+            $phone_number=$row["ptel"];
             $address=$row["paddress"];
             echo '
             <div id="popup1" class="overlay">
@@ -448,7 +448,7 @@
                             </tr>
                             <tr>
                                 <td class="label-td" colspan="2">
-                                '.$tele.'<br><br>
+                                '.$phone_number.'<br><br>
                                 </td>
                             </tr>
                             <tr>

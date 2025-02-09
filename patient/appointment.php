@@ -424,7 +424,7 @@ if ($result->num_rows == 0) {
                     <div style="width:100%;">
                         <div class="h3-search">
                             Booking Date: ' . substr($appodate, 0, 30) . '<br>
-                            Reference Number: Mabyuan Health ' . $appoid . '
+                            Reference Number: Mabayuan Health ' . $appoid . '
                         </div>
                         <div class="h1-search">
                             ' . substr($title, 0, 21) . '<br>
@@ -582,7 +582,7 @@ echo '</div>';
             $spcil_array = $spcil_res->fetch_assoc();
             $spcil_name = $spcil_array["sname"];
             $nic = $row['docnic'];
-            $tele = $row['doctel'];
+            $phone_number = $row['doctel'];
 
             echo '
             <div id="popup1" class="overlay">
@@ -591,7 +591,7 @@ echo '</div>';
                         <h2></h2>
                         <a class="close" href="doctors">&times;</a>
                         <div class="content">
-                            Mabyuan Health <br> App<br>
+                            Mabayuan Health <br> App<br>
                         </div>
                         <div style="display: flex;justify-content: center;">
                         <table width="80%" class="sub-table scrolldown add-doc-form-container" border="0">
@@ -638,7 +638,7 @@ echo '</div>';
                             </tr>
                             <tr>
                                 <td class="label-td" colspan="2">
-                                '.$tele.'<br><br>
+                                '.$phone_number.'<br><br>
                                 </td>
                             </tr>
                             <tr>

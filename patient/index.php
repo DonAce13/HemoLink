@@ -106,7 +106,7 @@ if ($result->num_rows > 0) {
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 Swal.fire({
-                    title: 'Welcome to Mabyuan Health!',
+                    title: 'Welcome to Mabayuan Health!',
                     text: 'You have successfully logged in as {$userType}',
                     icon: 'success',
                     confirmButtonText: 'Continue',

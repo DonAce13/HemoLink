@@ -357,7 +357,7 @@ if ($result->num_rows > 0) {
            
             $dob=$row["pdob"];
             $nic=$row['has_philhealth'];
-            $tele=$row['ptel'];
+            $phone_number=$row['ptel'];
             echo '
             <div id="popup1" class="overlay">
                     <div class="popup">
@@ -365,7 +365,7 @@ if ($result->num_rows > 0) {
                         <h2></h2>
                         <a class="close" href="settings.php">&times;</a>
                         <div class="content">
-                            Mabyuan Health <br> App<br>
+                            Mabayuan Health <br> App<br>
                             
                         </div>
                         <div style="display: flex;justify-content: center;">
@@ -416,7 +416,7 @@ if ($result->num_rows > 0) {
                             </tr>
                             <tr>
                                 <td class="label-td" colspan="2">
-                                '.$tele.'<br><br>
+                                '.$phone_number.'<br><br>
                                 </td>
                             </tr>
                             <tr>
@@ -472,7 +472,7 @@ if ($result->num_rows > 0) {
             
             $address=$row["paddress"];
             $nic=$row['has_philhealth'];
-            $tele=$row['ptel'];
+            $phone_number=$row['ptel'];
 
             $error_1=$_GET["error"];
                 $errorlist= array(
@@ -548,7 +548,7 @@ if ($result->num_rows > 0) {
                                     </tr>
                                     <tr>
                                         <td class="label-td" colspan="2">
-                                            <input type="tel" name="Tele" class="input-text" placeholder="Telephone Number" value="'.$tele.'" required><br>
+                                            <input type="tel" name="Tele" class="input-text" placeholder="Telephone Number" value="'.$phone_number.'" required><br>
                                         </td>
                                     </tr>
                                     <tr>

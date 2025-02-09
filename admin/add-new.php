@@ -48,7 +48,7 @@
         $nic=$_POST['nic'];
         $spec=$_POST['spec'];
         $email=$_POST['email'];
-        $tele=$_POST['Tele'];
+        $phone_number=$_POST['phone_number'];
         $password=$_POST['password'];
         $cpassword=$_POST['cpassword'];
         
@@ -59,7 +59,7 @@
                 $error='1';
             }else{
 
-                $sql1="insert into doctor(docemail,docname,docpassword,docnic,doctel,specialties) values('$email','$name','$password','$nic','$tele',$spec);";
+                $sql1="insert into doctor(docemail,docname,docpassword,docnic,doctel,specialties) values('$email','$name','$password','$nic','$phone_number',$spec);";
                 $sql2="insert into webuser values('$email','d')";
                 $database->query($sql1);
                 $database->query($sql2);

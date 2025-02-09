@@ -591,7 +591,7 @@ if ($_GET) {
             $spcil_array= $spcil_res->fetch_assoc();
             $spcil_name=$spcil_array["sname"];
             $nic=$row['docnic'];
-            $tele=$row['doctel'];
+            $phone_number=$row['doctel'];
             echo '
             <div id="popup1" class="overlay">
                     <div class="popup">
@@ -650,7 +650,7 @@ if ($_GET) {
                             </tr>
                             <tr>
                                 <td class="label-td" colspan="2">
-                                '.$tele.'<br><br>
+                                '.$phone_number.'<br><br>
                                 </td>
                             </tr>
                             <tr>

@@ -118,7 +118,7 @@ if (isset($_GET['logout'])) {
 if (isset($_SESSION["welcome_alert"])) {
     $alertMessage = [
         'icon' => 'success',
-        'title' => 'Welcome to Mabyuan Health!',
+        'title' => 'Welcome to Mabayuan Health!',
         'text' => 'Your account has been successfully created.'
     ];
     unset($_SESSION["welcome_alert"]);
@@ -134,7 +134,7 @@ if (isset($_SESSION["welcome_alert"])) {
     <link rel="icon" type="image/png" href="../img/bg01.png">
     <link rel="icon" type="image/png" href="../img/bg01.png">
     <link rel="shortcut icon" type="image/png" href="../img/bg01.png">
-    <title>Login - Mabyuan Health</title>
+    <title>Login - Mabayuan Health</title>
     
     <!-- CSS and Scripts -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -395,7 +395,7 @@ if (isset($_SESSION["welcome_alert"])) {
     <div class="container">
         <div class="row justify-content-center">
                     <div class="card-body p-5">
-                        <h1 class="header-text mb-4">Mabyuan Health</h1>
+                        <h1 class="header-text mb-4">Mabayuan Health</h1>
                         <p class="sub-text mb-4">Connecting you to better health</p>
                         <p class="sub-text mb-4">Login with your details to continue</p>
                         

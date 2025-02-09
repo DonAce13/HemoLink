@@ -272,9 +272,18 @@ INSERT INTO `specialties` (`id`, `sname`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `webuser`
---
+-- Table structure for table `web-- Create users table
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
+
+
+-- Create webuser table
 CREATE TABLE `webuser` (
   `email` varchar(255) NOT NULL,
   `usertype` char(1) DEFAULT NULL
@@ -326,14 +335,7 @@ ALTER TABLE `doctor`
   ADD KEY `idx_docemail` (`docemail`);
 
 --
--- Indexes for table `otp_verifications`
---
-ALTER TABLE `otp_verifications`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `phone_number` (`phone_number`),
-  ADD KEY `idx_phone_number` (`phone_number`);
 
---
 -- Indexes for table `patient`
 --
 ALTER TABLE `patient`
@@ -367,38 +369,6 @@ ALTER TABLE `webuser`
   ADD PRIMARY KEY (`email`);
 
 --
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `appointment`
---
-ALTER TABLE `appointment`
-  MODIFY `appoid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT for table `doctor`
---
-ALTER TABLE `doctor`
-  MODIFY `docid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT for table `otp_verifications`
---
-ALTER TABLE `otp_verifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `patient`
---
-ALTER TABLE `patient`
-  MODIFY `pid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT for table `schedule`
---
-ALTER TABLE `schedule`
-  MODIFY `scheduleid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 DELIMITER $$
 --

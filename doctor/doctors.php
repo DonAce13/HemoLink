@@ -348,7 +348,7 @@
             $spcil_array= $spcil_res->fetch_assoc();
             $spcil_name=$spcil_array["sname"];
             $nic=$row['docnic'];
-            $tele=$row['doctel'];
+            $phone_number=$row['doctel'];
             echo '
             <div id="popup1" class="overlay">
                     <div class="popup">
@@ -356,7 +356,7 @@
                         <h2></h2>
                         <a class="close" href="doctors.php">&times;</a>
                         <div class="content">
-                            Mabyuan Health <br> App<br>
+                            Mabayuan Health <br> App<br>
                             
                         </div>
                         <div style="display: flex;justify-content: center;">
@@ -407,7 +407,7 @@
                             </tr>
                             <tr>
                                 <td class="label-td" colspan="2">
-                                '.$tele.'<br><br>
+                                '.$phone_number.'<br><br>
                                 </td>
                             </tr>
                             <tr>
@@ -613,7 +613,7 @@
             $spcil_array= $spcil_res->fetch_assoc();
             $spcil_name=$spcil_array["sname"];
             $nic=$row['docnic'];
-            $tele=$row['doctel'];
+            $phone_number=$row['doctel'];
 
             $error_1=$_GET["error"];
                 $errorlist= array(
@@ -688,7 +688,7 @@
                                     </tr>
                                     <tr>
                                         <td class="label-td" colspan="2">
-                                            <input type="tel" name="Tele" class="input-text" placeholder="Telephone Number" value="'.$tele.'" required><br>
+                                            <input type="tel" name="Tele" class="input-text" placeholder="Telephone Number" value="'.$phone_number.'" required><br>
                                         </td>
                                     </tr>
                                     <tr>

@@ -16,7 +16,7 @@ ob_start(); // Optional: Buffer output to prevent header errors
     <link rel="stylesheet" href="css/main.css">  
     <link rel="stylesheet" href="css/signup.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <title>Sign Up - Mabyuan Health</title>
+    <title>Sign Up - Mabayuan Health</title>
     <style>
         * {
             margin: 0;
@@ -349,8 +349,8 @@ ob_start(); // Optional: Buffer output to prevent header errors
                   <!-- Telephone Field with Send OTP Button -->
 <tr>
     <td class="label-td" colspan="2">
-        <label for="tele" class="form-label">Telephone:</label>
-        <input type="tel" name="tele" id="tele" class="input-text" placeholder="Telephone Number" required pattern="^09\d{9}$" title="The number should start at 09 and be exactly 11 digits long.">
+        <label for="phone_number" class="form-label">Telephone:</label>
+        <input type="tel" name="phone_number" id="phone_number" class="input-text" placeholder="Telephone Number" required pattern="^09\d{9}$" title="The number should start at 09 and be exactly 11 digits long.">
         <button type="button" id="sendOtpButton" disabled onclick="sendOtp()">Send OTP</button>
     </td>
 </tr>
@@ -420,13 +420,13 @@ document.getElementById('termsLink').addEventListener('click', function(e) {
         html: `
             <div style="text-align: left; padding: 10px;">
                 <h3>Effective Date: January 14, 2025</h3>
-                <p>Welcome to Mabyuan Health! By using this website or mobile app, you agree to these Terms and Conditions.</p>
+                <p>Welcome to Mabayuan Health! By using this website or mobile app, you agree to these Terms and Conditions.</p>
                 
                 <h4 style="margin-top: 15px;">1. Acceptance of Terms</h4>
-                <p>By accessing or using Mabyuan Health, you agree to be bound by these terms.</p>
+                <p>By accessing or using Mabayuan Health, you agree to be bound by these terms.</p>
 
                 <h4 style="margin-top: 15px;">2. Service Description</h4>
-                <p>Mabyuan Health provides an online platform for scheduling healthcare appointments and accessing medical records.</p>
+                <p>Mabayuan Health provides an online platform for scheduling healthcare appointments and accessing medical records.</p>
 
                 <h4 style="margin-top: 15px;">3. User Responsibilities</h4>
                 <ul style="margin-left: 20px;">
@@ -444,19 +444,19 @@ document.getElementById('termsLink').addEventListener('click', function(e) {
                 </ul>
 
                 <h4 style="margin-top: 15px;">5. Limitation of Liability</h4>
-                <p>Mabyuan Health is not liable for any damages arising from use of the service.</p>
+                <p>Mabayuan Health is not liable for any damages arising from use of the service.</p>
 
                 <h4 style="margin-top: 15px;">6. Legal Rights and Priorities</h4>
-                <p>Mabyuan Health is committed to providing equitable access to healthcare services and upholding the rights of all individuals, including senior citizens, indigenous peoples, and persons with disabilities (PWD), as protected by Philippine law.</p>
+                <p>Mabayuan Health is committed to providing equitable access to healthcare services and upholding the rights of all individuals, including senior citizens, indigenous peoples, and persons with disabilities (PWD), as protected by Philippine law.</p>
 
                 <h4style="margin-top: 15px;">6.1 Senior Citizens' Rights</h4>
-                <p>In accordance with Republic Act No. 7432, which was later amended by RA 9472, senior citizens have the right to priority services in various establishments, including healthcare facilities. Mabyuan Health will ensure that priority is given to senior citizens during healthcare appointments, in line with the provisions of these laws.</p>
+                <p>In accordance with Republic Act No. 7432, which was later amended by RA 9472, senior citizens have the right to priority services in various establishments, including healthcare facilities. Mabayuan Health will ensure that priority is given to senior citizens during healthcare appointments, in line with the provisions of these laws.</p>
 
                 <h4 style="margin-top: 15px;">6.2 Indigenous Peoples' Rights</h4>
-                <p>In line with the Indigenous Peoples' Rights Act of 1997, Mabyuan Health recognizes and respects the rights of indigenous peoples, ensuring that they are provided with accessible healthcare services. Indigenous individuals will not be discriminated against in any manner, and their unique cultural and health needs will be taken into account.</p>
+                <p>In line with the Indigenous Peoples' Rights Act of 1997, Mabayuan Health recognizes and respects the rights of indigenous peoples, ensuring that they are provided with accessible healthcare services. Indigenous individuals will not be discriminated against in any manner, and their unique cultural and health needs will be taken into account.</p>
 
                 <h4 style="margin-top: 15px;">6.3 Persons with Disabilities (PWD) Rights</h4>
-                <p>As per Republic Act No. 10754, which expands the benefits and privileges for persons with disabilities, Mabyuan Health is committed to offering priority service to PWDs. This includes providing express lanes for PWDs in all healthcare appointments. In the absence of express lanes, Mabyuan Health ensures that priority is given to persons with disabilities to ensure timely access to necessary medical services.</p>
+                <p>As per Republic Act No. 10754, which expands the benefits and privileges for persons with disabilities, Mabayuan Health is committed to offering priority service to PWDs. This includes providing express lanes for PWDs in all healthcare appointments. In the absence of express lanes, Mabayuan Health ensures that priority is given to persons with disabilities to ensure timely access to necessary medical services.</p>
 
                 <h4 style="margin-top: 15px;">7. Privacy and Data Protection</h4>
                 <p>We take your privacy seriously and comply with relevant laws on data protection. Please review our privacy policy for details on how we collect, store, and protect your personal information.</p>
@@ -521,7 +521,7 @@ document.getElementById('privacyPolicyLink').addEventListener('click', function(
         html: `
             <div style="text-align: left; padding: 10px;">
                 <h3>Effective Date: January 14, 2025</h3>
-                <p>At Mabyuan Health, we value your privacy and are committed to protecting your personal information. Our goal is to ensure that your data is handled securely, and we take all necessary measures to protect it from unauthorized access, loss, or misuse.</p>
+                <p>At Mabayuan Health, we value your privacy and are committed to protecting your personal information. Our goal is to ensure that your data is handled securely, and we take all necessary measures to protect it from unauthorized access, loss, or misuse.</p>
                 
                 <h4 style="margin-top: 15px;">1. Information We Collect</h4>
                 <ul style="margin-left: 20px;">
@@ -540,8 +540,8 @@ document.getElementById('privacyPolicyLink').addEventListener('click', function(
 
                 <h4 style="margin-top: 15px;">3. Information Security</h4>
                 <p>Your personal information is stored securely using industry-standard encryption methods. We have implemented robust security measures to protect your data from unauthorized access, loss, or misuse.</p>
-                <p>Mabyuan Health is fully committed to preventing unauthorized access and vulnerabilities. We employ best practices to prevent common threats like SQL injection attacks. Our system is designed with built-in protection to ensure that no SQL injection vulnerabilities can be exploited.</p>
-                <p>Additionally, all data access is secured with strict access control, ensuring that only authorized personnel within Mabyuan Health have access to your information. This access is limited to essential personnel only, and all private personnel handling data are bound by strict confidentiality agreements.</p>
+                <p>Mabayuan Health is fully committed to preventing unauthorized access and vulnerabilities. We employ best practices to prevent common threats like SQL injection attacks. Our system is designed with built-in protection to ensure that no SQL injection vulnerabilities can be exploited.</p>
+                <p>Additionally, all data access is secured with strict access control, ensuring that only authorized personnel within Mabayuan Health have access to your information. This access is limited to essential personnel only, and all private personnel handling data are bound by strict confidentiality agreements.</p>
 
                 <h4 style="margin-top: 15px;">4. Security Tools Used</h4>
                 <p>To further enhance our security measures, we rely on three advanced tools to protect and monitor your data:</p>
@@ -552,7 +552,7 @@ document.getElementById('privacyPolicyLink').addEventListener('click', function(
                 </ul>
 
                 <h4 style="margin-top: 15px;">5. Data Disclosure</h4>
-                <p>Your personal information will only be disclosed to authorized personnel within Mabyuan Health who are directly involved in providing healthcare services. We do not sell, share, or rent your personal data to third parties for marketing or any other purposes without your explicit consent. In certain cases, we may disclose information to legal authorities if required by law or if it is necessary to protect your safety or the safety of others.</p>
+                <p>Your personal information will only be disclosed to authorized personnel within Mabayuan Health who are directly involved in providing healthcare services. We do not sell, share, or rent your personal data to third parties for marketing or any other purposes without your explicit consent. In certain cases, we may disclose information to legal authorities if required by law or if it is necessary to protect your safety or the safety of others.</p>
 
                 <h4 style="margin-top: 15px;">6. Your Rights</h4>
                 <ul style="margin-left: 20px;">
@@ -562,7 +562,7 @@ document.getElementById('privacyPolicyLink').addEventListener('click', function(
                 </ul>
 
                 <h4 style="margin-top: 15px;">7. Contact Us</h4>
-                <p>If you have any questions or concerns about this Privacy Policy, or if you wish to exercise your rights, please contact us at Mabyuan Health@gmail.com</a>.</p>
+                <p>If you have any questions or concerns about this Privacy Policy, or if you wish to exercise your rights, please contact us at Mabayuan Health@gmail.com</a>.</p>
             </div>
         `,
         width: '600px',
@@ -640,23 +640,25 @@ function showOtpInput() {
 
 // Function to enable Send OTP button
 function enableSendOtpButton() {
-    const teleInput = document.getElementById('tele');
+    const phoneInput = document.getElementById('phone_number'); // Corrected ID
     const sendOtpButton = document.getElementById('sendOtpButton');
-    sendOtpButton.disabled = !teleInput.value.match(/^09\d{9}$/);
+    sendOtpButton.disabled = !phoneInput.value.match(/^09\d{9}$/);
 }
 
+// Add event listener to telephone input for enabling Send OTP button
+document.getElementById('phone_number').addEventListener('input', enableSendOtpButton);
 // AJAX call to send OTP
 function sendOtp() {
-    var tele = document.getElementById('tele').value;
+    var phone_number = document.getElementById('phone_number').value;
 
     // Validate phone number (must be 11 digits starting with 09)
-    if (tele.match(/^09\d{9}$/)) {
+    if (phone_number.match(/^09\d{9}$/)) {
         fetch('send_otp.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
-            body: 'tele=' + encodeURIComponent(tele) // Encode the phone number for safety
+            body: 'phone_number=' + encodeURIComponent(phone_number) // Encode the phone number for safety
         })
         .then(response => {
             if (!response.ok) {
@@ -678,9 +680,8 @@ function sendOtp() {
     }
 }
 
-
 // Add event listener to telephone input for enabling Send OTP button
-document.getElementById('tele').addEventListener('input', enableSendOtpButton);
+// document.getElementById('phone_number').addEventListener('input', enableSendOtpButton);
 </script>
 <script>
 function calculateAge(dob) {
@@ -699,7 +700,7 @@ function calculateAge(dob) {
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             Swal.fire({
-                title: 'Welcome to Mabyuan Health!',
+                title: 'Welcome to Mabayuan Health!',
                 text: 'Your account has been successfully created.',
                 icon: 'success',
                 confirmButtonText: 'Continue'
@@ -739,7 +740,7 @@ if ($_POST) {
     $email = $_POST['email'] ?? "";
     $newpassword = $_POST['password'] ?? "";
     $cpassword = $_POST['confirm_password'] ?? "";
-    $phone = preg_replace('/[^0-9]/', '', $_POST['tele']); // Remove non-numeric characters
+    $phone = preg_replace('/[^0-9]/', '', $_POST['phone_number']); // Remove non-numeric characters
 if (substr($phone, 0, 1) === "0") {
     $phone = "+63" . substr($phone, 1); // Convert 09XXXXXXX to +639XXXXXXX
 } else {
@@ -779,7 +780,7 @@ if (substr($phone, 0, 1) === "0") {
             }
 
             // Insert patient data
-            $stmt = $database->prepare("INSERT INTO patient (pemail, pname, ppassword, paddress, has_philhealth, pdob, phone_number) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $stmt = $database->prepare("INSERT INTO patient (pemail, pname, ppassword, paddress, hasPhilhealth, pdob, phone_number) VALUES (?, ?, ?, ?, ?, ?, ?)");
             $fullName = $fname . ' ' . $lname;
             $hashed_password = $newpassword;
             $stmt->bind_param("sssssss", $email, $fullName, $hashed_password, $address, $hasPhilhealth, $dob, $phone);
