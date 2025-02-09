@@ -707,26 +707,25 @@ if ($_POST) {
     $lname = trim($_POST['lname']);
     $street_number = '#' . ltrim(trim($_POST['street_number']), '#');
     $address = sprintf("%s %s Avenue, Mabayuan, Olongapo City", $street_number, trim($_POST['street_name']));
-    $nic = !empty($_POST['nic']) ? $_POST['nic'] : NULL;
+    $nic = $_POST['nic'];
     $dob = $_POST['dob'];
     $email = $_POST['email'] ?? "";
     $newpassword = $_POST['password'] ?? "";
     $cpassword = $_POST['confirm_password'] ?? "";
     $phone = preg_replace('/[^0-9]/', '', $_POST['tele']); // Remove non-numeric characters
-    if (substr($phone, 0, 1) === "0") {
-        $phone = "+63" . substr($phone, 1); // Convert 09XXXXXXX to +639XXXXXXX
-    } else {
-        $phone = "+$phone"; // If already in E.164 format, add "+"
-    }
+if (substr($phone, 0, 1) === "0") {
+    $phone = "+63" . substr($phone, 1); // Convert 09XXXXXXX to +639XXXXXXX
+} else {
+    $phone = "+$phone"; // If already in E.164 format, add "+"
+}
 
+    
     $sweet_alert = "";
 
     if (!preg_match("/^[a-zA-Z ]+$/", $fname) || !preg_match("/^[a-zA-Z ]+$/", $lname)) {
         $sweet_alert = "<script>Swal.fire({title: 'Invalid Name Format', text: 'First and last names must contain only letters and spaces.', icon: 'error', confirmButtonText: 'OK'});</script>";
     } elseif ($newpassword !== $cpassword) {
         $sweet_alert = "<script>Swal.fire({title: 'Password Mismatch', text: 'Passwords do not match!', icon: 'error', confirmButtonText: 'OK'});</script>";
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $sweet_alert = "<script>Swal.fire({title: 'Invalid Email Format', text: 'Please enter a valid email address.', icon: 'error', confirmButtonText: 'OK'});</script>";
     } else {
         try {
             $database = new mysqli("localhost", "root", "Ayysue", "SQL_Database_Hemolink");
@@ -755,7 +754,7 @@ if ($_POST) {
             // Insert patient data
             $stmt = $database->prepare("INSERT INTO patient (pemail, pname, ppassword, paddress, pnic, pdob, phone_number) VALUES (?, ?, ?, ?, ?, ?, ?)");
             $fullName = $fname . ' ' . $lname;
-            $hashed_password = password_hash($newpassword, PASSWORD_BCRYPT); // Hash the password
+            $hashed_password = $newpassword;
             $stmt->bind_param("sssssss", $email, $fullName, $hashed_password, $address, $nic, $dob, $phone);
             if (!$stmt->execute()) {
                 throw new Exception("Error registering patient data");
@@ -770,20 +769,16 @@ if ($_POST) {
             }
 
             // Send OTP via Twilio
-            try {
-                $otp = rand(100000, 999999);
-                $account_sid = 'ACbf56b173b4f3c4b0cef7f2497d30d6a5';
-                $auth_token = 'd95e0606e4591b5f251cba67d54f7628';
-                $twilio_number = '14055432932';
-                $client = new Client($account_sid, $auth_token);
+            $otp = rand(100000, 999999);
+            $account_sid = 'ACbf56b173b4f3c4b0cef7f2497d30d6a5';
+            $auth_token = 'd95e0606e4591b5f251cba67d54f7628';
+            $twilio_number = '14055432932';
+            $client = new Client($account_sid, $auth_token);
 
-                $client->messages->create(
-                    $phone,
-                    ['from' => $twilio_number, 'body' => "Your OTP is: $otp"]
-                );
-            } catch (Exception $e) {
-                throw new Exception("Error sending OTP: " . $e->getMessage());
-            }
+            $client->messages->create(
+                $phone,
+                ['from' => $twilio_number, 'body' => "Your OTP is: $otp"]
+            );
 
             $database->commit();
 
@@ -798,9 +793,7 @@ if ($_POST) {
             header("Location: login.php");
             exit();
         } catch (Exception $e) {
-            if (isset($database) && $database !== null) {
-                $database->rollback();
-            }
+            $database->rollback();
             $sweet_alert = "<script>Swal.fire({title: 'Error', text: '" . addslashes($e->getMessage()) . "', icon: 'error', confirmButtonText: 'OK'});</script>";
         }
     }

@@ -4,7 +4,7 @@ define('DB_USER', 'root');
 define('DB_PASS', 'Ayysue');
 define('DB_NAME', 'SQL_Database_Hemolink');
 
-define('TWILIO_SID', 'ACe042a0f5dea2cb97ac2c45b1cbef4211');
-define('TWILIO_AUTH_TOKEN', '162f2dcca26f8207e4481aff9e29af1c');
-define('TWILIO_NUMBER', 'VAd879fde2196ca8355bb3da60bd1c960c');
+define('TWILIO_SID', 'ACbf56b173b4f3c4b0cef7f2497d30d6a5');
+define('TWILIO_AUTH_TOKEN', 'd95e0606e4591b5f251cba67d54f7628');
+define('TWILIO_NUMBER', '+14055432932');
 ?>
