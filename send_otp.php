@@ -1,5 +1,8 @@
 <?php
 use Twilio\Rest\Client;
+ini_set('display_errors', 1);
+
+// Check if the autoload.php file exists and is accessibl
 require __DIR__ . '/vendor/autoload.php';
 require 'config.php'; // Separate file for database & Twilio credentials
 
@@ -58,7 +61,7 @@ try {
         $tele,
         [
             'from' => TWILIO_NUMBER,
-            'body' => "Your OTP is: $otp. It expires in 5 minutes."
+            'body' => "Your Mabayuan Health verification code is: $otp. Don't share this code with anyone; our employees will never ask for the code."
         ]
     );
     echo "OTP sent successfully.";

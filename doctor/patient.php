@@ -321,7 +321,7 @@
                                     $email=$row["pemail"];
                                     $nic=$row["pnic"];
                                     $dob=$row["pdob"];
-                                    $tel=$row["ptel"];
+                                    $tel=$row["phone_number"];
                                     
                                     echo '<tr>
                                         <td> &nbsp;'.

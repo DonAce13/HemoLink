@@ -66,9 +66,6 @@ $list110 = $database->query($sqlmain);
         .sub-table{
             animation: transitionIn-Y-bottom 0.5s;
         }
-
-
-        
 </style>
 </head>
 <body>

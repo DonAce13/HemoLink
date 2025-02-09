@@ -110,8 +110,13 @@
                     </td>
                 </tr>
                 <tr class="menu-row" >
-                    <td class="menu-btn menu-icon-patient  menu-active menu-icon-patient-active">
+                    <td class="menu-btn menu-icon-patient menu-active menu-icon-records-active">
                         <a href="patient.php" class="non-style-link-menu  non-style-link-menu-active"><div><p class="menu-text">Patients</p></a></div>
+                    </td>
+                </tr>
+                <tr class="menu-row" >
+                    <td class="menu-btn menu-icon-records">
+                        <a href="records.php" class="non-style-link-menu "><div><p class="menu-text">Records</p></a></div>
                     </td>
                 </tr>
 
@@ -258,7 +263,7 @@
                                     $email=$row["pemail"];
                                     $nic = empty($row["pnic"]) ? 'None' : $row["pnic"];
                                     $dob=$row["pdob"];
-                                    $tel=$row["ptel"];
+                                    $tel=$row["phone_number"];
                                     
                                     echo '<tr>
                                         <td style="text-align: center;"> &nbsp;'.
@@ -315,7 +320,7 @@
             $email=$row["pemail"];
             $nic = empty($row["pnic"]) ? 'None' : $row["pnic"];
             $dob=$row["pdob"];
-            $tele=$row["ptel"];
+            $tele=$row["phone_number"];
             $address=$row["paddress"];
             echo '
             <div id="popup1" class="overlay">
