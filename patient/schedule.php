@@ -42,6 +42,9 @@ if ($result->num_rows > 0) {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../img/bg01.png">
+    <link rel="icon" type="image/png" href="../img/bg01.png">
+    <link rel="shortcut icon" type="image/png" href="../img/bg01.png">
     <link rel="stylesheet" href="../css/schedule.css">
     <link rel="stylesheet" href="../css/animations.css">  
     <link rel="stylesheet" href="../css/main.css">  
@@ -346,7 +349,7 @@ $schedulerow = $database->query($sqlmain);
                         $booking_check = $database->query("SELECT * FROM appointment WHERE pid = (SELECT pid FROM patient WHERE pemail = '" . $_SESSION["user"] . "') AND scheduleid = '$scheduleid'");
                         if ($booking_check->num_rows > 0) {
                             // Already booked
-                            $button_disabled = '<button class="cancel-booking-btn btn-primary-soft btn btn-booked" style="width:97%;" disabled>Already Booked</button>';
+                            $button_disabled = '<button class="cancel-booking-btn btn-primary-soft btn btn-booked" style="width:97%; background-color: #2d6a4f; border-radius: 15px;" disabled>Already Booked</button>';
                         } else {
                             // Not booked yet
                             $button_disabled = '<a href="booking?id=' . $scheduleid . '"><button class="cancel-booking-btn btn-primary-soft btn btn-book-now" style="width:95%;">Book Now</button></a>';

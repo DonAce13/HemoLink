@@ -42,6 +42,9 @@ if ($result->num_rows > 0) {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../img/bg01.png">
+    <link rel="icon" type="image/png" href="../img/bg01.png">
+    <link rel="shortcut icon" type="image/png" href="../img/bg01.png">
     <link rel="stylesheet" href="../css/animations.css">  
     <link rel="stylesheet" href="../css/main.css">  
     <link rel="stylesheet" href="../css/admin.css">
@@ -94,27 +97,27 @@ if ($result->num_rows > 0) {
         $userid = 0;
     }
 
-    // Display SweetAlert for successful login only once
-    if (isset($_GET['action']) && $_GET['action'] == 'login_success' && !isset($_SESSION['login_alert_shown'])) {
-        // Set the session variable to indicate that the alert has been shown
-        $_SESSION['login_alert_shown'] = true;
 
-        // Display SweetAlert with the patient's name
+    if (isset($_SESSION["login_success"]) && !isset($_SESSION["alert_shown"])) {
+        $userType = $_SESSION["user_type"] ?? "Patient";
+        $userName = $_SESSION["user_name"] ?? $username;
         echo "
         <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
         <script>
-            setTimeout(function() {
+            document.addEventListener('DOMContentLoaded', function() {
                 Swal.fire({
-                    title: 'Login Successful',
-                    text: 'Welcome, $username to your Patient Dashboard!',
+                    title: 'Welcome to HemoLink!',
+                    text: 'You have successfully logged in as {$userType}',
                     icon: 'success',
-                    confirmButtonText: 'OK'
+                    confirmButtonText: 'Continue',
+                    confirmButtonColor: '#2d6a4f'
                 });
-            }, 250); // Delay for 250ms
-        </script>
-        ";
+            });
+        </script>";
+        $_SESSION["alert_shown"] = true;
     }
     ?>
+
 
 <div class="container">
 <div class="hamburger" id="hamburger">
@@ -298,64 +301,63 @@ if ($result->num_rows > 0) {
                 </td>
                 </tr>
                 <tr>
-                    <td colspan="4">
-                    <table class="filter-container" style="border: none;" border="0">
-                            <tr>
-                                <td colspan="4">
-                                    <p style="font-size: 20px;font-weight:600;padding-left: 12px;">Status</p>
-                                </td>
-                            </tr>
-
-                            <tr class="status-report">
-                                <td class="stats1">
-                                    <a href="doctors.php" class="non-style-link">
-                                        <div class="dashboard-items">
-                                            <div>
-                                                <div class="h1-dashboard">
-                                                    <?php echo $doctorrow->num_rows; ?>
-                                                </div><br>
-                                                <div class="h3-dashboard">
-                                                    Doctors &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                </div>
-                                            </div>
-                                            <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/doctors-hover.svg');"></div>
-                                        </div>
-                                    </a>
-                            </td>
-
-
-                                <td class="stats2">
-                                    <a href="appointment.php" class="non-style-link">
-                                        <div class="dashboard-items">
-                                            <div>
-                                                <div class="h1-dashboard">
-                                                    <?php echo $appointmentrow->num_rows; ?>
-                                                </div><br>
-                                                <div class="h3-dashboard">
-                                                    New Booking &nbsp;&nbsp;
-                                                </div>
-                                            </div>
-                                            <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/book-hover.svg');"></div>
-                                        </div>
-                                    </a>
-                            </td>
-
-                                <td class="stats2">
-                                    <a href="schedule.php" class="non-style-link">
-                                        <div class="dashboard-items">
-                                            <div>
-                                                <div class="h1-dashboard">
-                                                    <?php echo $schedulerow->num_rows; ?>
-                                                </div><br>
-                                                <div class="h3-dashboard">
-                                                    All Sessions
-                                                </div>
-                                            </div>
-                                            <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/session-iceblue.svg');"></div>
-                                        </div>
-                                    </a>
-                            </td>
-                        </tr>
+    <td colspan="4">
+        <table class="filter-container" style="border: none;" border="0">
+            <tr>
+                <td colspan="4">
+                    <p style="font-size: 20px;font-weight:600;padding-left: 12px;">Status</p>
+                </td>
+            </tr>
+            <tr class="status-report">
+                <td class="stats1">
+                    <a href="doctors.php" class="non-style-link">
+                        <div class="dashboard-items">
+                            <div>
+                                <div class="h1-dashboard">
+                                    <?php echo $doctorrow->num_rows; ?>
+                                </div>
+                                <div class="h3-dashboard">
+                                    Doctors
+                                </div>
+                            </div>
+                            <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/doctors-hover.svg');"></div>
+                        </div>
+                    </a>
+                </td>
+                <td class="stats2">
+                    <a href="appointment.php" class="non-style-link">
+                        <div class="dashboard-items">
+                            <div>
+                                <div class="h1-dashboard">
+                                    <?php echo $appointmentrow->num_rows; ?>
+                                </div>
+                                <div class="h3-dashboard">
+                                    New Booking
+                                </div>
+                            </div>
+                            <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/book-hover.svg');"></div>
+                        </div>
+                    </a>
+                </td>
+                <td class="stats2">
+                    <a href="schedule.php" class="non-style-link">
+                        <div class="dashboard-items">
+                            <div>
+                                <div class="h1-dashboard">
+                                    <?php echo $schedulerow->num_rows; ?>
+                                </div>
+                                <div class="h3-dashboard">
+                                    All Sessions
+                                </div>
+                            </div>
+                            <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/session-iceblue.svg');"></div>
+                        </div>
+                    </a>
+                </td>
+            </tr>
+        </table>
+    </td>
+</tr>
 
                         </table>
                                     </center>

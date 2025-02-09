@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../img/bg01.png">
+    <link rel="icon" type="image/png" href="../img/bg01.png">
+    <link rel="shortcut icon" type="image/png" href="../img/bg01.png">
     <link rel="stylesheet" href="../css/animations.css">  
     <link rel="stylesheet" href="../css/main.css">  
     <link rel="stylesheet" href="../css/admin.css">
@@ -268,14 +271,14 @@
                                     $spcil_array= $spcil_res->fetch_assoc();
                                     $spcil_name=$spcil_array["sname"];
                                     echo '<tr>
-                                        <td> &nbsp;'.
+                                        <td style="text-align: center;"> &nbsp;'.
                                         substr($name,0,30)
                                         .'</td>
-                                        <td>
-                                        '.substr($email,0,20).'
-                                        </td>
-                                        <td>
-                                            '.substr($spcil_name,0,20).'
+                                        <td style="text-align: center;"> &nbsp;'
+                                        .substr($email,0,20).
+                                        '</td>
+                                        <td style="text-align: center;"> &nbsp;'
+                                        .substr($spcil_name,0,20).'
                                         </td>
 
                                         <td>
@@ -344,8 +347,8 @@
             $spcil_res= $database->query("select sname from specialties where id='$spe'");
             $spcil_array= $spcil_res->fetch_assoc();
             $spcil_name=$spcil_array["sname"];
-            $nic=$row['docnic'];
-            $tele=$row['doctel'];
+             $nic = empty($row["docnic"]) ? 'None' : $row["docnic"];
+            $tele=  empty($row["doctel"]) ? 'None' : $row["doctel"];
             echo '
             <div id="popup1" class="overlay">
                     <div class="popup">

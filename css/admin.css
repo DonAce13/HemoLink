@@ -251,7 +251,7 @@
     position: sticky;
     top: 0;
     display: block; /* Show the menu by default */
-    min-height: 750px;
+    min-height: 1000px;
 }
 
 /* Hamburger Icon styles (hidden by default) */

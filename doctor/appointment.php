@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../img/bg01.png">
+    <link rel="icon" type="image/png" href="../img/bg01.png">
+    <link rel="shortcut icon" type="image/png" href="../img/bg01.png">
     <link rel="stylesheet" href="../css/animations.css">  
     <link rel="stylesheet" href="../css/main.css">  
     <link rel="stylesheet" href="../css/admin.css">
@@ -255,91 +258,79 @@
                                 
                                 <th class="table-headin">
                                     
-                                    Appointment Date
-                                    
-                                </th>
-                                
-                                <th class="table-headin">
-                                    
                                     Events
                                     
                                 </tr>
                         </thead>
                         <tbody>
                         
-                            <?php
+                        <?php
+$result = $database->query($sqlmain);
 
-                                
-                                $result= $database->query($sqlmain);
+if ($result->num_rows == 0) {
+    echo '<tr>
+            <td colspan="7">
+                <br><br><br><br>
+                <center>
+                    <img src="../img/notfound.svg" width="25%">
+                    <br>
+                    <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">We cannot find anything related to your keywords!</p>
+                    <a class="non-style-link" href="appointment.php"><button class="login-btn btn-primary-soft btn" style="display: flex;justify-content: center;align-items: center;margin-left:20px;">&nbsp; Show all Appointments &nbsp;</button></a>
+                </center>
+                <br><br><br><br>
+            </td>
+          </tr>';
+} else {
+    date_default_timezone_set('Asia/Manila'); // Set timezone to Manila
+    $currentDateTime = new DateTime(); // Get the current date and time
 
-                                if($result->num_rows==0){
-                                    echo '<tr>
-                                    <td colspan="7">
-                                    <br><br><br><br>
-                                    <center>
-                                    <img src="../img/notfound.svg" width="25%">
-                                    
-                                    <br>
-                                    <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">We cannot find anything related to your keywords !</p>
-                                    <a class="non-style-link" href="appointment.php"><button  class="login-btn btn-primary-soft btn"  style="display: flex;justify-content: center;align-items: center;margin-left:20px;">&nbsp; Show all Appointments &nbsp;</font></button>
-                                    </a>
-                                    </center>
-                                    <br><br><br><br>
-                                    </td>
-                                    </tr>';
-                                    
-                                }
-                                else{
-                                for ( $x=0; $x<$result->num_rows;$x++){
-                                    $row=$result->fetch_assoc();
-                                    $appoid=$row["appoid"];
-                                    $scheduleid=$row["scheduleid"];
-                                    $title=$row["title"];
-                                    $docname=$row["docname"];
-                                    $scheduledate=$row["scheduledate"];
-                                    $scheduletime=$row["scheduletime"];
-                                    $pname=$row["pname"];
-                                    $apponum=$row["apponum"];
-                                    $appodate=$row["appodate"];
-                                    echo '<tr >
-                                        <td style="font-weight:600;"> &nbsp;'.
-                                        
-                                        substr($pname,0,25)
-                                        .'</td >
-                                        <td style="text-align:center;font-size:23px;font-weight:500; color: var(--btnnicetext);">
-                                        '.$apponum.'
-                                        
-                                        </td>
-                                        <td>
-                                        '.substr($title,0,15).'
-                                        </td>
-                                        <td style="text-align:center;;">
-                                            '.substr($scheduledate,0,10).' @'.substr($scheduletime,0,5).'
-                                        </td>
-                                        
-                                        <td style="text-align:center;">
-                                            '.$appodate.'
-                                        </td>
+    for ($x = 0; $x < $result->num_rows; $x++) {
+        $row = $result->fetch_assoc();
+        $appoid = $row["appoid"];
+        $scheduleid = $row["scheduleid"];
+        $title = $row["title"];
+        $docname = $row["docname"];
+        $scheduledate = $row["scheduledate"];
+        $scheduletime = $row["scheduletime"];
+        $pname = $row["pname"];
+        $apponum = $row["apponum"];
+        $appodate = $row["appodate"];
 
-                                        <td>
-                                        <div style="display:flex;justify-content: center;">
-                                        
-                                        
-                                                            <a href="?action=view&id='.$appoid.'" class="non-style-link">
+        // Combine scheduledate and scheduletime into a single DateTime object
+        $scheduledDateTime = new DateTime("$scheduledate $scheduletime");
+
+        // Determine the button label based on the comparison
+        if ($currentDateTime >= $scheduledDateTime) {
+            // If the session has passed, disable the Cancel button and show "Session Passed"
+            $buttonLabel = '<button class="btn-session-passed btn-primary-soft" style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;" disabled>Session Passed</button>';
+        } else {
+            // If the session is upcoming, show the Cancel button
+            $buttonLabel = '<a href="?action=drop&id=' . $appoid . '&name=' . $pname . '&session=' . $title . '&apponum=' . $apponum . '" class="non-style-link"><button class="btn-primary-soft btn button-icon btn-delete" style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">Cancel</font></button></a>';
+        }
+
+        // Display the row in the table
+        echo '<tr>
+                <td style="font-weight:600;"> &nbsp;' . substr($pname, 0, 25) . '</td>
+                <td style="text-align:center;font-size:23px;font-weight:500; color: var(--btnnicetext);">' . $apponum . '</td>
+                <td>' . substr($title, 0, 15) . '</td>
+                <td style="text-align:center;">
+                    ' . substr($scheduledate, 0, 10) . ' @' . substr($scheduletime, 0, 5) . '
+                </td>
+                <td>
+                    <div style="display:flex;justify-content: center;">
+                        <a href="?action=view&id=' . $appoid . '" class="non-style-link">
                             <button class="btn-primary-soft btn button-icon btn-view" style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;">
                                 <font class="tn-in-text">View</font>
                             </button>
-                        </a>
+                        </a>&nbsp;&nbsp;&nbsp;
+                        ' . $buttonLabel . '
+                    </div>
+                </td>
+              </tr>';
+    }
+}
+?>
 
-                                       <a href="?action=drop&id='.$appoid.'&name='.$pname.'&session='.$title.'&apponum='.$apponum.'" class="non-style-link"><button  class="btn-primary-soft btn button-icon btn-delete"  style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">Cancel</font></button></a>
-                                       &nbsp;&nbsp;&nbsp;</div>
-                                        </td>
-                                    </tr>';
-                                    
-                                }
-                            }
-                                 
-                            ?>
  
                             </tbody>
 

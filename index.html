@@ -4,69 +4,750 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../img/bg01.png">
+    <link rel="icon" type="image/png" href="../img/bg01.png">
+    <link rel="shortcut icon" type="image/png" href="../img/bg01.png">
+
+
     <link rel="stylesheet" href="css/animations.css">  
     <link rel="stylesheet" href="css/main.css">  
     <link rel="stylesheet" href="css/index.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <title>HEMOLINK</title>
+    <style>
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            line-height: 1.6;
+            position: relative; /* Add this */
+            background: #f8f9fa; /* Your existing background color */
+        }
+
+        /* Add this new style block */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.3); /* Adjust the 0.3 value to control darkness */
+            z-index: -1; /* Places the overlay behind content */
+            pointer-events: none; /* Allows clicking through the overlay */
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            background: #ffffff;
+            width: 100%;
+            padding: 15px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-shadow: 0 12px 32px rgba(0,0,0,0.1);
+        }
+        
+        .navbar .container {
+            max-width: 1200px;
+            max-height: 40px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background-image: url('../img/bg01.png');
+            background-size: cover;
+            background-position: center;
+            border-radius: 50%;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo {
+            color: #1B4C30;
+            font-size: 28px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .nav-links .btn {
+            background: #6BBF8A;
+            color: rgb(0, 0, 0);
+            padding: 14px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-left: 15px;
+            font-size: 16px;
+        }
+
+        .nav-links .btn-signup {
+            background: #ffffff;
+            color: rgb(0, 0, 0);
+            padding: 14px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-left: 15px;
+            font-size: 16px;
+        }
+
+        .nav-links .btn:hover {
+            background: #40916c;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 120px 20px 60px;
+            text-align: center;
+            background: #f0f0f0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .hero h1 {
+            text-align: center;
+            font-size: 48px;
+            color: #1b4332;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            text-align: center;
+            font-size: 18px;
+            color: #495057;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            line-height: 1.6;
+        }
+
+        /* Learn More styles */
+        .learn-more {
+            margin-top: 40px;
+            cursor: pointer;
+        }
+
+        .learn-more p {
+            text-align: left;
+            margin-bottom: 5px;
+            color: #1b4332;
+            font-weight: bold;
+        }
+
+        .arrow-down {
+            color: #1b4332;
+            font-size: 24px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        /* Features Section */
+        .features {
+            background-color: #f0f0f0;
+            padding: 80px 70px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 30px;
+            border-radius: 35px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 20px;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .feature-card h3 {
+            color: #1b4332;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        .feature-card p {
+            color: #6c757d;
+            font-size: 16px;
+        }
+        .cta-button {
+            background: #2d6a4f;
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-button:hover {
+            background: #40916c;
+        }
+
+        /* Video Section */
+        .video-section {
+            padding: 60px 20px;
+            text-align: center;
+            background: #f0f0f0;
+        }
+
+        .video-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        /* Footer */
+        .footer {
+            background: #1b4332;
+            color: white;
+            padding: 60px 20px 30px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+
+        .footer-info h3 {
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .footer-info p {
+            margin-bottom: 10px;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 24px;
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.6);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar .container {
+                padding: 0 15px;
+            }
+
+            .logo {
+                font-size: 24px;
+            }
+
+            .nav-links .btn {
+                padding: 8px 15px;
+                font-size: 14px;
+                margin-left: 8px;
+            }
+
+            .hero {
+                padding: 100px 15px 40px;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+                padding: 0 10px;
+            }
+            .learn-more p{
+                text-align: center;
+            }
+
+            .hero p {
+                font-size: 16px;
+                padding: 0 15px;
+            }
+
+            .features {
+                padding: 40px 15px;
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .feature-card {
+                padding: 20px;
+            }
+
+            .cta-button {
+                padding: 12px 30px;
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 28px;
+            }
+
+            .nav-links .btn {
+                padding: 6px 12px;
+                font-size: 12px;
+                margin-left: 5px;
+            }
+            .nav-links .btn-signup {
+                padding: 6px 12px;
+                font-size: 12px;
+                margin-left: 5px;
+            }
+
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .social-links {
+                justify-content: center;
+            }
+            .logo-overlay{
+                width: 100%;
+                height: 100%;
+                top: 50%;
+                left: 50%;
+            }
+        }
+        /* New Hero Container and Logo Styles */
+.hero-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 50px;
+    align-items: center;
+}
+
+.hero-logo {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    max-width: 500px;
+}
+
+.logo-square {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #1b4332;
+    border-radius: 10px;
+    transform: rotate(-10deg);
+}
+
+.logo-overlay {
+    position: absolute;
+    top: 40%;
+    left: 30%;
+    transform: translate(-50%, -50%);
+    width: 850px;
+    height: 750px;
+    background-image: url('../img/bg01.png');
+    background-size: 100%; /* Slightly smaller to fit better */
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+}
+
+.hero-content {
+    text-align: left;
+    max-width: 600px;
+}
+
+/* Update existing hero class */
+.hero {
+    padding: 0;
+    margin-top: 60px;
+    text-align: left;
+    background-image:url('../img/bg04.png') ;
+    background-size: cover;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+}
+
+/* Update CTA button */
+.cta-button {
+    background: #40916c;
+    border-radius: 25px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+/* Update media queries */
+@media (max-width: 768px) {
+    .hero-container {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 30px;
+    }
+
+    .hero-logo {
+        max-width: 300px;
+        margin: 0 auto;
+    }
+
+    .hero-content {
+        text-align: center;
+        margin: 0 auto;
+    }
+
+    .hero {
+        padding: 20px;
+    }
+    .qr-code {
+        margin-top: 20px;
+        display: inline-block;
+    }
+    .logo-overlay {
+        width: 76%;
+        height: 150px;
+        top: 50%;
+        left: 50%;
+    }
+
+
+.qr-code img {
+    width: 150px; /* Adjust size as needed */
+    height: 150px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Update media query for mobile responsiveness */
+@media (max-width: 768px) {
+    .qr-code {
+        margin: 20px auto;
+    }
+    
+    .qr-code img {
+        width: 120px;
+        height: 120px;
+    }
+}
+}
+    </style>
 </head>
 <body>
-    <div class="full-height">
-        <center>
-        <table border="0">
-            <tr>
-                <td width="80%">
-                <div class="container-text">
-                    <font class="logo">HEMOLINK |</font>
-                    <font class="logo-sub"> Hassle-Free Appointments for a Healthier Tomorrow.</font>
-                </div>
-                </td>
-                <td width="10%">
-                    <a href="login.php" class="non-style-link">
-                        <input type="button" value="LOGIN" class="btn-primary btn">
-                    </a>
-                </td>
-                <td width="10%">
-                    <a href="signup.php" class="non-style-link">
-                        <input type="button" value="REGISTER" class="btn-primary btn">
-                    </a>
-                </td>
-            </tr>
-
-            <tr>
-                <td colspan="3">
-                    <div class="container-text">
-                        <p class="heading-text">Avoid Hassles & Delays.</p>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="3">
-                    <div class="container-text">
-                        <p class="sub-text2">"How are you feeling today? Not at your best?
-                            No need to worry. Hemolink is here to connect you with the healthcare you need in Mabuyuan.
-                            <br>
-                            Book your appointments easily online with Hemolink. We provide a free and convenient service for scheduling health accommodations.
-                            <br>
-                            Make your appointment now and get the care you deserve."
-                            
-                        </p>
-                    </div>
-                </td>
-            </tr>
-
-            <!-- Retained Call-to-Action button as per your original structure -->
-            <tr>    
-                <td colspan="3">
-                    <center>
-                        <br>
-                        <a href="signup.php">
-                            <input type="button" value="Appoint Now!" class="btn-primary btn">
-                        </a>
-                    </center>
-                </td>
-            </tr>
-        </table>
-        </center>
+    <div class="navbar">
+        <div class="container">
+            <div class="logo-container">
+                <div class="logo-icon"></div>
+                <a href="/" class="logo">HEMOLINK</a>
+            </div>
+            <div class="nav-links">
+                <a href="signup.php"><button class="btn-signup">REGISTER</button></a>
+                <a href="login.php"><button class="btn">LOGIN</button></a>
+            </div>
+        </div>
     </div>
+
+    <section class="hero">
+        <div class="hero-container">
+            <!-- Left side with logo -->
+            <div class="hero-logo">
+                <div class="logo-overlay"></div>
+            </div>
+            
+            <!-- Right side with text -->
+            <div class="hero-content">
+                <h1>Your Link to Mabayuan Health Services</h1>
+                <p>Feeling under the weather? Don't worry! Hemolink makes it easy to book healthcare appointments in Mabayuan. Fast, free, and convenient—get the care you deserve today.</p>
+                <a href="signup.php" style="display: flex;justify-content: center;align-items: center;" class="cta-button">APPOINT NOW</a>
+                <div class="qr-code"  style="display: flex;justify-content: center;align-items: center;">
+                    <img src="img/qr-code.png" alt="QR Code">
+                </div>
+                <div class="learn-more">
+                    <p>Learn More</p>
+                    <div class="arrow-down" id="learnMoreBtn">▼</div>
+                </div>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="feature-card">
+            <div class="feature-icon" style="background-image: url('../img/icons/schedule.svg');"></div>
+            <h3>Booking System</h3>
+            <p>Book appointments easily! Skip the lines and schedule your Barangay Mabayuan Healthcare visit in just a few clicks.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon" style="background-image: url('../img/icons/settings.svg');"></div>
+            <h3>View Services</h3>
+            <p>Explore healthcare programs and services in Barangay Mabayuan anytime, anywhere.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon" style="background-image: url('../img/icons/cellphone.svg');"></div>
+            <h3>User-friendly Interface</h3>
+            <p>Navigate your healthcare needs effortlessly with our intuitive and simple design.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon" style="background-image: url('../img/icons/records.svg');"></div>
+            <h3>Health Records Access</h3>
+            <p>Securely view your medical history and track your health records conveniently online.</p>
+        </div>
+    </section>
+
+    <section class="video-section">
+        <div class="video-container">
+            <iframe 
+                width="100%" 
+                height="450" 
+                src="https://www.youtube.com/embed/YDg0SJRUMNg"
+                frameborder="0"
+                allowfullscreen
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            ></iframe>
+        </div>
+        <h4 style="text-align: center; font-size: 1,2rem; margin-bottom: 40px; font-weight: bold;">
+            Hemolink Promotional/ Tutorial Video
+        </h4>
+    </section>
+
+    <!-- Add Barangay Mabayuan Section Here -->
+<section style="background-color: #1b4332; padding: 60px 0; color: white;">
+    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+        <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 40px; font-weight: bold;">
+            BARANGAY MABAYUAN HEALTH DEPARTMENT
+        </h2>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+            <!-- Left side: Building Image -->
+            <div>
+                <img src="img/barangay-mabayuan.jpg" alt="Barangay Mabayuan Building" 
+                     style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+            </div>
+            
+            <!-- Right side: Map -->
+            <div>
+                <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30853.49661485122!2d120.2819668230284!3d14.84281039005076!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x339670e4723eeb57%3A0x6a64dad14597eba7!2sMabayuan%20Covered%20Court!5e0!3m2!1sen!2sph!4v1737908994317!5m2!1sen!2sph"
+                    width="100%" 
+                    height="100%" 
+                    style="border:0; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" 
+                    allowfullscreen="" 
+                    loading="lazy">
+                </iframe>
+            </div>
+        </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-info">
+                <h3>Contact Us</h3>
+                <p>#24 Otero Avenue., Barangay Mabayuan,</p>
+                <p>Olongapo City 2200</p>
+                <p>Phone: +63 9094357642</p>
+                <p>Email: hemolink@gmail.com</p>
+            </div>
+            <div class="footer-info">
+                <h3>Quick Links</h3>
+                <p><span id="privacyLink" style="color: white; cursor: pointer;">Privacy Policy</span></p>
+                <p><span id="termsLink" style="color: white; cursor: pointer;">Terms and Conditions</span></p>
+            </div>
+            <div class="footer-info">
+                <h3>Follow Us</h3>
+                <div class="social-links">
+                    <a href="https://www.youtube.com/@TheHemolink"><img src="../img/icons/youtube.svg" alt="Youtube"></a>
+                    <a href="https://www.facebook.com/profile.php?id=61565227891474"><img src="../img/icons/facebook.svg" alt="Facebook"></a>
+                    <a href="#"><img src="../img/icons/instagram.svg" alt="Instagram"></a>
+                </div>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>© 2025 HemoLink. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Privacy Policy popup
+    document.getElementById('privacyLink').addEventListener('click', function() {
+    Swal.fire({
+        title: 'Privacy Policy',
+        html: `
+            <div style="text-align: left; padding: 10px;">
+                <h3>Effective Date: January 14, 2025</h3>
+                <p>At Hemolink, we value your privacy and are committed to protecting your personal information. Our goal is to ensure that your data is handled securely, and we take all necessary measures to protect it from unauthorized access, loss, or misuse.</p>
+                
+                <h4 style="margin-top: 15px;">1. Information We Collect</h4>
+                <ul style="margin-left: 20px;">
+                    <li>Personal information (name, address, contact details)</li>
+                    <li>Medical history and health records</li>
+                    <li>Appointment details and preferences</li>
+                </ul>
+
+                <h4 style="margin-top: 15px;">2. How We Use Your Information</h4>
+                <ul style="margin-left: 20px;">
+                    <li>To provide healthcare services</li>
+                    <li>To manage and schedule appointments</li>
+                    <li>To enhance and improve the quality of our services</li>
+                    <li>To communicate with you about your health and appointment reminders</li>
+                </ul>
+
+                <h4 style="margin-top: 15px;">3. Information Security</h4>
+                <p>Your personal information is stored securely using industry-standard encryption methods. We have implemented robust security measures to protect your data from unauthorized access, loss, or misuse.</p>
+                <p>Hemolink is fully committed to preventing unauthorized access and vulnerabilities. We employ best practices to prevent common threats like SQL injection attacks. Our system is designed with built-in protection to ensure that no SQL injection vulnerabilities can be exploited.</p>
+                <p>Additionally, all data access is secured with strict access control, ensuring that only authorized personnel within Hemolink have access to your information. This access is limited to essential personnel only, and all private personnel handling data are bound by strict confidentiality agreements.</p>
+
+                <h4 style="margin-top: 15px;">4. Security Tools Used</h4>
+                <p>To further enhance our security measures, we rely on three advanced tools to protect and monitor your data:</p>
+                <ul style="margin-left: 20px;">
+                    <li><b>ManageEngine EventLog Analyzer</b>: This tool provides comprehensive log management and monitoring for SQL Server. It helps us collect, analyze, and report on SQL Server logs, providing real-time alerts for suspicious activities, unauthorized access, or potential security breaches.</li>
+                    <li><b>SQL Secure (Idera)</b>: This tool helps us perform comprehensive security assessments and monitoring. It allows our database administrators to identify potential vulnerabilities and take corrective actions before they can be exploited. SQL Secure also provides detailed reports on user permissions, security policy compliance, and potential security risks.</li>
+                    <li><b>Safe Backup</b>: We use this tool for reliable backup and disaster recovery solutions. It ensures that your data is securely backed up, and in the event of a security breach or data loss, we can restore services quickly and reliably.</li>
+                </ul>
+
+                <h4 style="margin-top: 15px;">5. Data Disclosure</h4>
+                <p>Your personal information will only be disclosed to authorized personnel within Hemolink who are directly involved in providing healthcare services. We do not sell, share, or rent your personal data to third parties for marketing or any other purposes without your explicit consent. In certain cases, we may disclose information to legal authorities if required by law or if it is necessary to protect your safety or the safety of others.</p>
+
+                <h4 style="margin-top: 15px;">6. Your Rights</h4>
+                <ul style="margin-left: 20px;">
+                    <li>Access your personal information at any time</li>
+                    <li>Request corrections or updates to your personal information</li>
+                    <li>Delete your account and personal information upon request, subject to applicable legal requirements</li>
+                </ul>
+
+                <h4 style="margin-top: 15px;">7. Contact Us</h4>
+                <p>If you have any questions or concerns about this Privacy Policy, or if you wish to exercise your rights, please contact us at hemolink@gmail.com</a>.</p>
+            </div>
+        `,
+        width: '800px',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#2d6a4f'
+    });
+});
+
+
+// Terms and Conditions popup
+document.getElementById('termsLink').addEventListener('click', function() {
+    Swal.fire({
+        title: 'Terms and Conditions',
+        html: `
+            <div style="text-align: left; padding: 10px;">
+                <h3>Effective Date: January 14, 2025</h3>
+                <p>Welcome to Hemolink! By using this website or mobile app, you agree to these Terms and Conditions.</p>
+                
+                <h4 style="margin-top: 15px;">1. Acceptance of Terms</h4>
+                <p>By accessing or using Hemolink, you agree to be bound by these terms.</p>
+
+                <h4 style="margin-top: 15px;">2. Service Description</h4>
+                <p>Hemolink provides an online platform for scheduling healthcare appointments and accessing medical records.</p>
+
+                <h4 style="margin-top: 15px;">3. User Responsibilities</h4>
+                <ul style="margin-left: 20px;">
+                    <li>Provide accurate information</li>
+                    <li>Maintain account security</li>
+                    <li>Comply with appointment policies</li>
+                    <li>Respect healthcare providers</li>
+                </ul>
+
+                <h4 style="margin-top: 15px;">4. Appointment Policies</h4>
+                <ul style="margin-left: 20px;">
+                    <li>24-hour cancellation notice required</li>
+                    <li>Arrive 15 minutes before appointment</li>
+                    <li>Bring valid ID and medical records</li>
+                </ul>
+
+                <h4 style="margin-top: 15px;">5. Limitation of Liability</h4>
+                <p>Hemolink is not liable for any damages arising from use of the service.</p>
+
+                <h4 style="margin-top: 15px;">6. Legal Rights and Priorities</h4>
+                <p>Hemolink is committed to providing equitable access to healthcare services and upholding the rights of all individuals, including senior citizens, indigenous peoples, and persons with disabilities (PWD), as protected by Philippine law.</p>
+
+                <h4style="margin-top: 15px;">6.1 Senior Citizens' Rights</h4>
+                <p>In accordance with Republic Act No. 7432, which was later amended by RA 9472, senior citizens have the right to priority services in various establishments, including healthcare facilities. Hemolink will ensure that priority is given to senior citizens during healthcare appointments, in line with the provisions of these laws.</p>
+
+                <h4 style="margin-top: 15px;">6.2 Indigenous Peoples' Rights</h4>
+                <p>In line with the Indigenous Peoples' Rights Act of 1997, Hemolink recognizes and respects the rights of indigenous peoples, ensuring that they are provided with accessible healthcare services. Indigenous individuals will not be discriminated against in any manner, and their unique cultural and health needs will be taken into account.</p>
+
+                <h4 style="margin-top: 15px;">6.3 Persons with Disabilities (PWD) Rights</h4>
+                <p>As per Republic Act No. 10754, which expands the benefits and privileges for persons with disabilities, Hemolink is committed to offering priority service to PWDs. This includes providing express lanes for PWDs in all healthcare appointments. In the absence of express lanes, Hemolink ensures that priority is given to persons with disabilities to ensure timely access to necessary medical services.</p>
+
+                <h4 style="margin-top: 15px;">7. Privacy and Data Protection</h4>
+                <p>We take your privacy seriously and comply with relevant laws on data protection. Please review our privacy policy for details on how we collect, store, and protect your personal information.</p>
+            </div>
+        `,
+        width: '800px',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#2d6a4f'
+    });
+});
+
+
+        // Learn More scroll functionality
+        document.getElementById('learnMoreBtn').addEventListener('click', function() {
+            const featuresSection = document.querySelector('.features');
+            featuresSection.scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
 </body>
 </html>

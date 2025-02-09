@@ -51,6 +51,9 @@ $list110 = $database->query($sqlmain);
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../img/bg01.png">
+    <link rel="icon" type="image/png" href="../img/bg01.png">
+    <link rel="shortcut icon" type="image/png" href="../img/bg01.png">
     <link rel="stylesheet" href="../css/animations.css">  
     <link rel="stylesheet" href="../css/main.css">  
     <link rel="stylesheet" href="../css/admin.css">
@@ -418,9 +421,15 @@ if ($result->num_rows == 0) {
 
         // Display sessions normally (soft-deletes removed)
         echo '<tr>
-            <td>' . substr($title, 0, 30) . '</td>
-            <td>' . substr($docid, 0, 20) . '</td>  <!-- Display docid instead of docname -->
-            <td style="text-align:center;">' . substr($scheduledate, 0, 10) . ' ' . substr($scheduletime, 0, 5) . '</td>
+            <td style="text-align: center;"> &nbsp;'
+            . substr($title, 0, 30) 
+            . '</td>
+            <td style="text-align: center;"> &nbsp;' 
+            . substr($docid, 0, 20) 
+            . '</td>  
+            <td style="text-align:center;">' 
+            . substr($scheduledate, 0, 10) . ' ' 
+            . substr($scheduletime, 0, 5) . '</td>
             <td style="text-align:center;">' . $nop . '</td>
             <td>
                 <div style="display:flex;justify-content: center;">
