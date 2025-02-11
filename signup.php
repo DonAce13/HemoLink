@@ -459,7 +459,7 @@ document.getElementById('termsLink').addEventListener('click', function(e) {
                 <p>As per Republic Act No. 10754, which expands the benefits and privileges for persons with disabilities, Mabayuan Health is committed to offering priority service to PWDs. This includes providing express lanes for PWDs in all healthcare appointments. In the absence of express lanes, Mabayuan Health ensures that priority is given to persons with disabilities to ensure timely access to necessary medical services.</p>
 
                 <h4 style="margin-top: 15px;">7. Privacy and Data Protection</h4>
-                <p>We take your privacy seriously and comply with relevant laws on data protection. Please review our privacy policy for details on how we collect, store, and protect your personal information.</p>
+                <p>We take your privacy seriously and are committed to protecting your personal information. Please review our privacy policy for details on how we collect, store, and protect your personal information.</p>
             </div>
         `,
         width: '600px',
@@ -631,8 +631,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-
-
 // Function to show OTP input
 function showOtpInput() {
     document.getElementById('otpRow').style.display = 'table-row';
@@ -640,25 +638,25 @@ function showOtpInput() {
 
 // Function to enable Send OTP button
 function enableSendOtpButton() {
-    const phoneInput = document.getElementById('phone_number'); // Corrected ID
+    const teleInput = document.getElementById('phone_number'); 
     const sendOtpButton = document.getElementById('sendOtpButton');
-    sendOtpButton.disabled = !phoneInput.value.match(/^09\d{9}$/);
+    sendOtpButton.disabled = !teleInput.value.match(/^09\d{9}$/);
 }
 
 // Add event listener to telephone input for enabling Send OTP button
 document.getElementById('phone_number').addEventListener('input', enableSendOtpButton);
 // AJAX call to send OTP
 function sendOtp() {
-    var phone_number = document.getElementById('phone_number').value;
+    var tele = document.getElementById('phone_number').value;
 
     // Validate phone number (must be 11 digits starting with 09)
-    if (phone_number.match(/^09\d{9}$/)) {
+    if (tele.match(/^09\d{9}$/)) {
         fetch('send_otp.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
-            body: 'phone_number=' + encodeURIComponent(phone_number) // Encode the phone number for safety
+            body: 'phone_number=' + encodeURIComponent(tele) // Encode the phone number for safety
         })
         .then(response => {
             if (!response.ok) {
@@ -730,107 +728,223 @@ date_default_timezone_set('Asia/Manila');
 $date = date('Y-m-d');
 $_SESSION["date"] = $date;
 
-if ($_POST) {
-    $fname = trim($_POST['fname']);
-    $lname = trim($_POST['lname']);
-    $street_number = '#' . ltrim(trim($_POST['street_number']), '#');
-    $address = sprintf("%s %s Avenue, Mabayuan, Olongapo City", $street_number, trim($_POST['street_name']));
-    $hasPhilhealth = $_POST['hasPhilhealth'] ?? 'no';
-    $dob = $_POST['dob'];
-    $email = $_POST['email'] ?? "";
-    $newpassword = $_POST['password'] ?? "";
-    $cpassword = $_POST['confirm_password'] ?? "";
-    $phone = preg_replace('/[^0-9]/', '', $_POST['phone_number']); // Remove non-numeric characters
-if (substr($phone, 0, 1) === "0") {
-    $phone = "+63" . substr($phone, 1); // Convert 09XXXXXXX to +639XXXXXXX
-} else {
-    $phone = "+$phone"; // If already in E.164 format, add "+"
+// Enable error reporting for debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// Database connection with error logging
+$database = new mysqli("localhost", "root", "", "sql_database_hemolink");
+if ($database->connect_errno) {
+    $sweet_alert = "<script>Swal.fire({
+        title: 'Database Connection Error', 
+        text: 'Failed to connect to database: " . addslashes($database->connect_error) . "', 
+        icon: 'error', 
+        confirmButtonText: 'OK'
+    });</script>";
+    error_log("Database Connection Failed: " . $database->connect_error);
+    echo $sweet_alert;
+    exit;
 }
 
-    
-    $sweet_alert = "";
+if ($_POST) {
+    try {
+        $database->begin_transaction();
 
-    if (!preg_match("/^[a-zA-Z ]+$/", $fname) || !preg_match("/^[a-zA-Z ]+$/", $lname)) {
-        $sweet_alert = "<script>Swal.fire({title: 'Invalid Name Format', text: 'First and last names must contain only letters and spaces.', icon: 'error', confirmButtonText: 'OK'});</script>";
-    } elseif ($newpassword !== $cpassword) {
-        $sweet_alert = "<script>Swal.fire({title: 'Password Mismatch', text: 'Passwords do not match!', icon: 'error', confirmButtonText: 'OK'});</script>";
-    } else {
+        // Sanitize and validate inputs
+        $fname = trim($_POST['fname']);
+        $lname = trim($_POST['lname']);
+        $street_number = '#' . ltrim(trim($_POST['street_number']), '#');
+        $address = sprintf("%s %s Avenue, Mabayuan, Olongapo City", $street_number, trim($_POST['street_name']));
+        $hasPhilhealth = $_POST['hasPhilhealth'] ?? 'no';
+        $dob = $_POST['dob'];
+        $email = $_POST['email'] ?? "";
+        $newpassword = $_POST['password'] ?? "";
+        $cpassword = $_POST['confirm_password'] ?? "";
+        $phone = preg_replace('/[^0-9]/', '', $_POST['phone_number']); // Remove non-numeric characters
+        if (substr($phone, 0, 1) === "0") {
+            $phone = "+63" . substr($phone, 1); // Convert 09XXXXXXX to +639XXXXXXX
+        } else {
+            $phone = "+$phone"; // If already in E.164 format, add "+"
+        }
+
+        // Validate inputs
+        if (empty($fname) || empty($lname) || empty($email) || empty($newpassword) || empty($phone)) {
+            throw new Exception("All fields are required.");
+        }
+
+        if ($newpassword !== $cpassword) {
+            throw new Exception("Passwords do not match.");
+        }
+
+        // Check if email exists in patient table
+        $stmt = $database->prepare("SELECT pemail FROM patient WHERE pemail = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result->num_rows > 0) {
+            throw new Exception("This email address is already registered.");
+        }
+
+        // Check if phone number exists in patient table
+        $stmt = $database->prepare("SELECT phone_number FROM patient WHERE phone_number = ?");
+        $stmt->bind_param("s", $phone);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result->num_rows > 0) {
+            throw new Exception("This phone number is already registered.");
+        }
+
+        // Check if email exists in webuser table
+        $stmt = $database->prepare("SELECT email FROM webuser WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result->num_rows > 0) {
+            throw new Exception("This email address is already registered as a web user.");
+        }
+
+        // Prepare full name
+        $fullName = $fname . ' ' . $lname;
+
+        // Insert patient data
+        $stmt = $database->prepare("INSERT INTO patient (pemail, pname, ppassword, paddress, hasPhilhealth, pdob, phone_number) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("sssssss", $email, $fullName, $newpassword, $address, $hasPhilhealth, $dob, $phone);
+        
+        // Execute patient insert
+        if (!$stmt->execute()) {
+            error_log("Patient Insert Failed: " . $stmt->error);
+            error_log("Insert Details:");
+            error_log("Email: $email");
+            error_log("Full Name: $fullName");
+            error_log("Address: $address");
+            error_log("PhilHealth: $hasPhilhealth");
+            error_log("DOB: $dob");
+            error_log("Phone: $phone");
+            
+            throw new Exception("Error registering patient data: " . $stmt->error);
+        }
+
+        // Insert webuser data
+        $stmt = $database->prepare("INSERT INTO webuser (email, usertype) VALUES (?, ?)");
+        $userType = 'p';
+        $stmt->bind_param("ss", $email, $userType);
+        if (!$stmt->execute()) {
+            throw new Exception("Error creating user account: " . $stmt->error);
+        }
+
+        // Send OTP via Twilio
+        $otp = rand(100000, 999999);
+        $account_sid = 'ACbf56b173b4f3c4b0cef7f2497d30d6a5';
+        $auth_token = 'd95e0606e4591b5f251cba67d54f7628';
+        $twilio_number = '+18506000203';
+        $client = new Client($account_sid, $auth_token);
+
         try {
-            $database = new mysqli("localhost", "u667890873_Ace", "BarkForMeDog011303", "u667890873_hemolink_data");
-            if ($database->connect_error) {
-                throw new Exception("Database connection failed: " . $database->connect_error);
-            }
-
-            $database->begin_transaction();
-
-            // Check if email exists
-            $stmt = $database->prepare("SELECT pemail FROM patient WHERE pemail = ?");
-            $stmt->bind_param("s", $email);
-            $stmt->execute();
-            if ($stmt->get_result()->num_rows > 0) {
-                throw new Exception("This email address is already registered.");
-            }
-
-            // Check if phone number exists
-            $stmt = $database->prepare("SELECT phone_number FROM patient WHERE phone_number = ?");
-            $stmt->bind_param("s", $phone);
-            $stmt->execute();
-            if ($stmt->get_result()->num_rows > 0) {
-                throw new Exception("This phone number is already registered.");
-            }
-
-            // Insert patient data
-            $stmt = $database->prepare("INSERT INTO patient (pemail, pname, ppassword, paddress, hasPhilhealth, pdob, phone_number) VALUES (?, ?, ?, ?, ?, ?, ?)");
-            $fullName = $fname . ' ' . $lname;
-            $hashed_password = $newpassword;
-            $stmt->bind_param("sssssss", $email, $fullName, $hashed_password, $address, $hasPhilhealth, $dob, $phone);
-            if (!$stmt->execute()) {
-                throw new Exception("Error registering patient data");
-            }
-
-            // Insert webuser data
-            $stmt = $database->prepare("INSERT INTO webuser (email, usertype) VALUES (?, ?)");
-            $userType = 'p';
-            $stmt->bind_param("ss", $email, $userType);
-            if (!$stmt->execute()) {
-                throw new Exception("Error creating user account");
-            }
-
-            // Send OTP via Twilio
-            $otp = rand(100000, 999999);
-            $account_sid = 'ACbf56b173b4f3c4b0cef7f2497d30d6a5';
-            $auth_token = 'd95e0606e4591b5f251cba67d54f7628';
-            $twilio_number = '14055432932';
-            $client = new Client($account_sid, $auth_token);
-
             $client->messages->create(
                 $phone,
-                ['from' => $twilio_number, 'body' => "Your OTP is: $otp"]
+                [
+                    'from' => $twilio_number,
+                    'body' => "Your OTP is: $otp"
+                ]
             );
 
-            $database->commit();
+            // Ensure OTP is stored in the database
+            $stmt = $database->prepare("INSERT INTO otp_verifications (phone_number, otp) VALUES (?, ?)");
+            $stmt->bind_param("ss", $phone, $otp);
+            $stmt->execute();
 
-            $_SESSION["user"] = $email;
-            $_SESSION["usertype"] = "p";
-            $_SESSION["username"] = $fname;
-            $_SESSION["sweet_alert"] = true;
-            $_SESSION["login_success"] = true;
-            $_SESSION["user_type"] = "Patient";
-            $_SESSION["user_name"] = $fname;
-
-            header("Location: login.php");
-            exit();
         } catch (Exception $e) {
-            $database->rollback();
-            $sweet_alert = "<script>Swal.fire({title: 'Error', text: '" . addslashes($e->getMessage()) . "', icon: 'error', confirmButtonText: 'OK'});</script>";
+            error_log("Twilio OTP Error: " . $e->getMessage());
+            // Continue with registration even if OTP sending fails
         }
+
+        // Commit transaction
+        $database->commit();
+
+        // Set session for successful registration
+        $_SESSION["sweet_alert"] = true;
+        $_SESSION["user"] = $email;
+        $_SESSION["usertype"] = "p";
+        $_SESSION["username"] = $fname;
+        $_SESSION["login_success"] = true;
+        $_SESSION["user_type"] = "Patient";
+        $_SESSION["user_name"] = $fname;
+
+    } catch (Exception $e) {
+        // Rollback transaction on error
+        $database->rollback();
+        
+        // Log the error
+        error_log("Signup Error: " . $e->getMessage());
+        
+        // Display error to user
+        $sweet_alert = "<script>Swal.fire({
+            title: 'Registration Error', 
+            text: '" . addslashes($e->getMessage()) . "', 
+            icon: 'error', 
+            confirmButtonText: 'OK'
+        });</script>";
+    }
+}
+
+// Display any error alert
+if (!empty($sweet_alert)) {
+    echo $sweet_alert;
+}
+
+// After sending OTP, verify if the entered OTP matches
+if ($_POST && isset($_POST['otp'])) {
+    $entered_otp = trim($_POST['otp']);
+    $phone = preg_replace('/[^0-9]/', '', $_POST['phone_number']); // Remove non-numeric characters
+    if (substr($phone, 0, 1) === "0") {
+        $phone = "+63" . substr($phone, 1); // Convert 09XXXXXXX to +639XXXXXXX
+    } else {
+        $phone = "+$phone"; // If already in E.164 format, add "+"
     }
 
-    if (!empty($sweet_alert)) {
-        echo $sweet_alert;
+    // Check OTP with a time-based validation
+    $stmt = $database->prepare("SELECT otp, expires_at FROM otp_verifications WHERE phone_number = ? AND otp = ? AND expires_at > NOW()");
+    $stmt->bind_param("ss", $phone, $entered_otp);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        // OTP is correct and not expired
+        // Delete the used OTP to prevent reuse
+        $delete_stmt = $database->prepare("DELETE FROM otp_verifications WHERE phone_number = ? AND otp = ?");
+        $delete_stmt->bind_param("ss", $phone, $entered_otp);
+        $delete_stmt->execute();
+
+        // Proceed with account creation
+        $_SESSION["user"] = $email;
+        $_SESSION["usertype"] = "p";
+        $_SESSION["username"] = $fname;
+        $_SESSION["login_success"] = true;
+        $_SESSION["user_type"] = "Patient";
+        $_SESSION["user_name"] = $fname;
+
+        echo "<script>Swal.fire({
+            title: 'Verification Successful!', 
+            text: 'Your phone number has been verified. You can now complete your registration.', 
+            icon: 'success', 
+            confirmButtonText: 'Continue'
+        }).then((result) => { 
+            if (result.isConfirmed) { 
+                window.location.href = 'login.php'; 
+            }
+        });</script>";
+    } else {
+        // OTP is incorrect or expired
+        echo "<script>Swal.fire({
+            title: 'Invalid or Expired OTP', 
+            text: 'The OTP you entered is incorrect or has expired. Please request a new OTP.', 
+            icon: 'error', 
+            confirmButtonText: 'OK'
+        });</script>";
     }
 }
 ?>
+
 <?php
 ob_end_flush(); // Flush output buffer
 ?>
