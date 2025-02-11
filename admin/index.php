@@ -358,7 +358,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'login_success' && !isset($_SES
 
                 <td class="responsive-td" width="50%">
                     <center>
-                        <div class="abc scroll" style="height: 200px;">
+                        <div class="abc scroll">
                             <table width="100%" class="sub-table scrolldown" border="0">
                                 <thead>
                                     <tr>

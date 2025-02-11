@@ -175,11 +175,6 @@ if ($result->num_rows > 0) {
                         <a href="index.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">Dashboard</p></a></div></a>
                     </td>
                 </tr>
-                <tr class="menu-row">
-                    <td class="menu-btn menu-icon-doctor ">
-                        <a href="doctors.php" class="non-style-link-menu "><div><p class="menu-text">Doctors</p></a></div>
-                    </td>
-                </tr>
                 <tr class="menu-row" >
                     <td class="menu-btn menu-icon-schedule">
                         <a href="schedule.php" class="non-style-link-menu"><div><p class="menu-text">Schedule</p></div></a>
@@ -322,7 +317,7 @@ if ($result->num_rows > 0) {
                             
                                     <p style="font-size: 20px;font-weight:600;padding-left: 40px;" class="anime">Your Upcoming Booking</p>
                                     <center>
-                                        <div class="abc scroll" style="height: 250px;padding: 0;margin: 0;">
+                                        <div class="abc scroll" style="height: 1000px;padding: 0;margin: 0;">
                                         <table width="85%" class="sub-table scrolldown" border="0" >
                                         <thead>
                                             
@@ -348,66 +343,61 @@ if ($result->num_rows > 0) {
                                                 Scheduled Date & Time
                                                     
                                                 </th>
+
+                                                <th class="table-headin">
                                                     
-                                                </tr>
+                                                Booked For
+                                                        
+                                                </th>
+                                            </tr>
                                         </thead>
                                         <tbody>
                                         
                                             <?php
-                                            $nextweek=date("Y-m-d",strtotime("+1 week"));
-                                                $sqlmain= "select * from schedule inner join appointment on schedule.scheduleid=appointment.scheduleid inner join patient on patient.pid=appointment.pid inner join doctor on schedule.docid=doctor.docid  where  patient.pid=$userid  and schedule.scheduledate>='$today' order by schedule.scheduledate asc";
-                                                //echo $sqlmain;
-                                                $result= $database->query($sqlmain);
-                
-                                                if($result->num_rows==0){
-                                                    echo '<tr>
-                                                    <td colspan="4">
-                                                    <br><br><br><br>
-                                                    <center>
-                                                    <img src="../img/notfound.svg" width="25%">
-                                                    
-                                                    <br>
-                                                    <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">Nothing to show here!</p>
-                                                    <a class="non-style-link" href="schedule.php"><button  class="login-btn btn-primary-soft btn"  style="display: flex;justify-content: center;align-items: center;margin-left:20px;">&nbsp; Find a Schedule &nbsp;</font></button>
-                                                    </a>
-                                                    </center>
-                                                    <br><br><br><br>
-                                                    </td>
-                                                    </tr>';
-                                                    
-                                                }
-                                                else{
-                                                for ( $x=0; $x<$result->num_rows;$x++){
-                                                    $row=$result->fetch_assoc();
-                                                    $scheduleid=$row["scheduleid"];
-                                                    $title=$row["title"];
-                                                    $apponum=$row["apponum"];
-                                                    $docname=$row["docname"];
-                                                    $scheduledate=$row["scheduledate"];
-                                                    $scheduletime=$row["scheduletime"];
-                                                   
-                                                    echo '
-                                                    <tr>
-                                                        <td style="padding:30px;text-align:center;font-size:25px;font-weight:700;"> &nbsp;'.
-                                                        $apponum
-                                                        .'</td>
-                                                        <td style="padding:20px;text-align:center;"> &nbsp;'.
-                                                        substr($title,0,30)
-                                                        .'</td>
-                                                        <td style= "text-align:center;">
-                                                        '.substr($docname,0,20).'
-                                                        </td>
-                                                        <td style="text-align:center;">
-                                                            '.substr($scheduledate,0,10).' '.substr($scheduletime,0,5).'
-                                                        </td>
+                                            $nextweek = date("Y-m-d", strtotime("+1 week"));
+                                            $sqlmain = "SELECT *, IF(is_self = 0, 'For Myself', other_patient_name) AS patient_display FROM schedule 
+                                                        INNER JOIN appointment ON schedule.scheduleid = appointment.scheduleid 
+                                                        INNER JOIN patient ON patient.pid = appointment.pid 
+                                                        INNER JOIN doctor ON schedule.docid = doctor.docid 
+                                                        WHERE patient.pid = $userid AND schedule.scheduledate >= '$today' 
+                                                        ORDER BY schedule.scheduledate ASC";
+                                            $result = $database->query($sqlmain);
 
-                
-                                                       
+                                            if ($result->num_rows == 0) {
+                                                echo '<tr>
+                                                <td colspan="6">
+                                                <br><br><br><br>
+                                                <center>
+                                                <img src="../img/notfound.svg" width="25%">
+                                                
+                                                <br>
+                                                <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">Nothing to show here!</p>
+                                                <a class="non-style-link" href="schedule.php"><button class="login-btn btn-primary-soft btn" style="display: flex;justify-content: center;align-items: center;margin-left:20px;">&nbsp; Find a Schedule &nbsp;</font></button>
+                                                </a>
+                                                </center>
+                                                <br><br><br><br>
+                                                </td>
+                                                </tr>';
+                                            } else {
+                                                for ($x = 0; $x < $result->num_rows; $x++) {
+                                                    $row = $result->fetch_assoc();
+                                                    $scheduleid = $row["scheduleid"];
+                                                    $title = $row["title"];
+                                                    $apponum = $row["apponum"];
+                                                    $docname = $row["docname"];
+                                                    $scheduledate = $row["scheduledate"];
+                                                    $scheduletime = $row["scheduletime"];
+                                                    $patient_display = $row["patient_display"];
+
+                                                    echo '<tr>
+                                                    <td style="padding:30px;text-align:center;font-size:25px;font-weight:700;">&nbsp;' . $apponum . '</td>
+                                                    <td style="padding:20px;text-align:center;">&nbsp;' . substr($title, 0, 30) . '</td>
+                                                    <td style="text-align:center;">' . substr($docname, 0, 20) . '</td>
+                                                    <td style="text-align:center;">' . substr($scheduledate, 0, 10) . ' ' . substr($scheduletime, 0, 5) . '</td>
+                                                    <td style="text-align:center;">' . $patient_display . '</td>
                                                     </tr>';
-                                                    
                                                 }
                                             }
-                                                 
                                             ?>
                  
                                             </tbody>

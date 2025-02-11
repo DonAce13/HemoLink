@@ -242,7 +242,8 @@ font.logo-sub{
 
 .abc{
   width: 100%;
-  height: 550px;
+  height: 100%;
+
   overflow: auto;
 }
 
@@ -665,7 +666,6 @@ input[type=search]:focus {
   .date-container1{
     width:75%;
   }
-}
 
 
 }
@@ -813,3 +813,4 @@ input[type=search]:focus {
 }
 }
 
+}

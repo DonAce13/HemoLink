@@ -1,0 +1,127 @@
+@media (max-width: 768px) {
+    .menu {
+        width: 100%;
+        padding: 0;
+    }
+    .menu-container {
+        width: 100%;
+        padding: 0;
+    }
+    .profile-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .profile-title, .profile-subtitle {
+        text-align: center;
+    }
+    .filter-container {
+        width: 100%;
+        padding: 0;
+    }
+    .filter-container-items {
+        width: 100%;
+    }
+    .sub-table {
+        width: 100%;
+        padding: 0;
+    }
+    .dashboard-items {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    .h1-search, .h3-search, .h4-search {
+        text-align: center;
+    }
+    .btn-session-full, .btn-session-passed, .btn-schedule-ongoing, .login-btn {
+        width: 100%;
+    }
+    .abc {
+        width: 100%;
+        overflow-x: auto;
+        padding: 0;
+    }
+}
+
+.popup{
+    animation: transitionIn-Y-bottom 0.5s;
+}
+.sub-table{
+    animation: transitionIn-Y-bottom 0.5s;
+}
+@media (max-width: 768px) {
+    .menu {
+        width: 100%;
+        padding: 0;
+    }
+    .menu-container {
+        width: 100%;
+        padding: 0;
+    }
+    .profile-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .profile-title, .profile-subtitle {
+        text-align: center;
+    }
+    .filter-container {
+        width: 100%;
+        padding: 0;
+    }
+    .filter-container-items {
+        width: 100%;
+    }
+    .sub-table {
+        width: 100%;
+        padding: 0;
+    }
+    .dashboard-items {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    .h1-search, .h3-search, .h4-search {
+        text-align: center;
+    }
+    .btn-session-full, .btn-session-passed, .btn-schedule-ongoing, .login-btn {
+        width: 100%;
+    }
+    .abc {
+        width: 100%;
+        overflow-x: auto;
+        padding: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        align-items: center;
+    }
+    .menu {
+        width: 100%;
+    }
+    .dash-body {
+        width: 100%;
+        overflow-x: auto;
+    }
+    .date-container,
+    .filter-container {
+        width: 100%;
+        text-align: center;
+    }
+    .filter-container-items {
+        width: 100%;
+    }
+    .dashboard-items {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    .h1-search, .h3-search, .h4-search {
+        text-align: center;
+    }
+    .btn-session-full, .btn-session-passed, .btn-schedule-ongoing, .login-btn {
+        width: 100%;
+    }
+}

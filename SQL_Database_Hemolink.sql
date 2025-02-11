@@ -46,7 +46,7 @@ INSERT INTO `admin` (`aemail`, `apassword`) VALUES
 --
 
 CREATE TABLE `appointment` (
-  `appoid` int(11) NOT NULL,
+  `appoid` int(11) NOT NULL AUTO_INCREMENT,
   `pid` int(11) DEFAULT NULL,
   `apponum` int(11) DEFAULT NULL,
   `scheduleid` int(11) DEFAULT NULL,
@@ -58,7 +58,8 @@ CREATE TABLE `appointment` (
   `philhealth_id` varchar(20) DEFAULT NULL,
   `age` int(11) DEFAULT NULL,
   `status` enum('scheduled','done','canceled','ongoing') DEFAULT 'scheduled',
-  `is_confirmed` tinyint(1) NOT NULL DEFAULT 0
+  `is_confirmed` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`appoid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
@@ -137,11 +138,12 @@ INSERT INTO `doctor` (`docid`, `docemail`, `docname`, `docpassword`, `docnic`, `
 --
 
 CREATE TABLE `otp_verifications` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `phone_number` varchar(15) NOT NULL,
   `otp` varchar(6) NOT NULL,
   `expires_at` datetime NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -151,25 +153,26 @@ CREATE TABLE `otp_verifications` (
 --
 
 CREATE TABLE `patient` (
-  `pid` int(11) NOT NULL,
+  `pid` int(11) NOT NULL AUTO_INCREMENT,
   `pemail` varchar(255) NOT NULL,
   `pname` varchar(255) NOT NULL,
   `ppassword` char(60) NOT NULL,
   `paddress` varchar(255) DEFAULT NULL,
-  `pnic` varchar(15) DEFAULT NULL,
+  `hasPhilhealth` varchar(15) DEFAULT NULL,
   `pdob` date DEFAULT NULL,
   `phone_number` varchar(15) NOT NULL,
   `created_at` timestamp NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `is_deleted` tinyint(1) DEFAULT 0
+  `is_deleted` tinyint(1) DEFAULT 0,
+  PRIMARY KEY (`pid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `patient`
 --
 
-INSERT INTO `patient` (`pid`, `pemail`, `pname`, `ppassword`, `paddress`, `pnic`, `pdob`, `phone_number`, `created_at`, `updated_at`, `is_deleted`) VALUES
-(3, 'dev.ralph07@gmail.com', 'ralph jaminal', '123', '#12a De Aro Avenue, Mabayuan, Olongapo City', '', '2025-02-04', '+639685837376', '2025-02-05 16:04:24', '2025-02-05 16:04:24', 0);
+INSERT INTO `patient` (`pid`, `pemail`, `pname`, `ppassword`, `paddress`, `hasPhilhealth`, `pdob`, `phone_number`, `created_at`, `updated_at`, `is_deleted`) VALUES
+(1, 'patient@gmail.com', 'test patient', '123', '#12a De Aro Avenue, Mabayuan, Olongapo City', 'yes', '2025-02-04', '+639685837376', '2025-02-05 16:04:24', '2025-02-05 16:04:24', 0);
 
 -- --------------------------------------------------------
 
@@ -178,7 +181,7 @@ INSERT INTO `patient` (`pid`, `pemail`, `pname`, `ppassword`, `paddress`, `pnic`
 --
 
 CREATE TABLE `schedule` (
-  `scheduleid` int(11) NOT NULL,
+  `scheduleid` int(11) NOT NULL AUTO_INCREMENT,
   `docid` varchar(255) DEFAULT NULL,
   `title` varchar(255) DEFAULT NULL,
   `scheduledate` date DEFAULT NULL,
@@ -186,7 +189,8 @@ CREATE TABLE `schedule` (
   `session_duration` int(4) DEFAULT NULL,
   `end_time` time DEFAULT NULL,
   `nop` int(4) DEFAULT NULL,
-  `deleted_at` timestamp NULL DEFAULT NULL
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`scheduleid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
@@ -203,8 +207,9 @@ INSERT INTO `schedule` (`scheduleid`, `docid`, `title`, `scheduledate`, `schedul
 --
 
 CREATE TABLE `specialties` (
-  `id` int(2) NOT NULL,
-  `sname` varchar(50) DEFAULT NULL
+  `id` int(2) NOT NULL AUTO_INCREMENT,
+  `sname` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
@@ -272,18 +277,9 @@ INSERT INTO `specialties` (`id`, `sname`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `web-- Create users table
-CREATE TABLE users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(255) NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+-- Table structure for table `webuser`
+--
 
-
-
--- Create webuser table
 CREATE TABLE `webuser` (
   `email` varchar(255) NOT NULL,
   `usertype` char(1) DEFAULT NULL
@@ -296,8 +292,7 @@ CREATE TABLE `webuser` (
 INSERT INTO `webuser` (`email`, `usertype`) VALUES
 ('administrator@gmail.com', 'a'),
 ('doctor@gmail.com', 'd'),
-('patient@gmail.com', 'p'),
-('wakuwaku@gmail.com', 'p');
+('patient@gmail.com', 'p');
 
 --
 -- Indexes for dumped tables
@@ -313,7 +308,6 @@ ALTER TABLE `admin`
 -- Indexes for table `appointment`
 --
 ALTER TABLE `appointment`
-  ADD PRIMARY KEY (`appoid`),
   ADD KEY `pid` (`pid`),
   ADD KEY `scheduleid` (`scheduleid`),
   ADD KEY `idx_appodate` (`appodate`),
@@ -335,23 +329,20 @@ ALTER TABLE `doctor`
   ADD KEY `idx_docemail` (`docemail`);
 
 --
-
 -- Indexes for table `patient`
 --
 ALTER TABLE `patient`
-  ADD PRIMARY KEY (`pid`),
   ADD UNIQUE KEY `pemail` (`pemail`),
   ADD UNIQUE KEY `phone_number` (`phone_number`),
-  ADD UNIQUE KEY `pnic` (`pnic`),
+  ADD UNIQUE KEY `hasPhilhealth` (`hasPhilhealth`),
   ADD KEY `idx_pemail` (`pemail`),
   ADD KEY `idx_phone_number` (`phone_number`),
-  ADD KEY `idx_pnic` (`pnic`);
+  ADD KEY `idx_hasPhilhealth` (`hasPhilhealth`);
 
 --
 -- Indexes for table `schedule`
 --
 ALTER TABLE `schedule`
-  ADD PRIMARY KEY (`scheduleid`),
   ADD KEY `docid` (`docid`),
   ADD KEY `idx_scheduledate_time` (`scheduledate`,`scheduletime`),
   ADD KEY `idx_docid_date` (`docid`,`scheduledate`);
@@ -359,8 +350,6 @@ ALTER TABLE `schedule`
 --
 -- Indexes for table `specialties`
 --
-ALTER TABLE `specialties`
-  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `webuser`

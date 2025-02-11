@@ -267,25 +267,24 @@
         $action=$_GET["action"];
         if($action=='drop'){
             $nameget=$_GET["name"];
-            echo '
-            <div id="popup1" class="overlay">
-                    <div class="popup">
-                    <center>
-                        <h2>Are you sure?</h2>
-                        <a class="close" href="settings.php">&times;</a>
-                        <div class="content">
-                            You want to delete this record<br>('.substr($nameget,0,40).').
-                            
-                        </div>
-                        <div style="display: flex;justify-content: center;">
-                        <a href="delete-doctor.php?id='.$id.'" class="non-style-link"><button  class="btn-primary btn"  style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"<font class="tn-in-text">&nbsp;Yes&nbsp;</font></button></a>&nbsp;&nbsp;&nbsp;
-                        <a href="settings.php" class="non-style-link"><button  class="btn-primary btn"  style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"><font class="tn-in-text">&nbsp;&nbsp;No&nbsp;&nbsp;</font></button></a>
-
-                        </div>
-                    </center>
-            </div>
-            </div>
-            ';
+            echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
+            echo '<script type="text/javascript">
+            Swal.fire({
+              title: "Are you sure?",
+              text: "You want to delete this record.",
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonText: "Yes, delete it",
+              cancelButtonText: "No, cancel",
+              reverseButtons: true
+            }).then((result) => {
+              if (result.isConfirmed) {
+                window.location.href = "delete-doctor.php?id='.$id.'";
+              } else {
+                window.location.href = "settings.php";
+              }
+            });
+            </script>';
         }elseif($action=='view'){
             $sqlmain= "select * from doctor where docid='$id'";
             $result= $database->query($sqlmain);

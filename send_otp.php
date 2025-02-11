@@ -18,7 +18,7 @@ $phone_number = $_POST['phone_number'];
 
 // Validate phone number (must be 11 digits starting with 09)
 if (!preg_match('/^09\d{9}$/', $phone_number)) {
-    die("Invalid phone number formdefine('TWILIO_VERIFY_SID', 'your_twilio_verify_service_sid');at. Please enter a valid 11-digit number starting with 09.");
+    die("Invalid phone number format. Please enter a valid 11-digit number starting with 09.");
 }
 
 // Convert to international format (+63)
@@ -39,15 +39,10 @@ if (!$stmt->execute()) {
 // Initialize Twilio Verify client
 $twilio = new Client(TWILIO_SID, TWILIO_AUTH_TOKEN);
 
-try {
-    $verification = $twilio->verify->v2->services(TWILIO_VERIFY_SID)
-                                       ->verifications
-                                       ->create($phone_number, "sms");
-    echo "OTP verification initiated. Check your phone for the code.";
-} catch (Exception $e) {
-    echo "Error sending OTP: " . $e->getMessage();
-    error_log("Twilio Error: " . $e->getMessage());
-}
+$verification = $twilio->verify->v2->services(TWILIO_VERIFY_SID)
+                                   ->verifications
+                                   ->create($phone_number, "sms");
+echo "OTP verification initiated. Check your phone for the code.";
 
 $stmt->close();
 $conn->close();

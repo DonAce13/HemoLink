@@ -16,12 +16,20 @@ if(isset($_SESSION["user"])) {
 // Include the database connection
 include("../connection.php");
 
-// Fetch data for age distribution
-$ageQuery = "SELECT age_group, COUNT(*) as count FROM users GROUP BY age_group";
-$ageResult = $database->query($ageQuery);
-$ageData = [];
-while($row = $ageResult->fetch_assoc()) {
-    $ageData[] = $row;
+// Fetch data for doctor specialties
+$specialtyQuery = "SELECT sname, COUNT(*) as count FROM doctor JOIN specialties ON doctor.specialties = specialties.id GROUP BY sname";
+$specialtyResult = $database->query($specialtyQuery);
+$specialtyData = [];
+while($row = $specialtyResult->fetch_assoc()) {
+    $specialtyData[] = $row;
+}
+
+// Fetch data for appointment status
+$statusQuery = "SELECT status, COUNT(*) as count FROM appointment GROUP BY status";
+$statusResult = $database->query($statusQuery);
+$statusData = [];
+while($row = $statusResult->fetch_assoc()) {
+    $statusData[] = $row;
 }
 
 // Check if the appointments table exists and fetch data
@@ -151,30 +159,58 @@ if ($database->query("SHOW TABLES LIKE 'appointments'")->num_rows == 1) {
                     </td>
                 </tr>
             </table>
-            <h1>User Records</h1>
+            <h1>Informative Charts</h1>
             <div class="chart-container">
-                <canvas id="ageChart"></canvas>
+                <canvas id="specialtyChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <canvas id="statusChart"></canvas>
             </div>
             <div class="chart-container">
                 <canvas id="appointmentChart"></canvas>
+                <div class="filter-controls">
+                    <label for="filter">Filter by:</label>
+                    <select id="filter" onchange="updateAppointmentChart()">
+                        <option value="all">All</option>
+                        <option value="month">This Month</option>
+                        <option value="week">This Week</option>
+                        <option value="date">Specific Date</option>
+                    </select>
+                    <input type="date" id="specificDate" onchange="updateAppointmentChart()" style="display:none;">
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Age Distribution Chart
-        const ageCtx = document.getElementById('ageChart').getContext('2d');
-        const ageData = {
-            labels: <?php echo json_encode(array_column($ageData, 'age_group')); ?>,
+        // Doctor Specialties Chart
+        const specialtyCtx = document.getElementById('specialtyChart').getContext('2d');
+        const specialtyData = {
+            labels: <?php echo json_encode(array_column($specialtyData, 'sname')); ?>,
             datasets: [{
-                label: 'Age Distribution',
-                data: <?php echo json_encode(array_column($ageData, 'count')); ?>,
+                label: 'Doctor Specialties',
+                data: <?php echo json_encode(array_column($specialtyData, 'count')); ?>,
                 backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'],
             }]
         };
-        new Chart(ageCtx, {
+        new Chart(specialtyCtx, {
+            type: 'doughnut',
+            data: specialtyData,
+        });
+
+        // Appointment Status Chart
+        const statusCtx = document.getElementById('statusChart').getContext('2d');
+        const statusData = {
+            labels: <?php echo json_encode(array_column($statusData, 'status')); ?>,
+            datasets: [{
+                label: 'Appointment Status',
+                data: <?php echo json_encode(array_column($statusData, 'count')); ?>,
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'],
+            }]
+        };
+        new Chart(statusCtx, {
             type: 'pie',
-            data: ageData,
+            data: statusData,
         });
 
         // Appointment Chart
@@ -187,10 +223,51 @@ if ($database->query("SHOW TABLES LIKE 'appointments'")->num_rows == 1) {
                 backgroundColor: '#36A2EB',
             }]
         };
-        new Chart(appointmentCtx, {
+        let appointmentChart = new Chart(appointmentCtx, {
             type: 'bar',
             data: appointmentData,
         });
+
+        function updateAppointmentChart() {
+            const filter = document.getElementById('filter').value;
+            const specificDate = document.getElementById('specificDate').value;
+
+            let query = "SELECT DATE(appodate) as date, COUNT(*) as count FROM appointment WHERE appodate >= CURDATE() ";
+
+            if (filter === 'month') {
+                query += "AND MONTH(appodate) = MONTH(CURDATE()) AND YEAR(appodate) = YEAR(CURDATE()) ";
+            } else if (filter === 'week') {
+                query += "AND WEEK(appodate) = WEEK(CURDATE()) AND YEAR(appodate) = YEAR(CURDATE()) ";
+            } else if (filter === 'date' && specificDate) {
+                query += "AND appodate = '" + specificDate + "' ";
+            }
+
+            query += "GROUP BY DATE(appodate)";
+
+            // Fetch new data based on the query
+            fetch('fetch_appointment_data.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ query: query }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                const appointmentData = {
+                    labels: data.map(item => item.date),
+                    datasets: [{
+                        label: 'Appointments',
+                        data: data.map(item => item.count),
+                        backgroundColor: '#36A2EB',
+                    }]
+                };
+
+                // Update the chart
+                appointmentChart.data = appointmentData;
+                appointmentChart.update();
+            });
+        }
     </script>
 </body>
 </html>
