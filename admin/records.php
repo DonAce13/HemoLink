@@ -35,11 +35,57 @@ function getFilterCondition($filterType, $currentDate) {
     }
 }
 
-// Fetch data for appointment status
-$statusQuery = "SELECT status, COUNT(*) as count 
-                FROM appointment 
-                WHERE 1=1 " . getFilterCondition($filterType, $currentDate) . " 
-                GROUP BY status";
+// Fetch data for schedule status
+$statusQuery = "";
+switch($filterType) {
+    case 'year':
+        $statusQuery = "SELECT 
+            CASE 
+                WHEN deleted_at IS NULL THEN 'Active Schedules'
+                ELSE 'Inactive Schedules'
+            END as status, 
+            COUNT(*) as count 
+        FROM schedule 
+        WHERE YEAR(scheduledate) = YEAR('$currentDate')
+        GROUP BY status";
+        break;
+    case 'month':
+        $statusQuery = "SELECT 
+            CASE 
+                WHEN deleted_at IS NULL THEN 'Active Schedules'
+                ELSE 'Inactive Schedules'
+            END as status, 
+            COUNT(*) as count 
+        FROM schedule 
+        WHERE YEAR(scheduledate) = YEAR('$currentDate') 
+        AND MONTH(scheduledate) = MONTH('$currentDate')
+        GROUP BY status";
+        break;
+    case 'week':
+        $statusQuery = "SELECT 
+            CASE 
+                WHEN deleted_at IS NULL THEN 'Active Schedules'
+                ELSE 'Inactive Schedules'
+            END as status, 
+            COUNT(*) as count 
+        FROM schedule 
+        WHERE YEAR(scheduledate) = YEAR('$currentDate') 
+        AND WEEK(scheduledate) = WEEK('$currentDate')
+        GROUP BY status";
+        break;
+    case 'day':
+        $statusQuery = "SELECT 
+            CASE 
+                WHEN deleted_at IS NULL THEN 'Active Schedules'
+                ELSE 'Inactive Schedules'
+            END as status, 
+            COUNT(*) as count 
+        FROM schedule 
+        WHERE DATE(scheduledate) = DATE('$currentDate')
+        GROUP BY status";
+        break;
+}
+
 $statusResult = $database->query($statusQuery);
 $statusData = [];
 while($row = $statusResult->fetch_assoc()) {
@@ -83,13 +129,56 @@ while($row = $ageGroupResult->fetch_assoc()) {
     $ageGroupData[] = $row;
 }
 
-// Check if the appointments table exists and fetch data
+// Fetch appointment overview data from schedule and appointment tables
 $appointmentData = [];
-if ($database->query("SHOW TABLES LIKE 'appointments'")->num_rows == 1) {
-    $appointmentQuery = "SELECT DATE(appodate) as date, COUNT(*) as count 
-                         FROM appointment 
-                         WHERE appodate >= CURDATE() " . getFilterCondition($filterType, $currentDate) . " 
-                         GROUP BY DATE(appodate)";
+$appointmentQuery = "";
+
+switch($filterType) {
+    case 'year':
+        $appointmentQuery = "SELECT 
+            s.scheduledate as date, 
+            COUNT(a.scheduleid) as count 
+        FROM schedule s
+        LEFT JOIN appointment a ON s.scheduleid = a.scheduleid
+        WHERE YEAR(s.scheduledate) = YEAR('$currentDate')
+        GROUP BY s.scheduledate
+        ORDER BY s.scheduledate";
+        break;
+    case 'month':
+        $appointmentQuery = "SELECT 
+            s.scheduledate as date, 
+            COUNT(a.scheduleid) as count 
+        FROM schedule s
+        LEFT JOIN appointment a ON s.scheduleid = a.scheduleid
+        WHERE YEAR(s.scheduledate) = YEAR('$currentDate') 
+        AND MONTH(s.scheduledate) = MONTH('$currentDate')
+        GROUP BY s.scheduledate
+        ORDER BY s.scheduledate";
+        break;
+    case 'week':
+        $appointmentQuery = "SELECT 
+            s.scheduledate as date, 
+            COUNT(a.scheduleid) as count 
+        FROM schedule s
+        LEFT JOIN appointment a ON s.scheduleid = a.scheduleid
+        WHERE YEAR(s.scheduledate) = YEAR('$currentDate') 
+        AND WEEK(s.scheduledate) = WEEK('$currentDate')
+        GROUP BY s.scheduledate
+        ORDER BY s.scheduledate";
+        break;
+    case 'day':
+        $appointmentQuery = "SELECT 
+            s.scheduledate as date, 
+            COUNT(a.scheduleid) as count 
+        FROM schedule s
+        LEFT JOIN appointment a ON s.scheduleid = a.scheduleid
+        WHERE DATE(s.scheduledate) = DATE('$currentDate')
+        GROUP BY s.scheduledate
+        ORDER BY s.scheduledate";
+        break;
+}
+
+if (!empty($appointmentQuery)) {
     $appointmentResult = $database->query($appointmentQuery);
     while($row = $appointmentResult->fetch_assoc()) {
         $appointmentData[] = $row;
@@ -119,7 +208,7 @@ if ($database->query("SHOW TABLES LIKE 'appointments'")->num_rows == 1) {
         }
         .chart-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 20px;
             padding: 20px;
         }
@@ -133,16 +222,18 @@ if ($database->query("SHOW TABLES LIKE 'appointments'")->num_rows == 1) {
             transition: all 0.3s ease;
             resize: both;
             overflow: auto;
-            min-width: 300px;
-            min-height: 300px;
+            min-width: 250px;
+            min-height: 250px;
             max-width: 100%;
-            max-height: 600px;
+            max-height: 500px;
+            position: relative;
         }
 
         .chart-container.resizable h3 {
             text-align: center;
             color: #2d6a4f;
             margin-bottom: 15px;
+            font-size: 1rem;
         }
 
         .chart-container.resizable:hover {
@@ -165,8 +256,38 @@ if ($database->query("SHOW TABLES LIKE 'appointments'")->num_rows == 1) {
 
         @media (max-width: 1200px) {
             .chart-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .chart-grid {
                 grid-template-columns: 1fr;
             }
+        }
+        
+        .chart-legend {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            right: 10px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .chart-legend-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.8rem;
+        }
+
+        .chart-legend-item span {
+            width: 12px;
+            height: 12px;
+            margin-right: 5px;
+            border-radius: 50%;
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -238,6 +359,11 @@ if ($database->query("SHOW TABLES LIKE 'appointments'")->num_rows == 1) {
                     </td>
                 </tr>
                 <tr class="menu-row" >
+                    <td class="menu-btn menu-icon-patient">
+                        <a href="patient.php" class="non-style-link-menu"><div><p class="menu-text">Patients</p></a></div>
+                    </td>
+                </tr>
+                <tr class="menu-row" >
                     <td class="menu-btn menu-icon-records  menu-active menu-icon-records-active">
                         <a href="records.php" class="non-style-link-menu  non-style-link-menu-active"><div><p class="menu-text">Records</p></a></div>
                     </td>
@@ -274,7 +400,7 @@ if ($database->query("SHOW TABLES LIKE 'appointments'")->num_rows == 1) {
             <h1>Informative Charts</h1>
             <div class="chart-grid">
                 <div class="chart-container resizable" id="status-chart-container">
-                    <h3>Appointment Status</h3>
+                    <h3>Schedule Status</h3>
                     <canvas id="statusChart"></canvas>
                 </div>
                 <div class="chart-container resizable" id="age-group-chart-container">
@@ -290,20 +416,83 @@ if ($database->query("SHOW TABLES LIKE 'appointments'")->num_rows == 1) {
     </div>
 
     <script>
-        // Appointment Status Chart
+        // Color palette for consistent and accessible colors
+        const colorPalette = [
+            '#1f77b4',  // Blue
+            '#ff7f0e',  // Orange
+            '#2ca02c',  // Green
+            '#d62728',  // Red
+            '#9467bd',  // Purple
+            '#8c564b',  // Brown
+            '#e377c2',  // Pink
+            '#7f7f7f',  // Gray
+            '#bcbd22',  // Olive
+            '#17becf'   // Cyan
+        ];
+
+        // Schedule Status Chart
         const statusCtx = document.getElementById('statusChart').getContext('2d');
         const statusData = {
             labels: <?php echo json_encode(array_column($statusData, 'status')); ?>,
             datasets: [{
-                label: 'Appointment Status',
+                label: 'Schedule Status',
                 data: <?php echo json_encode(array_column($statusData, 'count')); ?>,
-                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'],
+                backgroundColor: colorPalette.slice(0, <?php echo count($statusData); ?>),
             }]
         };
         const statusChart = new Chart(statusCtx, {
             type: 'pie',
             data: statusData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: {
+                    padding: {
+                        bottom: 50  // Space for legend
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false  // Hide default legend
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                label += context.formattedValue;
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
         });
+
+        // Create custom legend for status chart
+        function createStatusChartLegend() {
+            const legendContainer = document.createElement('div');
+            legendContainer.className = 'chart-legend';
+            
+            statusData.labels.forEach((label, index) => {
+                const legendItem = document.createElement('div');
+                legendItem.className = 'chart-legend-item';
+                
+                const colorSpan = document.createElement('span');
+                colorSpan.style.backgroundColor = statusData.datasets[0].backgroundColor[index];
+                
+                const labelSpan = document.createElement('span');
+                labelSpan.textContent = `${label}: ${statusData.datasets[0].data[index]}`;
+                
+                legendItem.appendChild(colorSpan);
+                legendItem.appendChild(labelSpan);
+                legendContainer.appendChild(legendItem);
+            });
+
+            document.getElementById('status-chart-container').appendChild(legendContainer);
+        }
 
         // Age Group Chart
         const ageGroupCtx = document.getElementById('ageGroupChart').getContext('2d');
@@ -312,23 +501,41 @@ if ($database->query("SHOW TABLES LIKE 'appointments'")->num_rows == 1) {
                 $labels = array_column($ageGroupData, 'age_group');
                 $labels = array_map(function($label) {
                     switch($label) {
-                        case '18-30': return "'Patients aged 18 to 30'";
-                        case '31-60': return "'Patients aged 31 to 60'";
-                        case '61-90': return "'Patients aged 61 to 90'";
+                        case '18-30': return "'18-30 years'";
+                        case '31-60': return "'31-60 years'";
+                        case '61-90': return "'61-90 years'";
                         default: return $label;
                     }
                 }, $labels);
                 echo json_encode($labels);
             ?>,
             datasets: [{
-                label: 'Age Group Distribution',
+                label: 'Patient Age Distribution',
                 data: <?php echo json_encode(array_column($ageGroupData, 'count')); ?>,
-                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+                backgroundColor: colorPalette.slice(1, 4),
             }]
         };
         const ageGroupChart = new Chart(ageGroupCtx, {
             type: 'bar',
             data: ageGroupData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Number of Patients'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
         });
 
         // Appointment Chart
@@ -338,46 +545,93 @@ if ($database->query("SHOW TABLES LIKE 'appointments'")->num_rows == 1) {
             datasets: [{
                 label: 'Appointments',
                 data: <?php echo json_encode(array_column($appointmentData, 'count')); ?>,
-                backgroundColor: '#36A2EB',
+                backgroundColor: colorPalette[5],
+                borderColor: colorPalette[5],
+                borderWidth: 1,
+                barThickness: 'flex',
+                maxBarThickness: 50
             }]
         };
         const appointmentChart = new Chart(appointmentCtx, {
             type: 'bar',
             data: appointmentData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Number of Appointments'
+                        },
+                        ticks: {
+                            precision: 0  // Whole numbers only
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        },
+                        ticks: {
+                            autoSkip: true,
+                            maxRotation: 45,
+                            minRotation: 45
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: function(context) {
+                                return 'Date: ' + context[0].label;
+                            },
+                            label: function(context) {
+                                return 'Appointments: ' + context.formattedValue;
+                            }
+                        }
+                    }
+                }
+            }
         });
 
         function updateCharts() {
             const filter = document.getElementById('globalFilter').value;
-            
-            // Redirect to the same page with the selected filter
             window.location.href = 'records.php?filter=' + filter;
         }
 
         function resizeCharts() {
             const charts = [
-                { chartId: 'statusChart', containerId: 'status-chart-container' },
-                { chartId: 'ageGroupChart', containerId: 'age-group-chart-container' },
-                { chartId: 'appointmentChart', containerId: 'appointment-chart-container' }
+                { chart: statusChart, containerId: 'status-chart-container' },
+                { chart: ageGroupChart, containerId: 'age-group-chart-container' },
+                { chart: appointmentChart, containerId: 'appointment-chart-container' }
             ];
 
-            charts.forEach(chart => {
-                const canvas = document.getElementById(chart.chartId);
-                const container = document.getElementById(chart.containerId);
+            charts.forEach(({ chart, containerId }) => {
+                const container = document.getElementById(containerId);
+                const canvas = container.querySelector('canvas');
                 
                 // Adjust canvas size to container
                 canvas.width = container.clientWidth - 40;
                 canvas.height = container.clientHeight - 80;
                 
                 // Redraw the chart
-                window[chart.chartId].resize();
+                chart.resize();
             });
         }
 
         // Resize charts on window resize
         window.addEventListener('resize', resizeCharts);
 
-        // Initial resize after charts are created
-        document.addEventListener('DOMContentLoaded', resizeCharts);
+        // Initial resize and legend creation after charts are created
+        document.addEventListener('DOMContentLoaded', () => {
+            resizeCharts();
+            createStatusChartLegend();
+        });
     </script>
 </body>
 </html>

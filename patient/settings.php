@@ -152,14 +152,14 @@ if ($result->num_rows > 0) {
                         <a href="index.php" class="non-style-link-menu "><div><p class="menu-text">Dashboard</p></a></div></a>
                     </td>
                 </tr>
-                <tr class="menu-row" >
+                <!-- <tr class="menu-row" >
                     <td class="menu-btn menu-icon-schedule">
                         <a href="schedule.php" class="non-style-link-menu"><div><p class="menu-text">Schedule</p></div></a>
                     </td>
-                </tr>
+                </tr> -->
                 <tr class="menu-row">
                     <td class="menu-btn menu-icon-appoinment">
-                        <a href="appointment.php" class="non-style-link-menu"><div><p class="menu-text">Appointment</p></a></div>
+                        <a href="appointment.php" class="non-style-link-menu"><div><p class="menu-text">My Booking History</p></a></div>
                     </td>
                 </tr>
                 <tr class="menu-row" >

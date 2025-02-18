@@ -11,7 +11,6 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
 
-
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
@@ -29,7 +28,8 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `admin` (
   `aemail` varchar(255) NOT NULL,
-  `apassword` varchar(255) DEFAULT NULL
+  `apassword` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`aemail`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
@@ -59,7 +59,12 @@ CREATE TABLE `appointment` (
   `age` int(11) DEFAULT NULL,
   `status` enum('scheduled','done','canceled','ongoing') DEFAULT 'scheduled',
   `is_confirmed` tinyint(1) NOT NULL DEFAULT 0,
-  PRIMARY KEY (`appoid`)
+  PRIMARY KEY (`appoid`),
+  KEY `pid` (`pid`),
+  KEY `scheduleid` (`scheduleid`),
+  KEY `idx_appodate` (`appodate`),
+  KEY `idx_pid_scheduleid` (`pid`,`scheduleid`),
+  KEY `idx_is_self` (`is_self`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
@@ -105,7 +110,8 @@ CREATE TABLE `archived_schedule` (
   `scheduledate` date DEFAULT NULL,
   `scheduletime` time DEFAULT NULL,
   `nop` int(11) DEFAULT NULL,
-  `deleted_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `deleted_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`scheduleid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
@@ -121,7 +127,8 @@ CREATE TABLE `doctor` (
   `docpassword` varchar(255) DEFAULT NULL,
   `docnic` varchar(15) DEFAULT NULL,
   `doctel` varchar(15) DEFAULT NULL,
-  `specialties` int(2) DEFAULT NULL
+  `specialties` int(2) DEFAULT NULL,
+  PRIMARY KEY (`docid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
@@ -164,7 +171,9 @@ CREATE TABLE `patient` (
   `created_at` timestamp NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `is_deleted` tinyint(1) DEFAULT 0,
-  PRIMARY KEY (`pid`)
+  PRIMARY KEY (`pid`),
+  UNIQUE KEY `pemail` (`pemail`),
+  UNIQUE KEY `phone_number` (`phone_number`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -172,7 +181,14 @@ CREATE TABLE `patient` (
 --
 
 INSERT INTO `patient` (`pid`, `pemail`, `pname`, `ppassword`, `paddress`, `hasPhilhealth`, `pdob`, `phone_number`, `created_at`, `updated_at`, `is_deleted`) VALUES
-(1, 'patient@gmail.com', 'test patient', '123', '#12a De Aro Avenue, Mabayuan, Olongapo City', 'yes', '2025-02-04', '+639685837376', '2025-02-05 16:04:24', '2025-02-05 16:04:24', 0);
+(1, 'patient@gmail.com', 'test patient', 'test123', '#12a De Aro Avenue, Mabayuan, Olongapo City', 'yes', '1955-02-04', '+639685837376', '2025-02-05 16:04:24', '2025-02-05 16:04:24', 0),
+(2, 'john.test@gmail.com', 'John Tester', 'John2Test', '#45 Amagis Avenue, Olongapo City', 'no', '1965-05-15', '+639123456789', '2025-02-05 16:10:00', '2025-02-05 16:10:00', 0),
+(3, 'maria.grace@gmail.com', 'Maria Grace', 'Maria2Grace', '#78 Grace Pauline Street, Olongapo City', 'yes', '1975-11-20', '+639987654321', '2025-02-05 16:15:00', '2025-02-05 16:15:00', 0),
+(4, 'alex.leyva@gmail.com', 'Alex Leyva', 'Alex2Leyva', '#22 Leyva Street, Olongapo City', 'no', '1985-08-10', '+639567890123', '2025-02-05 16:20:00', '2025-02-05 16:20:00', 0),
+(5, 'sarah.mercurio@gmail.com', 'Sarah Mercurio', 'Sarah2Mercurio', '#56 Mercurio Street, Olongapo City', 'yes', '1995-03-25', '+639234567890', '2025-02-05 16:25:00', '2025-02-05 16:25:00', 0),
+(6, 'emma.rose@gmail.com', 'Emma Rose', 'Emma2Rose', '#33 Rosete Street, Olongapo City', 'no', '1960-07-12', '+639876543210', '2025-02-05 16:30:00', '2025-02-05 16:30:00', 0),
+(7, 'michael.park@gmail.com', 'Michael Park', 'Michael2Park', '#67 Napalan Street, Olongapo City', 'yes', '1970-09-18', '+639345678901', '2025-02-05 16:35:00', '2025-02-05 16:35:00', 0),
+(8, 'lisa.wong@gmail.com', 'Lisa Wong', 'Lisa2Wong', '#89 Nieves Street, Olongapo City', 'no', '1980-12-30', '+639654321987', '2025-02-05 16:40:00', '2025-02-05 16:40:00', 0);
 
 -- --------------------------------------------------------
 
@@ -282,7 +298,8 @@ INSERT INTO `specialties` (`id`, `sname`) VALUES
 
 CREATE TABLE `webuser` (
   `email` varchar(255) NOT NULL,
-  `usertype` char(1) DEFAULT NULL
+  `usertype` char(1) DEFAULT NULL,
+  PRIMARY KEY (`email`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
@@ -292,72 +309,14 @@ CREATE TABLE `webuser` (
 INSERT INTO `webuser` (`email`, `usertype`) VALUES
 ('administrator@gmail.com', 'a'),
 ('doctor@gmail.com', 'd'),
-('patient@gmail.com', 'p');
-
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `admin`
---
-ALTER TABLE `admin`
-  ADD PRIMARY KEY (`aemail`);
-
---
--- Indexes for table `appointment`
---
-ALTER TABLE `appointment`
-  ADD KEY `pid` (`pid`),
-  ADD KEY `scheduleid` (`scheduleid`),
-  ADD KEY `idx_appodate` (`appodate`),
-  ADD KEY `idx_pid_scheduleid` (`pid`,`scheduleid`),
-  ADD KEY `idx_is_self` (`is_self`);
-
---
--- Indexes for table `archived_schedule`
---
-ALTER TABLE `archived_schedule`
-  ADD PRIMARY KEY (`scheduleid`);
-
---
--- Indexes for table `doctor`
---
-ALTER TABLE `doctor`
-  ADD PRIMARY KEY (`docid`),
-  ADD KEY `specialties` (`specialties`),
-  ADD KEY `idx_docemail` (`docemail`);
-
---
--- Indexes for table `patient`
---
-ALTER TABLE `patient`
-  ADD UNIQUE KEY `pemail` (`pemail`),
-  ADD UNIQUE KEY `phone_number` (`phone_number`),
-  ADD UNIQUE KEY `hasPhilhealth` (`hasPhilhealth`),
-  ADD KEY `idx_pemail` (`pemail`),
-  ADD KEY `idx_phone_number` (`phone_number`),
-  ADD KEY `idx_hasPhilhealth` (`hasPhilhealth`);
-
---
--- Indexes for table `schedule`
---
-ALTER TABLE `schedule`
-  ADD KEY `docid` (`docid`),
-  ADD KEY `idx_scheduledate_time` (`scheduledate`,`scheduletime`),
-  ADD KEY `idx_docid_date` (`docid`,`scheduledate`);
-
---
--- Indexes for table `specialties`
---
-
---
--- Indexes for table `webuser`
---
-ALTER TABLE `webuser`
-  ADD PRIMARY KEY (`email`);
-
---
+('patient@gmail.com', 'p'),
+('john.test@gmail.com', 'p'),
+('maria.grace@gmail.com', 'p'),
+('alex.leyva@gmail.com', 'p'),
+('sarah.mercurio@gmail.com', 'p'),
+('emma.rose@gmail.com', 'p'),
+('michael.park@gmail.com', 'p'),
+('lisa.wong@gmail.com', 'p');
 
 DELIMITER $$
 --
@@ -383,8 +342,17 @@ CREATE DEFINER=`root`@`localhost` EVENT `update_appointment_status` ON SCHEDULE 
    AND `status` = 'scheduled';
 END$$
 
+CREATE EVENT `cleanup_old_appointments` 
+ON SCHEDULE EVERY 1 WEEK 
+STARTS '2025-02-02 00:00:00' 
+DO BEGIN
+    -- Delete appointments older than 2 years
+    DELETE FROM `appointment` 
+    WHERE `appodate` < DATE_SUB(CURDATE(), INTERVAL 2 YEAR);
+END$$
+
 DELIMITER ;
-COMMIT;
+
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

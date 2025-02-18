@@ -49,9 +49,9 @@
             $stmt->bind_param("iisssissisis", $userid, $apponum, $scheduleid, $date, $scheduletime, $is_self, $other_patient_name, $description, $philhealth_id, $age, $status, $is_confirmed);
 
             if ($stmt->execute()) {
-                header("location: appointment.php?action=booking-added&id=".$apponum."&titleget=none");
+                header("location: appointment.php?action=booking-added&id=".$apponum."&titleget=none&sweetalert=success");
             } else {
-                echo "Error: " . $stmt->error;
+                header("location: appointment.php?action=booking-failed&id=".$apponum."&titleget=none&sweetalert=error");
             }
         }
     }
@@ -61,7 +61,7 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="../css/animations.css">  
     <link rel="stylesheet" href="../css/main.css">  
     <link rel="stylesheet" href="../css/admin.css">
@@ -72,6 +72,75 @@
         }
         .sub-table{
             animation: transitionIn-Y-bottom 0.5s;
+        }
+
+        /* Responsive Design Enhancements */
+        @media screen and (max-width: 768px) {
+            .dash-body {
+                padding: 10px;
+            }
+            .dashboard-items {
+                flex-direction: column;
+            }
+            .dashboard-items > div {
+                width: 100% !important;
+                margin-bottom: 15px;
+            }
+            table {
+                width: 100% !important;
+            }
+            .h1-search, .h3-search {
+                font-size: 16px !important;
+            }
+            .dashboard-icons {
+                font-size: 40px !important;
+            }
+            .login-btn {
+                width: 100% !important;
+                margin-left: 0 !important;
+            }
+            #otherPatientForm input, 
+            #otherPatientForm textarea {
+                width: 100%;
+                box-sizing: border-box;
+            }
+        }
+
+        /* Flexbox for better responsiveness */
+        .booking-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .booking-section {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        /* Improved form styling */
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input, 
+        .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        /* Enhanced radio button styling */
+        .radio-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .radio-group input {
+            margin-right: 5px;
         }
     </style>
 </head>
@@ -258,79 +327,68 @@
 
                                                                 // Display the booking form
                                                                 echo '
+                                                                <div class="booking-container">
+                                                                    <div class="booking-section">
+                                                                        <div class="dashboard-items search-items">
+                                                                            <div style="width:100%">
+                                                                                <div class="h1-search" style="font-size:25px;">
+                                                                                    Session Details
+                                                                                </div><br>
+                                                                                <div class="h3-search" style="font-size:18px;line-height:30px">
+                                                                                    Doctor name:  &nbsp;&nbsp;<b>' . $docname . '</b><br>
+                                                                                    Doctor Email:  &nbsp;&nbsp;<b>' . $docemail . '</b>
+                                                                                </div>
+                                                                                <div class="h3-search" style="font-size:18px;">
+                                                                                    Session Title: ' . $title . '<br>
+                                                                                    Session Scheduled Date: ' . $scheduledate . '<br>
+                                                                                    Session Starts: ' . $scheduletime . '<br>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="booking-section">
+                                                                        <div class="dashboard-items search-items">
+                                                                            <div style="width:100%">
+                                                                                <div class="h1-search" style="font-size:20px;line-height: 35px;margin-left:8px;text-align:center;">
+                                                                                    Your Appointment Number
+                                                                                </div>
+                                                                                <center>
+                                                                                    <div class="dashboard-icons" style="margin-left: 0px;width:90%;font-size:70px;font-weight:800;text-align:center;color:var(--btnnictext);background-color: var(--btnice)">' . $apponum . '</div>
+                                                                                </center>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
                                                                 <form action="" method="post">
                                                                     <input type="hidden" name="scheduleid" value="' . $scheduleid . '" >
                                                                     <input type="hidden" name="apponum" value="' . $apponum . '" >
                                                                     <input type="hidden" name="date" value="' . $scheduledate . '" >
                                                                     <input type="hidden" name="scheduletime" value="' . $scheduletime . '" >
+                                                                    <div class="form-group">
+                                                                    <br>
+                                                                    <br>
+                                                                        <label for="is_self">Choose an option:</label><br>
+                                                                        <div class="radio-group">
+                                                                            <input type="radio" id="self" name="is_self" value="0" onclick="toggleOtherPatientForm()" checked> Myself<br>
+                                                                            <input type="radio" id="others" name="is_self" value="1" onclick="toggleOtherPatientForm()"> Someone Else<br><br>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div id="otherPatientForm" style="display: none;">
+                                                                        <div class="form-group">
+                                                                            <label for="other_patient_name">Other Patient Name:</label><br>
+                                                                            <input type="text" id="other_patient_name" name="other_patient_name"><br><br>
 
-                                                                    <table>
-                                                                        <tr>
-                                                                            <td style="width: 50%;">
-                                                                                <div class="dashboard-items search-items">
-                                                                                    <div style="width:100%">
-                                                                                        <div class="h1-search" style="font-size:25px;">
-                                                                                            Session Details
-                                                                                        </div><br>
-                                                                                        <div class="h3-search" style="font-size:18px;line-height:30px">
-                                                                                            Doctor name:  &nbsp;&nbsp;<b>' . $docname . '</b><br>
-                                                                                            Doctor Email:  &nbsp;&nbsp;<b>' . $docemail . '</b>
-                                                                                        </div>
-                                                                                        <div class="h3-search" style="font-size:18px;">
-                                                                                            Session Title: ' . $title . '<br>
-                                                                                            Session Scheduled Date: ' . $scheduledate . '<br>
-                                                                                            Session Starts: ' . $scheduletime . '<br>
-                                                                                        </div>
-                                                                                </div>
-                                                                            </td>
-                                                                            <td style="width: 50%;">
-                                                                                <div class="dashboard-items search-items">
-                                                                                    <div style="width:100%">
-                                                                                        <div class="h1-search" style="font-size:20px;line-height: 35px;margin-left:8px;text-align:center;">
-                                                                                            Your Appointment Number
-                                                                                        </div>
-                                                                                        <center>
-                                                                                            <div class="dashboard-icons" style="margin-left: 0px;width:90%;font-size:70px;font-weight:800;text-align:center;color:var(--btnnictext);background-color: var(--btnice)">' . $apponum . '</div>
-                                                                                        </center>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td style="width: 100%;">
-                                                                                <div class="dashboard-items search-items">
-                                                                                    <div style="width:100%">
-                                                                                        <div class="h1-search" style="font-size:25px;">
-                                                                                            Book For:
-                                                                                        </div><br><br>
-                                                                                        <div class="h3-search" style="font-size:18px;line-height:30px">
-                                                                                            <label for="is_self">Choose an option:</label><br>
-                                                                                            <input type="radio" id="self" name="is_self" value="0" onclick="toggleOtherPatientForm()" checked> Myself<br>
-                                                                                            <input type="radio" id="others" name="is_self" value="1" onclick="toggleOtherPatientForm()"> Someone Else<br><br>
-                                                                                        </div>
-                                                                                        <div id="otherPatientForm" style="display: none;">
-                                                                                            <label for="other_patient_name">Other Patient Name:</label><br>
-                                                                                            <input type="text" id="other_patient_name" name="other_patient_name"><br><br>
+                                                                            <label for="philhealth_id">PhilHealth ID:</label><br>
+                                                                            <input type="text" id="philhealth_id" name="philhealth_id" maxlength="12"><br><br>
 
-                                                                                            <label for="philhealth_id">PhilHealth ID:</label><br>
-                                                                                            <input type="text" id="philhealth_id" name="philhealth_id" maxlength="12"><br><br>
+                                                                            <label for="age">Age:</label><br>
+                                                                            <input type="number" id="age" name="age" max="999"><br><br>
 
-                                                                                            <label for="age">Age:</label><br>
-                                                                                            <input type="number" id="age" name="age" max="999"><br><br>
-
-                                                                                            <label for="description">Description:</label><br>
-                                                                                            <textarea id="description" name="description"></textarea><br><br>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td>
-                                                                                <input type="submit" class="login-btn btn-primary btn btn-book" style="margin-left:10px;padding-left: 25px;padding-right: 25px;padding-top: 10px;padding-bottom: 10px;width:95%;text-align: center;" value="Book now" name="booknow" onclick="validateForm(event)">
-                                                                            </td>
-                                                                        </tr>
-                                                                    </table>
+                                                                            <label for="description">Description:</label><br>
+                                                                            <textarea id="description" name="description"></textarea><br><br>
+                                                                        </div>
+                                                                    </div>
+                                                                    <input type="submit" class="login-btn btn-primary btn btn-book" style="margin-left:10px;padding-left: 25px;padding-right: 25px;padding-top: 10px;padding-bottom: 10px;width:95%;text-align: center;" value="Book now" name="booknow" onclick="validateForm(event)">
                                                                 </form>
 
                                                                 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -407,8 +465,6 @@
                                     </center>
                                 </td>
                             </tr>                                   
-                                                                    }
-                                  
                         </table>
                     </div>
                 </div>
@@ -417,3 +473,51 @@
     </div>
 </body>
 </html>
+
+<?php
+    // Add error handling for session full and other scenarios
+    $error = isset($_GET['error']) ? $_GET['error'] : null;
+    $sweetalert = isset($_GET['sweetalert']) ? $_GET['sweetalert'] : null;
+    $error_messages = [
+        'session_full' => 'This session has reached its maximum booking limit of 5 participants.',
+        'incomplete_info' => 'Please fill in all required fields for booking someone else.',
+        'invalid_philhealth' => 'PhilHealth ID must be exactly 12 digits.',
+        'invalid_age' => 'Age must be between 1 and 100.',
+        'database_error' => 'An error occurred while processing your booking.'
+    ];
+
+    if ($error && isset($error_messages[$error])) {
+        echo "<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                icon: 'error',
+                title: 'Booking Error',
+                text: '".$error_messages[$error]."',
+                confirmButtonText: 'OK'
+            });
+        });
+        </script>";
+    } elseif ($sweetalert == 'success') {
+        echo "<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                icon: 'success',
+                title: 'Booking Successful',
+                text: 'Your booking has been successfully added.',
+                confirmButtonText: 'OK'
+            });
+        });
+        </script>";
+    } elseif ($sweetalert == 'error') {
+        echo "<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                icon: 'error',
+                title: 'Booking Error',
+                text: 'An error occurred while processing your booking.',
+                confirmButtonText: 'OK'
+            });
+        });
+        </script>";
+    }
+?>

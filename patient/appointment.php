@@ -115,14 +115,14 @@
                     </td>
                 </tr>
                 
-                <tr class="menu-row" >
+                <!-- <tr class="menu-row" >
                     <td class="menu-btn menu-icon-session">
                         <a href="schedule.php" class="non-style-link-menu"><div><p class="menu-text">Scheduled Sessions</p></div></a>
                     </td>
-                </tr>
+                </tr> -->
                 <tr class="menu-row" >
                     <td class="menu-btn menu-icon-appoinment  menu-active menu-icon-appoinment-active">
-                        <a href="appointment.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">My Bookings</p></a></div>
+                        <a href="appointment.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">My Booking History</p></a></div>
                     </td>
                 </tr>
                 <tr class="menu-row" >
@@ -252,8 +252,11 @@
 
                                             $currentDateTime = new DateTime();
                                             $scheduledDateTime = new DateTime("$scheduledate $scheduletime");
+                                            $oneDayBefore = clone $scheduledDateTime;
+                                            $oneDayBefore->modify('-1 day');
 
                                             $isPast = $currentDateTime >= $scheduledDateTime;
+                                            $canCancel = $currentDateTime <= $oneDayBefore;
 
                                             echo '
                                             <td class="responsive-td">
@@ -280,12 +283,17 @@
                                                             <div class="h4-search">
                                                                 Current Time: '.$currentDateTime->format('Y-m-d H:i:s').'
                                                             </div>
+                                                            <div class="h4-search">
+                                                                Cancellation Deadline: '.$oneDayBefore->format('Y-m-d H:i:s').'
+                                                            </div>
                                                             <br>';
 
-                                            if (!$isPast) {
-                                                echo '<a href="?action=drop&id='.$appoid.'&title='.$title.'&doc='.$docname.'"><button class="login-btn btn-primary-soft btn" style="padding-top:11px;padding-bottom:11px;width:100%"><font class="tn-in-text">Cancel Booking</font></button></a>';
+                                            if ($isPast) {
+                                                echo '<button class="btn-cancellation-not-allowed" style="width:100%" disabled><font class="tn-in-text">Session Completed</font></button>';
+                                            } elseif (!$canCancel) {
+                                                echo '<button class="btn-cancellation-not-allowed" style="width:100%" onclick="showCancellationAlert()"><font class="tn-in-text">Cannot cancel more than 1 day in advance</font></button>';
                                             } else {
-                                                echo '<button class="btn-cancellation-not-allowed" style="width:100%" disabled><font class="tn-in-text">Cancellation Not Allowed</font></button>';
+                                                echo '<a href="?action=drop&id='.$appoid.'&title='.$title.'&doc='.$docname.'"><button class="login-btn btn-primary-soft btn" style="padding-top:11px;padding-bottom:11px;width:100%"><font class="tn-in-text">Cancel Booking</font></button></a>';
                                             }
 
                                             echo '</div>
@@ -312,9 +320,9 @@
     </div>
     <?php
     
-    if($_GET){
-        $id=$_GET["id"];
-        $action=$_GET["action"];
+    if(!empty($_GET)){
+        $id = isset($_GET["id"]) ? $_GET["id"] : null;
+        $action = isset($_GET["action"]) ? $_GET["action"] : null;
         
         if($action=='booking-added'){
             
@@ -333,8 +341,8 @@
             </script>
             ";
         }elseif($action=='drop'){
-            $title=$_GET["title"];
-            $docname=$_GET["doc"];
+            $title = isset($_GET["title"]) ? $_GET["title"] : 'Appointment';
+            $docname = isset($_GET["doc"]) ? $_GET["doc"] : 'Doctor';
             
             echo '
             <div id="popup1" class="overlay">
@@ -469,7 +477,47 @@
     }
 }
 
+    // Add SweetAlert script
+    $sweetalert = isset($_GET['sweetalert']) ? $_GET['sweetalert'] : null;
+    
+    if ($sweetalert == 'success') {
+        echo '
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            Swal.fire({
+                icon: "success",
+                title: "Booking Successful",
+                text: "Your booking has been successfully added.",
+                confirmButtonText: "OK"
+            });
+        });
+        </script>';
+    } elseif ($sweetalert == 'error') {
+        echo '
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            Swal.fire({
+                icon: "error",
+                title: "Booking Error",
+                text: "An error occurred while processing your booking.",
+                confirmButtonText: "OK"
+            });
+        });
+        </script>';
+    }
     ?>
+    <script>
+        function showCancellationAlert() {
+            Swal.fire({
+                icon: "error",
+                title: "Cancellation Not Allowed",
+                text: "You can only cancel bookings up to one day before the scheduled date.",
+                confirmButtonText: "OK"
+            });
+        }
+    </script>
     </div>
 
 </body>

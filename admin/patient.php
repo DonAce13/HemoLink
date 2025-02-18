@@ -261,7 +261,7 @@
                                     $pid=$row["pid"];
                                     $name=$row["pname"];
                                     $email=$row["pemail"];
-                                    $nic = empty($row["has_philhealth"]) ? 'None' : $row["has_philhealth"];
+                                    $nic = strtolower($row["hasPhilhealth"]) === 'yes' ? 'Yes' : 'No';
                                     $dob=$row["pdob"];
                                     $tel=$row["phone_number"];
                                     
@@ -318,7 +318,7 @@
             $row=$result->fetch_assoc();
             $name=$row["pname"];
             $email=$row["pemail"];
-            $nic = empty($row["has_philhealth"]) ? 'None' : $row["has_philhealth"];
+            $nic = strtolower($row["hasPhilhealth"]) === 'yes' ? 'Yes' : 'No';
             $dob=$row["pdob"];
             $phone_number=$row["ptel"];
             $address=$row["paddress"];

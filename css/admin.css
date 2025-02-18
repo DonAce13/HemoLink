@@ -686,3 +686,10 @@
 .pagination a.prev, .pagination a.next {
     font-weight: bold;
 }
+
+.menu-icon-records {
+    background-image: url('../img/icons/records.svg');
+    background-repeat: no-repeat;
+    background-position: 70px;
+    background-size: 25px;
+}

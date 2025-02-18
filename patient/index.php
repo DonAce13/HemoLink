@@ -175,14 +175,14 @@ if ($result->num_rows > 0) {
                         <a href="index.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">Dashboard</p></a></div></a>
                     </td>
                 </tr>
-                <tr class="menu-row" >
+                <!-- <tr class="menu-row" >
                     <td class="menu-btn menu-icon-schedule">
                         <a href="schedule.php" class="non-style-link-menu"><div><p class="menu-text">Schedule</p></div></a>
                     </td>
-                </tr>
+                </tr> -->
                 <tr class="menu-row">
                     <td class="menu-btn menu-icon-appoinment">
-                        <a href="appointment.php" class="non-style-link-menu"><div><p class="menu-text">Appointment</p></a></div>
+                        <a href="appointment.php" class="non-style-link-menu"><div><p class="menu-text">My Booking History</p></a></div>
                     </td>
                 </tr>
                 <tr class="menu-row" >
@@ -250,44 +250,24 @@ if ($result->num_rows > 0) {
                         <td >
                             <h3>Welcome!</h3>
                             <h1><?php echo $username  ?>.</h1>
-                            <p>Let's Introduce our facilitating Doctors in the
-                                <a href="doctors.php" class="non-style-link"><b>"All Doctors"</b></a> section <br> 
-                                Or reserve your slots in the upcoming events in the
-                                <a href="schedule.php" class="non-style-link"><b>"Sessions"</b> </a> slot
-                                
-                            </p>
-                            
-                            <h3>Look up a Doctor Here</h3>
-
-                            
-                        </td>
                     </tr>
                     <td colspan="2" class="nav-bar" >
                                 
-                                <form action="doctors.php" method="post" class="header-search">
-        
-                                    <input type="search" name="search" class="input-text header-searchbar" placeholder="Search Doctor name or Email" list="doctors">&nbsp;&nbsp;
+                                <form action="" method="get" class="header-search">
+                                    <label for="session_date">Filter Sessions by Date:</label>
+                                    <input type="date" id="session_date" name="session_date" class="input-text header-searchbar" 
+                                           value="<?php echo isset($_GET['session_date']) ? htmlspecialchars($_GET['session_date']) : ''; ?>">
                                     
-                                    <?php
-                                        echo '<datalist id="doctors">';
-                                        $list11 = $database->query("select  docname,docemail from  doctor;");
-        
-                                        for ($y=0;$y<$list11->num_rows;$y++){
-                                            $row00=$list11->fetch_assoc();
-                                            $d=$row00["docname"];
-                                            $c=$row00["docemail"];
-                                            echo "<option value='$d'><br/>";
-                                            echo "<option value='$c'><br/>";
-                                        };
-        
-                                    echo ' </datalist>';
-                                    ?>
+                                    <input type="submit" value="Filter Sessions" class="btn-primary-soft btn button-icon btn-search" 
+                                           style="padding-left: 25px;padding-right: 25px;padding-top: 10px;padding-bottom: 10px;">
                                     
-                               
-                                    <input type="Submit" value="Search"class="btn-primary-soft btn button-icon btn-search" style="padding-left: 25px;padding-right: 25px;padding-top: 10px;padding-bottom: 10px;">
-                                
+                                    <?php if(isset($_GET['session_date'])): ?>
+                                        <a href="index.php" class="btn-primary-soft btn button-icon btn-search" 
+                                           style="padding-left: 15px;padding-right: 15px;padding-top: 10px;padding-bottom: 10px; margin-left: 10px;">
+                                            Reset Filter
+                                        </a>
+                                    <?php endif; ?>
                                 </form>
-                                
                             </td>
                     
                     </table>
@@ -315,6 +295,174 @@ if ($result->num_rows > 0) {
 
 
                             
+                                    <p style="font-size: 20px;font-weight:600;padding-left: 40px;" class="anime">Available Sessions</p>
+                                    <center>
+                                        <div class="abc scroll" style="height: 500px;padding: 0;margin: 0;">
+                                        <?php
+                                        // Get current month and year
+                                        $current_month = date('F Y');
+                                        
+                                        // Check if a specific date is selected
+                                        $filter_date = isset($_GET['session_date']) ? $_GET['session_date'] : null;
+                                        
+                                        // Display month or filtered date
+                                        if ($filter_date) {
+                                            $formatted_date = date('F d, Y', strtotime($filter_date));
+                                            echo "<h2 style='text-align: center; color: #2d6a4f; margin-bottom: 20px;'>Sessions on $formatted_date</h2>";
+                                        } else {
+                                            echo "<h2 style='text-align: center; color: #2d6a4f; margin-bottom: 20px;'>$current_month</h2>";
+                                        }
+                                        ?>
+                                        <?php
+                                        // Days of the week
+                                        ?>
+                                        <table width="95%" class="sub-table scrolldown" border="0">
+                                        <thead>
+                                            <tr>
+                                                <th class="table-headin">Session Title</th>
+                                                <th class="table-headin">Doctor</th>
+                                                <th class="table-headin">Date & Time</th>
+                                                <th class="table-headin">Availability</th>
+                                                <th class="table-headin">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                            $today = date('Y-m-d');
+                                            $current_time = date('H:i:s');
+                                            $nextweek = date("Y-m-d", strtotime("+1 week"));
+
+                                            // Check if a specific date is selected for filtering
+                                            $filter_date = isset($_GET['session_date']) ? $_GET['session_date'] : null;
+
+                                            // Prepare the base SQL query
+                                            $sqlmain = "SELECT schedule.*, doctor.docname, 
+                                                        (SELECT COUNT(*) FROM appointment WHERE scheduleid = schedule.scheduleid) as booked_count,
+                                                        DAYOFWEEK(schedule.scheduledate) as day_of_week,
+                                                        DAYNAME(schedule.scheduledate) as day_name
+                                                        FROM schedule 
+                                                        INNER JOIN doctor ON schedule.docid = doctor.docid
+                                                        WHERE 1=1";
+
+                                            // Add date filtering conditions
+                                            if ($filter_date) {
+                                                // If a specific date is selected, show only sessions for that date
+                                                $sqlmain .= " AND schedule.scheduledate = '$filter_date'";
+                                            } else {
+                                                // Default behavior: show sessions from today to next week
+                                                $sqlmain .= " AND schedule.scheduledate >= '$today' 
+                                                              AND schedule.scheduledate <= '$nextweek'
+                                                              AND DAYOFWEEK(schedule.scheduledate) BETWEEN 2 AND 6
+                                                              AND (schedule.scheduledate > '$today' OR 
+                                                                   (schedule.scheduledate = '$today' AND schedule.scheduletime > '$current_time'))";
+                                            }
+
+                                            // Complete the query
+                                            $sqlmain .= " ORDER BY 
+                                                            CASE day_name 
+                                                                WHEN 'Monday' THEN 1 
+                                                                WHEN 'Tuesday' THEN 2 
+                                                                WHEN 'Wednesday' THEN 3 
+                                                                WHEN 'Thursday' THEN 4 
+                                                                WHEN 'Friday' THEN 5 
+                                                            END,
+                                                            schedule.scheduletime";
+
+                                            $result = $database->query($sqlmain);
+
+                                            if ($result->num_rows == 0) {
+                                                echo '<tr>
+                                                <td colspan="5">
+                                                <br><br><br><br>
+                                                <center>
+                                                <img src="../img/notfound.svg" width="25%">
+                                                <br>
+                                                <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">No available sessions at the moment!</p>
+                                                </center>
+                                                <br><br><br><br>
+                                                </td>
+                                                </tr>';
+                                            } else {
+                                                // Group sessions by day of the week
+                                                $sessions_by_day = [];
+                                                $days_order = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+                                                
+                                                while ($row = $result->fetch_assoc()) {
+                                                    $day_name = $row['day_name'];
+                                                    $sessions_by_day[$day_name][] = $row;
+                                                }
+
+                                                // Iterate through days in order
+                                                foreach ($days_order as $day_name) {
+                                                    if (isset($sessions_by_day[$day_name])) {
+                                                        // Display day header
+                                                        echo "<tr><td colspan='5' style='background-color: #f0f0f0; font-weight: bold; text-align: center;'>$day_name</td></tr>";
+                                                        
+                                                        // Sort sessions for this day by time
+                                                        usort($sessions_by_day[$day_name], function($a, $b) {
+                                                            return strtotime($a['scheduletime']) - strtotime($b['scheduletime']);
+                                                        });
+
+                                                        // Display sessions for this day
+                                                        foreach ($sessions_by_day[$day_name] as $row) {
+                                                            $scheduleid = $row["scheduleid"];
+                                                            $title = $row["title"];
+                                                            $docname = $row["docname"];
+                                                            $scheduledate = $row["scheduledate"];
+                                                            $scheduletime = $row["scheduletime"];
+                                                            $nop = $row["nop"]; // Number of participants
+                                                            $booked_count = $row["booked_count"];
+                                                            $remaining_slots = $nop - $booked_count;
+
+                                                            // Determine button state
+                                                            $button_state = "book-now";
+                                                            $button_text = "Book Now";
+                                                            $button_disabled = "";
+
+                                                            if ($remaining_slots <= 0) {
+                                                                $button_state = "session-full";
+                                                                $button_text = "Session Full";
+                                                                $button_disabled = "disabled";
+                                                            }
+
+                                                            // Check if session has reached 5 bookings
+                                                            $booking_count_query = "SELECT COUNT(*) as booking_count FROM appointment WHERE scheduleid = $scheduleid";
+                                                            $booking_count_result = $database->query($booking_count_query);
+                                                            $booking_count_row = $booking_count_result->fetch_assoc();
+                                                            $current_bookings = $booking_count_row['booking_count'];
+
+                                                            if ($current_bookings >= 5) {
+                                                                $button_state = "session-full";
+                                                                $button_text = "Max Bookings Reached";
+                                                                $button_disabled = "disabled";
+                                                            }
+
+                                                            echo '<tr>
+                                                            <td style="text-align:center;">' . substr($title, 0, 30) . '</td>
+                                                            <td style="text-align:center;">' . substr($docname, 0, 20) . '</td>
+                                                            <td style="text-align:center;">' . 
+                                                                substr($scheduledate, 0, 10) . ' @ ' . 
+                                                                substr($scheduletime, 0, 5) . 
+                                                            '</td>
+                                                            <td style="text-align:center;">' . $remaining_slots . '/' . $nop . ' slots</td>
+                                                            <td style="text-align:center;">
+                                                                <a href="booking.php?id=' . $scheduleid . '">
+                                                                    <button class="login-btn btn-primary-soft btn ' . $button_state . '" ' . $button_disabled . ' style="width:100%">
+                                                                        ' . $button_text . '
+                                                                    </button>
+                                                                </a>
+                                                            </td>
+                                                            </tr>';
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            ?>
+                                        </tbody>
+                                        </table>
+                                        </div>
+                                    </center>
+
                                     <p style="font-size: 20px;font-weight:600;padding-left: 40px;" class="anime">Your Upcoming Booking</p>
                                     <center>
                                         <div class="abc scroll" style="height: 1000px;padding: 0;margin: 0;">

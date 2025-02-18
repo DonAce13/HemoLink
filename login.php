@@ -16,54 +16,90 @@ if ($_POST) {
     // Clear the logout message flag when attempting to log in
     unset($_SESSION['logout_shown']);
     
-    $email = $_POST['useremail'];
-    $password = $_POST['userpassword'];
+    // Sanitize inputs
+    $email = $securityUtils->sanitizeInput($_POST['useremail']);
+    $password = $securityUtils->sanitizeInput($_POST['userpassword']);
 
     try {
-        $result = $database->query("SELECT * FROM webuser WHERE email='$email'");
-        if($result && $result->num_rows==1){
-            $utype = $result->fetch_assoc()['usertype'];
+        // Validate email format
+        if (!$securityUtils->validateEmail($email)) {
+            throw new Exception("Invalid email format");
+        }
+
+        // First, check user type with prepared statement
+        $userTypeQuery = "SELECT usertype FROM webuser WHERE email = ?";
+        $userTypeResult = $securityUtils->preparedSelect($userTypeQuery, [$email], 's');
+        
+        if ($userTypeResult->num_rows == 1) {
+            $userType = $userTypeResult->fetch_assoc()['usertype'];
             
             $loginSuccessful = false;
             
-            switch($utype) {
+            switch($userType) {
                 case 'p':
-                    $checker = $database->query("SELECT * FROM patient WHERE pemail='$email' AND ppassword='$password'");
-                    if ($checker && $checker->num_rows==1) {
-                        $patient = $checker->fetch_assoc();
+                    $patientQuery = "SELECT * FROM patient WHERE pemail = ? AND ppassword = ?";
+                    $patientResult = $securityUtils->preparedSelect($patientQuery, [$email, $password], 'ss');
+                    
+                    if ($patientResult->num_rows == 1) {
+                        $patient = $patientResult->fetch_assoc();
                         $_SESSION['user'] = $email;
                         $_SESSION['usertype'] = 'p';
                         $_SESSION['login_success'] = true;
                         $_SESSION['user_type'] = 'Patient';
                         $_SESSION['user_name'] = $patient['pname'];
+                        
+                        // Log successful login
+                        $securityUtils->logSecurityEvent('LOGIN_SUCCESS', [
+                            'email' => $email,
+                            'user_type' => 'Patient'
+                        ]);
+                        
                         header('Location: patient/index.php?action=login_success');
                         exit();
                     }
                     break;
                     
                 case 'a':
-                    $checker = $database->query("SELECT * FROM admin WHERE aemail='$email' AND apassword='$password'");
-                    if ($checker && $checker->num_rows==1) {
-                        $admin = $checker->fetch_assoc();
+                    $adminQuery = "SELECT * FROM admin WHERE aemail = ? AND apassword = ?";
+                    $adminResult = $securityUtils->preparedSelect($adminQuery, [$email, $password], 'ss');
+                    
+                    if ($adminResult->num_rows == 1) {
+                        $admin = $adminResult->fetch_assoc();
                         $_SESSION['user'] = $email;
                         $_SESSION['usertype'] = 'a';
                         $_SESSION['login_success'] = true;
                         $_SESSION['user_type'] = 'Administrator';
-                        $_SESSION['user_name'] = $admin['aname'];
+                        $_SESSION['user_name'] = $admin['aname'] ?? 'Admin';
+                        
+                        // Log successful login
+                        $securityUtils->logSecurityEvent('LOGIN_SUCCESS', [
+                            'email' => $email,
+                            'user_type' => 'Administrator'
+                        ]);
+                        
                         header('Location: admin/index.php?action=login_success');
                         exit();
                     }
                     break;
                     
                 case 'd':
-                    $checker = $database->query("SELECT * FROM doctor WHERE docemail='$email' AND docpassword='$password'");
-                    if ($checker && $checker->num_rows==1) {
-                        $doctor = $checker->fetch_assoc();
+                    $doctorQuery = "SELECT * FROM doctor WHERE docemail = ? AND docpassword = ?";
+                    $doctorResult = $securityUtils->preparedSelect($doctorQuery, [$email, $password], 'ss');
+                    
+                    if ($doctorResult->num_rows == 1) {
+                        $doctor = $doctorResult->fetch_assoc();
                         $_SESSION['user'] = $email;
                         $_SESSION['usertype'] = 'd';
                         $_SESSION['login_success'] = true;
                         $_SESSION['user_type'] = 'Doctor';
                         $_SESSION['user_name'] = $doctor['docname'];
+                        
+                        // Log successful login
+                        $securityUtils->logSecurityEvent('LOGIN_SUCCESS', [
+                            'email' => $email,
+                            'user_type' => 'Doctor'
+                        ]);
+                        
                         header('Location: doctor/index.php?action=login_success');
                         exit();
                     }
@@ -76,6 +112,12 @@ if ($_POST) {
                 'title' => 'Login Failed',
                 'text' => 'Incorrect password. Please try again.'
             ];
+            
+            // Log failed login attempt
+            $securityUtils->logSecurityEvent('LOGIN_FAILED', [
+                'email' => $email,
+                'reason' => 'Incorrect Password'
+            ]);
         } else {
             // User doesn't exist
             $alertMessage = [
@@ -83,13 +125,24 @@ if ($_POST) {
                 'title' => 'User Not Found',
                 'text' => 'No account found with this email address.'
             ];
+            
+            // Log failed login attempt
+            $securityUtils->logSecurityEvent('LOGIN_FAILED', [
+                'email' => $email,
+                'reason' => 'User Not Found'
+            ]);
         }
     } catch (Exception $e) {
         $alertMessage = [
             'icon' => 'error',
             'title' => 'System Error',
-            'text' => 'A database error occurred. Please try again later.'
+            'text' => 'A system error occurred. Please try again later.'
         ];
+        
+        // Log system error
+        $securityUtils->logSecurityEvent('LOGIN_ERROR', [
+            'error_message' => $e->getMessage()
+        ]);
     }
 }
 

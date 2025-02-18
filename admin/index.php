@@ -174,7 +174,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'login_success' && !isset($_SES
                 </tr>
                 <tr class="menu-row" >
                     <td class="menu-btn menu-icon-records">
-                        <a href="records.php" class="non-style-link-menu"><div><p class="menu-text">Records</p></a></div>
+                        <a href="records.php" class="non-style-link-menu"><div><p class="menu-text">Records</p></div></a>
                     </td>
                 </tr>
             </table>

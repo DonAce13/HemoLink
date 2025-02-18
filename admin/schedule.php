@@ -90,23 +90,22 @@
                         <a href="patient.php" class="non-style-link-menu"><div><p class="menu-text">Patients</p></a></div>
                     </td>
                 </tr>
+                <tr class="menu-row" >
+                    <td class="menu-btn menu-icon-records">
+                        <a href="records.php" class="non-style-link-menu"><div><p class="menu-text">Records</p></a></div>
+                    </td>
+                </tr>
 
             </table>
         </div>
         <div class="dash-body">
             <table border="0" width="100%" style=" border-spacing: 0;margin:0;padding:0;margin-top:25px; ">
-                <tr >
-                    <td width="13%" >
-                    <a href="schedule.php" ><button  class="login-btn btn-primary-soft btn btn-icon-back"  style="padding-top:11px;padding-bottom:11px;margin-left:20px;width:125px"><font class="tn-in-text">Back</font></button></a>
-                    </td>
-                    <td>
-                                           
-                    </td>
-                    <td width="15%">
-                        <p style="font-size: 14px;color: rgb(119, 119, 119);padding: 0;margin: 0;text-align: right;">
+
+                    <td width="100%">
+                        <p style="font-size: 14px;color: rgb(119, 119, 119);padding: 0;margin: 0;text-align: center;">
                             Today's Date
                         </p>
-                        <p class="heading-sub12" style="padding: 0;margin: 0;">
+                        <p class="heading-sub12" style="padding: 0;margin: 0;text-align: center;">
                             <?php 
 
                         date_default_timezone_set('Asia/Manila');
@@ -118,9 +117,6 @@
 
                         ?>
                         </p>
-                    </td>
-                    <td width="10%">
-                        <button  class="btn-label"  style="display: flex;justify-content: center;align-items: center;"><img src="../img/calendar.svg" width="100%"></button>
                     </td>
 
 
@@ -265,11 +261,7 @@
                                 Max num that can be booked
                                     
                                 </th>
-                                <th class="table-headin">
-                                    
-                                    Session Duration
-                                    
-                                </th>
+
                                 <th class="table-headin">
                                     
                                     End Time
@@ -316,6 +308,8 @@
                                     $nop=$row["nop"];
                                     $session_duration=$row["session_duration"];
                                     $end_time=$row["end_time"];
+
+
                                     echo '<tr>
                                         <td> &nbsp;'.
                                         substr($title,0,30)
@@ -468,7 +462,15 @@
                             </tr>
                             <tr>
                                 <td class="label-td" colspan="2">
-                                    <input type="text" name="session_duration" class="input-text" placeholder="Session Duration" required><br>
+                                    <select name="session_duration" class="box" required>
+                                        <option value="" disabled selected hidden>Select Session Duration</option>
+                                        <option value="15">15 minutes</option>
+                                        <option value="30">30 minutes</option>
+                                        <option value="45">45 minutes</option>
+                                        <option value="60">1 hour</option>
+                                        <option value="90">1 hour 30 minutes</option>
+                                        <option value="120">2 hours</option>
+                                    </select><br>
                                 </td>
                             </tr>
                             <tr>
@@ -478,7 +480,7 @@
                             </tr>
                             <tr>
                                 <td class="label-td" colspan="2">
-                                    <input type="time" name="end_time" class="input-text" placeholder="End Time" required><br>
+                                    <input type="time" name="end_time" class="input-text" readonly><br>
                                 </td>
                             </tr>
                            
@@ -746,6 +748,49 @@
         
     ?>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const timeInput = document.querySelector('input[name="time"]');
+            const durationSelect = document.querySelector('select[name="session_duration"]');
+            const endTimeInput = document.querySelector('input[name="end_time"]');
+
+            function calculateEndTime() {
+                if (!timeInput.value || !durationSelect.value) return;
+
+                // Parse start time
+                const [startHours, startMinutes] = timeInput.value.split(':').map(Number);
+
+                // Calculate end time
+                let endHours = startHours;
+                let endMinutes = startMinutes + parseInt(durationSelect.value);
+
+                // Handle hour overflow
+                endHours += Math.floor(endMinutes / 60);
+                endMinutes %= 60;
+
+                // Format hours and minutes with leading zeros
+                const formattedEndHours = String(endHours).padStart(2, '0');
+                const formattedEndMinutes = String(endMinutes).padStart(2, '0');
+
+                // Set end time
+                endTimeInput.value = `${formattedEndHours}:${formattedEndMinutes}`;
+            }
+
+            // Calculate end time when start time or duration changes
+            timeInput.addEventListener('change', calculateEndTime);
+            durationSelect.addEventListener('change', calculateEndTime);
+
+            // Optional: Validate form submission
+            const form = document.querySelector('.add-new-form');
+            form.addEventListener('submit', function(e) {
+                if (!timeInput.value || !durationSelect.value) {
+                    e.preventDefault();
+                    alert('Please select start time and session duration');
+                }
+            });
+        });
+    </script>
 
 </body>
 </html>

@@ -1,0 +1,90 @@
+2025-02-12 05:08:35 | SELECT_QUERY | {"query":"SELECT usertype FROM webuser WHERE email = ?","params":["administrator@gmail.com"]}
+2025-02-12 05:08:35 | SELECT_QUERY | {"query":"SELECT * FROM admin WHERE aemail = ? AND apassword = ?","params":["administrator@gmail.com","123"]}
+2025-02-12 05:08:35 | LOGIN_SUCCESS | {"email":"administrator@gmail.com","user_type":"Administrator"}
+2025-02-12 05:08:41 | SELECT_QUERY | {"query":"SELECT usertype FROM webuser WHERE email = ?","params":["patient@gmail.com"]}
+2025-02-12 05:08:41 | SELECT_QUERY | {"query":"SELECT * FROM patient WHERE pemail = ? AND ppassword = ?","params":["patient@gmail.com","123"]}
+2025-02-12 05:08:41 | LOGIN_FAILED | {"email":"patient@gmail.com","reason":"Incorrect Password"}
+2025-02-12 05:08:55 | SELECT_QUERY | {"query":"SELECT usertype FROM webuser WHERE email = ?","params":["administrator@gmail.com"]}
+2025-02-12 05:08:55 | SELECT_QUERY | {"query":"SELECT * FROM admin WHERE aemail = ? AND apassword = ?","params":["administrator@gmail.com","123"]}
+2025-02-12 05:08:55 | LOGIN_SUCCESS | {"email":"administrator@gmail.com","user_type":"Administrator"}
+2025-02-12 05:09:13 | SELECT_QUERY | {"query":"SELECT usertype FROM webuser WHERE email = ?","params":["patient@gmail.com"]}
+2025-02-12 05:09:13 | SELECT_QUERY | {"query":"SELECT * FROM patient WHERE pemail = ? AND ppassword = ?","params":["patient@gmail.com","123"]}
+2025-02-12 05:09:13 | LOGIN_FAILED | {"email":"patient@gmail.com","reason":"Incorrect Password"}
+2025-02-12 05:10:01 | SELECT_QUERY | {"query":"SELECT usertype FROM webuser WHERE email = ?","params":["patient@gmail.com"]}
+2025-02-12 05:10:01 | SELECT_QUERY | {"query":"SELECT * FROM patient WHERE pemail = ? AND ppassword = ?","params":["patient@gmail.com","test123"]}
+2025-02-12 05:10:01 | LOGIN_SUCCESS | {"email":"patient@gmail.com","user_type":"Patient"}
+2025-02-12 05:24:05 | SELECT_QUERY | {"query":"SELECT usertype FROM webuser WHERE email = ?","params":["administrator@gmail.com"]}
+2025-02-12 05:24:05 | SELECT_QUERY | {"query":"SELECT * FROM admin WHERE aemail = ? AND apassword = ?","params":["administrator@gmail.com","123"]}
+2025-02-12 05:24:05 | LOGIN_SUCCESS | {"email":"administrator@gmail.com","user_type":"Administrator"}
+2025-02-12 05:26:34 | SELECT_QUERY | {"query":"SELECT usertype FROM webuser WHERE email = ?","params":["patient@gmail.com"]}
+2025-02-12 05:26:34 | SELECT_QUERY | {"query":"SELECT * FROM patient WHERE pemail = ? AND ppassword = ?","params":["patient@gmail.com","test123"]}
+2025-02-12 05:26:34 | LOGIN_SUCCESS | {"email":"patient@gmail.com","user_type":"Patient"}
+2025-02-12 05:27:05 | SELECT_QUERY | {"query":"SELECT usertype FROM webuser WHERE email = ?","params":["administrator@gmail.com"]}
+2025-02-12 05:27:05 | SELECT_QUERY | {"query":"SELECT * FROM admin WHERE aemail = ? AND apassword = ?","params":["administrator@gmail.com","123"]}
+2025-02-12 05:27:05 | LOGIN_SUCCESS | {"email":"administrator@gmail.com","user_type":"Administrator"}
+2025-02-18 05:16:21 | SELECT_QUERY | {"query":"SELECT usertype FROM webuser WHERE email = ?","params":["patient@gmail.com"]}
+2025-02-18 05:16:21 | SELECT_QUERY | {"query":"SELECT * FROM patient WHERE pemail = ? AND ppassword = ?","params":["patient@gmail.com","123"]}
+2025-02-18 05:16:21 | LOGIN_FAILED | {"email":"patient@gmail.com","reason":"Incorrect Password"}
+2025-02-18 05:16:59 | SELECT_QUERY | {"query":"SELECT usertype FROM webuser WHERE email = ?","params":["patient@gmail.com"]}
+2025-02-18 05:16:59 | SELECT_QUERY | {"query":"SELECT * FROM patient WHERE pemail = ? AND ppassword = ?","params":["patient@gmail.com","test123"]}
+2025-02-18 05:16:59 | LOGIN_SUCCESS | {"email":"patient@gmail.com","user_type":"Patient"}
+2025-02-18 05:18:06 | SELECT_QUERY | {"query":"SELECT usertype FROM webuser WHERE email = ?","params":["patient@gmail.com"]}
+2025-02-18 05:18:06 | SELECT_QUERY | {"query":"SELECT * FROM patient WHERE pemail = ? AND ppassword = ?","params":["patient@gmail.com","test123"]}
+2025-02-18 05:18:06 | LOGIN_SUCCESS | {"email":"patient@gmail.com","user_type":"Patient"}
+2025-02-18 05:18:56 | SELECT_QUERY | {"query":"SELECT usertype FROM webuser WHERE email = ?","params":["administrator@gmail.com"]}
+2025-02-18 05:18:56 | SELECT_QUERY | {"query":"SELECT * FROM admin WHERE aemail = ? AND apassword = ?","params":["administrator@gmail.com","123"]}
+2025-02-18 05:18:56 | LOGIN_SUCCESS | {"email":"administrator@gmail.com","user_type":"Administrator"}
+2025-02-18 05:23:08 | SELECT_QUERY | {"query":"SELECT usertype FROM webuser WHERE email = ?","params":["administrator@gmail.com"]}
+2025-02-18 05:23:08 | SELECT_QUERY | {"query":"SELECT * FROM admin WHERE aemail = ? AND apassword = ?","params":["administrator@gmail.com","123"]}
+2025-02-18 05:23:08 | LOGIN_SUCCESS | {"email":"administrator@gmail.com","user_type":"Administrator"}
+2025-02-18 05:36:05 | SELECT_QUERY | {"query":"SELECT usertype FROM webuser WHERE email = ?","params":["patient@gmail.com"]}
+2025-02-18 05:36:05 | SELECT_QUERY | {"query":"SELECT * FROM patient WHERE pemail = ? AND ppassword = ?","params":["patient@gmail.com","test123"]}
+2025-02-18 05:36:05 | LOGIN_SUCCESS | {"email":"patient@gmail.com","user_type":"Patient"}
+2025-02-18 05:37:12 | SELECT_QUERY | {"query":"SELECT usertype FROM webuser WHERE email = ?","params":["administrator@gmail.com"]}
+2025-02-18 05:37:12 | SELECT_QUERY | {"query":"SELECT * FROM admin WHERE aemail = ? AND apassword = ?","params":["administrator@gmail.com","123"]}
+2025-02-18 05:37:12 | LOGIN_SUCCESS | {"email":"administrator@gmail.com","user_type":"Administrator"}
+2025-02-18 05:51:06 | SELECT_QUERY | {"query":"SELECT usertype FROM webuser WHERE email = ?","params":["patient@gmail.com"]}
+2025-02-18 05:51:06 | SELECT_QUERY | {"query":"SELECT * FROM patient WHERE pemail = ? AND ppassword = ?","params":["patient@gmail.com","123"]}
+2025-02-18 05:51:06 | LOGIN_FAILED | {"email":"patient@gmail.com","reason":"Incorrect Password"}
+2025-02-18 05:51:09 | SELECT_QUERY | {"query":"SELECT usertype FROM webuser WHERE email = ?","params":["patient@gmail.com"]}
+2025-02-18 05:51:09 | SELECT_QUERY | {"query":"SELECT * FROM patient WHERE pemail = ? AND ppassword = ?","params":["patient@gmail.com","test123"]}
+2025-02-18 05:51:09 | LOGIN_SUCCESS | {"email":"patient@gmail.com","user_type":"Patient"}
+2025-02-18 06:00:31 | SELECT_QUERY | {"query":"SELECT usertype FROM webuser WHERE email = ?","params":["patient@gmail.com"]}
+2025-02-18 06:00:31 | SELECT_QUERY | {"query":"SELECT * FROM patient WHERE pemail = ? AND ppassword = ?","params":["patient@gmail.com","123"]}
+2025-02-18 06:00:31 | LOGIN_FAILED | {"email":"patient@gmail.com","reason":"Incorrect Password"}
+2025-02-18 06:00:35 | SELECT_QUERY | {"query":"SELECT usertype FROM webuser WHERE email = ?","params":["patient@gmail.com"]}
+2025-02-18 06:00:35 | SELECT_QUERY | {"query":"SELECT * FROM patient WHERE pemail = ? AND ppassword = ?","params":["patient@gmail.com","test123"]}
+2025-02-18 06:00:35 | LOGIN_SUCCESS | {"email":"patient@gmail.com","user_type":"Patient"}
+2025-02-18 06:00:51 | SELECT_QUERY | {"query":"SELECT usertype FROM webuser WHERE email = ?","params":["patient@gmail.com"]}
+2025-02-18 06:00:51 | SELECT_QUERY | {"query":"SELECT * FROM patient WHERE pemail = ? AND ppassword = ?","params":["patient@gmail.com","test123"]}
+2025-02-18 06:00:51 | LOGIN_SUCCESS | {"email":"patient@gmail.com","user_type":"Patient"}
+2025-02-18 06:02:59 | SELECT_QUERY | {"query":"SELECT usertype FROM webuser WHERE email = ?","params":["patient@gmail.com"]}
+2025-02-18 06:02:59 | SELECT_QUERY | {"query":"SELECT * FROM patient WHERE pemail = ? AND ppassword = ?","params":["patient@gmail.com","test123"]}
+2025-02-18 06:02:59 | LOGIN_SUCCESS | {"email":"patient@gmail.com","user_type":"Patient"}
+2025-02-18 06:12:52 | SELECT_QUERY | {"query":"SELECT usertype FROM webuser WHERE email = ?","params":["administrator@gmail.com"]}
+2025-02-18 06:12:52 | SELECT_QUERY | {"query":"SELECT * FROM admin WHERE aemail = ? AND apassword = ?","params":["administrator@gmail.com","123"]}
+2025-02-18 06:12:52 | LOGIN_SUCCESS | {"email":"administrator@gmail.com","user_type":"Administrator"}
+2025-02-18 06:13:22 | SELECT_QUERY | {"query":"SELECT usertype FROM webuser WHERE email = ?","params":["patient@gmail.com"]}
+2025-02-18 06:13:22 | SELECT_QUERY | {"query":"SELECT * FROM patient WHERE pemail = ? AND ppassword = ?","params":["patient@gmail.com","test123"]}
+2025-02-18 06:13:22 | LOGIN_SUCCESS | {"email":"patient@gmail.com","user_type":"Patient"}
+2025-02-18 06:22:29 | SELECT_QUERY | {"query":"SELECT usertype FROM webuser WHERE email = ?","params":["administrator@gmail.com"]}
+2025-02-18 06:22:29 | SELECT_QUERY | {"query":"SELECT * FROM admin WHERE aemail = ? AND apassword = ?","params":["administrator@gmail.com","123"]}
+2025-02-18 06:22:29 | LOGIN_SUCCESS | {"email":"administrator@gmail.com","user_type":"Administrator"}
+2025-02-18 06:22:54 | SELECT_QUERY | {"query":"SELECT usertype FROM webuser WHERE email = ?","params":["patient@gmail.com"]}
+2025-02-18 06:22:54 | SELECT_QUERY | {"query":"SELECT * FROM patient WHERE pemail = ? AND ppassword = ?","params":["patient@gmail.com","123"]}
+2025-02-18 06:22:54 | LOGIN_FAILED | {"email":"patient@gmail.com","reason":"Incorrect Password"}
+2025-02-18 06:22:58 | SELECT_QUERY | {"query":"SELECT usertype FROM webuser WHERE email = ?","params":["patient@gmail.com"]}
+2025-02-18 06:22:58 | SELECT_QUERY | {"query":"SELECT * FROM patient WHERE pemail = ? AND ppassword = ?","params":["patient@gmail.com","TEST123"]}
+2025-02-18 06:22:58 | LOGIN_SUCCESS | {"email":"patient@gmail.com","user_type":"Patient"}
+2025-02-18 06:25:02 | SELECT_QUERY | {"query":"SELECT usertype FROM webuser WHERE email = ?","params":["administrator@gmail.com"]}
+2025-02-18 06:25:02 | SELECT_QUERY | {"query":"SELECT * FROM admin WHERE aemail = ? AND apassword = ?","params":["administrator@gmail.com","123"]}
+2025-02-18 06:25:02 | LOGIN_SUCCESS | {"email":"administrator@gmail.com","user_type":"Administrator"}
+2025-02-18 06:25:24 | SELECT_QUERY | {"query":"SELECT usertype FROM webuser WHERE email = ?","params":["patient@gmail.com"]}
+2025-02-18 06:25:24 | SELECT_QUERY | {"query":"SELECT * FROM patient WHERE pemail = ? AND ppassword = ?","params":["patient@gmail.com","test123"]}
+2025-02-18 06:25:24 | LOGIN_SUCCESS | {"email":"patient@gmail.com","user_type":"Patient"}
+2025-02-18 06:41:18 | SELECT_QUERY | {"query":"SELECT usertype FROM webuser WHERE email = ?","params":["administrator@gmail.com"]}
+2025-02-18 06:41:18 | SELECT_QUERY | {"query":"SELECT * FROM admin WHERE aemail = ? AND apassword = ?","params":["administrator@gmail.com","123"]}
+2025-02-18 06:41:18 | LOGIN_SUCCESS | {"email":"administrator@gmail.com","user_type":"Administrator"}
+2025-02-18 06:50:57 | SELECT_QUERY | {"query":"SELECT usertype FROM webuser WHERE email = ?","params":["patient@gmail.com"]}
+2025-02-18 06:50:57 | SELECT_QUERY | {"query":"SELECT * FROM patient WHERE pemail = ? AND ppassword = ?","params":["patient@gmail.com","test123"]}
+2025-02-18 06:50:57 | LOGIN_SUCCESS | {"email":"patient@gmail.com","user_type":"Patient"}
