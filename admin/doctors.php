@@ -236,7 +236,7 @@
                                 </th>
                                 <th class="table-headin">
                                     
-                                    Events
+                                    Actions
                                     
                                 </tr>
                         </thead>
@@ -315,31 +315,33 @@
         </div>
     </div>
     <?php 
-    if($_GET){
+if ($_GET) {
+    $id = $_GET["id"];
+    $action = $_GET["action"];
+    if ($action == 'drop') {
+        $nameget = $_GET["name"];
         
-        $id=$_GET["id"];
-        $action=$_GET["action"];
-        if($action=='drop'){
-            $nameget=$_GET["name"];
-            echo '
-            <div id="popup1" class="overlay">
-                    <div class="popup">
-                    <center>
-                        <h2>Are you sure?</h2>
-                        <a class="close" href="doctors.php">&times;</a>
-                        <div class="content">
-                            You want to delete this record<br>('.substr($nameget,0,40).').
-                            
-                        </div>
-                        <div style="display: flex;justify-content: center;">
-                        <a href="delete-doctor.php?id='.$id.'" class="non-style-link"><button  class="btn-primary btn"  style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"<font class="tn-in-text">&nbsp;Yes&nbsp;</font></button></a>&nbsp;&nbsp;&nbsp;
-                        <a href="doctors.php" class="non-style-link"><button  class="btn-primary btn"  style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"><font class="tn-in-text">&nbsp;&nbsp;No&nbsp;&nbsp;</font></button></a>
-
-                        </div>
-                    </center>
-            </div>
-            </div>
-            ';
+        // SweetAlert implementation
+        echo '
+        <script>
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You want to delete this record (' . substr($nameget, 0, 40) . ').",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!",
+                cancelButtonText: "No, cancel!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "delete-doctor.php?id=' . $id . '";
+                } else {
+                    window.location.href = "doctors.php"; // Redirect back to doctors page if canceled
+                }
+            });
+        </script>
+        ';
         }elseif($action=='view'){
             $sqlmain= "select * from doctor where docid='$id'";
             $result= $database->query($sqlmain);
@@ -426,11 +428,7 @@
                             </td>
                             </tr>
                             <tr>
-                                <td colspan="2">
-                                    <a href="doctors.php"><input type="button" value="OK" class="login-btn btn-primary-soft btn" ></a>
                                 
-                                    
-                                </td>
                 
                             </tr>
                            
@@ -647,7 +645,7 @@
                                     <tr>
                                         <td>
                                             <p style="padding: 0;margin: 0;text-align: left;font-size: 25px;font-weight: 500;">Edit Doctor Details.</p>
-                                        Doctor ID : '.$id.' (Auto Generated)<br><br>
+                                        <br>
                                         </td>
                                     </tr>
                                     <tr>
@@ -764,26 +762,19 @@
                     ';
         }else{
             echo '
-                <div id="popup1" class="overlay">
-                        <div class="popup">
-                        <center>
-                        <br><br><br><br>
-                            <h2>Edit Successfully!</h2>
-                            <a class="close" href="doctors.php">&times;</a>
-                            <div class="content">
-                                
-                                
-                            </div>
-                            <div style="display: flex;justify-content: center;">
-                            
-                            <a href="doctors.php" class="non-style-link"><button  class="btn-primary btn"  style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"><font class="tn-in-text">&nbsp;&nbsp;OK&nbsp;&nbsp;</font></button></a>
-
-                            </div>
-                            <br><br>
-                        </center>
-                </div>
-                </div>
-    ';
+            <script>
+                Swal.fire({
+                    title: "Edit Successfully!",
+                    text: "Your changes have been saved.",
+                    icon: "success",
+                    confirmButtonText: "OK"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "doctors.php"; // Redirect to doctors page after confirmation
+                    }
+                });
+            </script>
+            ';
 
 
 

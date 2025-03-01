@@ -31,7 +31,6 @@
 
     if($_POST){
         if(isset($_POST["booknow"])){
-            $apponum = $_POST["apponum"];
             $scheduleid = $_POST["scheduleid"];
             $date = $_POST["date"];
             $scheduletime = $_POST["scheduletime"];
@@ -40,19 +39,76 @@
             $description = $_POST["description"];
             $philhealth_id = $_POST["philhealth_id"];
             $age = $_POST["age"];
-            $status = 'scheduled';
+            $status = 'pending';
             $is_confirmed = 0;
 
-            // Corrected SQL Insert using prepared statement
-            $sql2 = "INSERT INTO appointment (pid, apponum, scheduleid, appodate, scheduletime, is_self, other_patient_name, description, philhealth_id, age, status, is_confirmed) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            $stmt = $database->prepare($sql2);
-            $stmt->bind_param("iisssissisis", $userid, $apponum, $scheduleid, $date, $scheduletime, $is_self, $other_patient_name, $description, $philhealth_id, $age, $status, $is_confirmed);
+            // Start a transaction to ensure data integrity
+            $database->begin_transaction();
 
-            if ($stmt->execute()) {
-                header("location: appointment.php?action=booking-added&id=".$apponum."&titleget=none&sweetalert=success");
-            } else {
-                header("location: appointment.php?action=booking-failed&id=".$apponum."&titleget=none&sweetalert=error");
+            try {
+                // Check patient's total attempts for this session
+                $patient_attempt_check = "SELECT COUNT(*) as total_attempts 
+                    FROM appointment 
+                    WHERE pid = ? AND scheduleid = ?";
+                $stmt_attempt_check = $database->prepare($patient_attempt_check);
+                $stmt_attempt_check->bind_param("ii", $userid, $scheduleid);
+                $stmt_attempt_check->execute();
+                $attempt_result = $stmt_attempt_check->get_result();
+                $attempt_row = $attempt_result->fetch_assoc();
+
+                // Check if patient has reached max attempts for this session
+                if ($attempt_row['total_attempts'] >= 5) {
+                    $database->rollback();
+                    header("location: appointment.php?action=booking-failed&titleget=none&sweetalert=error&reason=Max booking attempts reached for this session");
+                    exit;
+                }
+
+                // Check session availability for approved bookings
+                $slots_query = "SELECT available_slots FROM schedule WHERE scheduleid = ?";
+                $slots_stmt = $database->prepare($slots_query);
+                $slots_stmt->bind_param("i", $scheduleid);
+                $slots_stmt->execute();
+                $slots_result = $slots_stmt->get_result();
+                $slots_row = $slots_result->fetch_assoc();
+
+                // Check if session is full
+                if ($slots_row['available_slots'] <= 0) {
+                    $database->rollback();
+                    header("location: appointment.php?action=booking-failed&titleget=none&sweetalert=error&reason=Session Full");
+                    exit;
+                }
+
+                // Generate unique appointment number for the session
+                $apponum_query = "SELECT COALESCE(MAX(apponum), 0) + 1 as next_apponum 
+                                  FROM appointment 
+                                  WHERE scheduleid = ?";
+                $stmt_apponum = $database->prepare($apponum_query);
+                $stmt_apponum->bind_param("i", $scheduleid);
+                $stmt_apponum->execute();
+                $apponum_result = $stmt_apponum->get_result();
+                $apponum_row = $apponum_result->fetch_assoc();
+                $next_apponum = $apponum_row['next_apponum'];
+
+                // Prepare and execute the insert statement
+                $sql2 = "INSERT INTO appointment (pid, apponum, scheduleid, appodate, scheduletime, is_self, other_patient_name, description, philhealth_id, age, status, is_confirmed) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                $stmt = $database->prepare($sql2);
+                $stmt->bind_param("iisssissisis", $userid, $next_apponum, $scheduleid, $date, $scheduletime, $is_self, $other_patient_name, $description, $philhealth_id, $age, $status, $is_confirmed);
+
+                if ($stmt->execute()) {
+                    // Commit the transaction
+                    $database->commit();
+                    header("location: appointment.php?action=booking-added&titleget=none&sweetalert=success");
+                } else {
+                    // Rollback the transaction on failure
+                    $database->rollback();
+                    header("location: appointment.php?action=booking-failed&titleget=none&sweetalert=error");
+                }
+            } catch (Exception $e) {
+                // Rollback the transaction on any exception
+                $database->rollback();
+                header("location: appointment.php?action=booking-failed&titleget=none&sweetalert=error&reason=".urlencode($e->getMessage()));
             }
+            exit;
         }
     }
  ?>
@@ -203,12 +259,7 @@
 
                 <tr class="menu-row">
                     <td class="menu-btn menu-icon-session menu-active menu-icon-session-active">
-                        <a href="schedule.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">Schedule</p></div></a>
-                    </td>
-                </tr>
-                <tr class="menu-row">
-                    <td class="menu-btn menu-icon-appoinment">
-                        <a href="appointment.php" class="non-style-link-menu"><div><p class="menu-text">My Bookings</p></div></a>
+                        <a href="schedule.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">My Bookings</p></div></a>
                     </td>
                 </tr>
                 <tr class="menu-row">
@@ -320,10 +371,32 @@
                                                                 $scheduledate = $session["scheduledate"];
                                                                 $scheduletime = $session["scheduletime"];
 
-                                                                // Get the appointment number
-                                                                $sql2 = "SELECT * FROM appointment WHERE scheduleid = $id";
-                                                                $result12 = $database->query($sql2);
-                                                                $apponum = ($result12->num_rows) + 1;
+                                                                // Get the appointment number, counting only approved appointments for this specific session
+                                                                $sql2 = "SELECT * FROM appointment WHERE scheduleid = ? AND status = 'Approved'";
+                                                                $stmt2 = $database->prepare($sql2);
+                                                                $stmt2->bind_param("i", $id);
+                                                                $stmt2->execute();
+                                                                $result12 = $stmt2->get_result();
+                                                                $current_bookings = $result12->num_rows;
+
+                                                                // Check if max bookings (5) have been reached for this specific session
+                                                                if ($current_bookings >= 5) {
+                                                                    echo '<div class="alert alert-danger">
+                                                                            <p>Maximum number of bookings (5) has been reached for this session.</p>
+                                                                          </div>';
+                                                                    exit; // Stop further execution
+                                                                }
+
+                                                                // Generate unique appointment number for the session
+                                                                $apponum_query = "SELECT COALESCE(MAX(apponum), 0) + 1 as next_apponum 
+                                                                              FROM appointment 
+                                                                              WHERE scheduleid = ?";
+                                                                $stmt_apponum = $database->prepare($apponum_query);
+                                                                $stmt_apponum->bind_param("i", $scheduleid);
+                                                                $stmt_apponum->execute();
+                                                                $apponum_result = $stmt_apponum->get_result();
+                                                                $apponum_row = $apponum_result->fetch_assoc();
+                                                                $next_apponum = $apponum_row['next_apponum'];
 
                                                                 // Display the booking form
                                                                 echo '
@@ -353,7 +426,7 @@
                                                                                     Your Appointment Number
                                                                                 </div>
                                                                                 <center>
-                                                                                    <div class="dashboard-icons" style="margin-left: 0px;width:90%;font-size:70px;font-weight:800;text-align:center;color:var(--btnnictext);background-color: var(--btnice)">' . $apponum . '</div>
+                                                                                    <div class="dashboard-icons" style="margin-left: 0px;width:90%;font-size:70px;font-weight:800;text-align:center;color:var(--btnnictext);background-color: var(--btnice)">' . $next_apponum . '</div>
                                                                                 </center>
                                                                             </div>
                                                                         </div>
@@ -361,7 +434,7 @@
                                                                 </div>
                                                                 <form action="" method="post">
                                                                     <input type="hidden" name="scheduleid" value="' . $scheduleid . '" >
-                                                                    <input type="hidden" name="apponum" value="' . $apponum . '" >
+                                                                    <input type="hidden" name="apponum" value="' . $next_apponum . '" >
                                                                     <input type="hidden" name="date" value="' . $scheduledate . '" >
                                                                     <input type="hidden" name="scheduletime" value="' . $scheduletime . '" >
                                                                     <div class="form-group">
@@ -378,8 +451,17 @@
                                                                             <label for="other_patient_name">Other Patient Name:</label><br>
                                                                             <input type="text" id="other_patient_name" name="other_patient_name"><br><br>
 
-                                                                            <label for="philhealth_id">PhilHealth ID:</label><br>
-                                                                            <input type="text" id="philhealth_id" name="philhealth_id" maxlength="12"><br><br>
+                                                                            <label for="philhealth_category">PhilHealth Category:</label><br>
+                                                                            <select id="philhealth_category" name="philhealth_id" class="input-text" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                                                                <option value="">Select PhilHealth Category</option>
+                                                                                <option value="employed">Employed</option>
+                                                                                <option value="self_employed">Self-Employed</option>
+                                                                                <option value="ofw">Overseas Filipino Worker (OFW)</option>
+                                                                                <option value="senior_citizen">Senior Citizen</option>
+                                                                                <option value="indigent">Indigent</option>
+                                                                                <option value="pwd">Person with Disability</option>
+                                                                                <option value="non_paying">Non-Paying</option>
+                                                                            </select><br><br>
 
                                                                             <label for="age">Age:</label><br>
                                                                             <input type="number" id="age" name="age" max="999"><br><br>
@@ -406,49 +488,31 @@
 
                                                                     function validateForm(event) {
                                                                         const isSelf = document.getElementById("self").checked;
-                                                                        if (!isSelf) {
-                                                                            const otherPatientName = document.getElementById("other_patient_name").value.trim();
-                                                                            const philhealthId = document.getElementById("philhealth_id").value.trim();
-                                                                            const age = document.getElementById("age").value.trim();
-                                                                            const description = document.getElementById("description").value.trim();
-
-                                                                            // Validate PhilHealth ID (must be exactly 12 digits)
-                                                                            const philhealthPattern = /^\d{12}$/;
-                                                                            if (!philhealthPattern.test(philhealthId)) {
-                                                                                event.preventDefault();
-                                                                                Swal.fire({
-                                                                                    title: "Invalid PhilHealth ID",
-                                                                                    text: "PhilHealth ID must be exactly 12 digits.",
-                                                                                    icon: "error",
-                                                                                    confirmButtonText: "OK"
-                                                                                });
-                                                                                return;
-                                                                            }
-
-                                                                            // Validate Age (must not exceed 3 digits)
-                                                                            if (age < 1 || age > 100) {
-                                                                                event.preventDefault();
-                                                                                Swal.fire({
-                                                                                    title: "Invalid Age",
-                                                                                    text: "Age must be a number between 1 and 100.",
-                                                                                    icon: "error",
-                                                                                    confirmButtonText: "OK"
-                                                                                });
-                                                                                return;
-                                                                            }
-
-                                                                            // Check if all fields are filled
-                                                                            if (!otherPatientName || !philhealthId || !age || !description) {
-                                                                                event.preventDefault();
-                                                                                Swal.fire({
-                                                                                    title: "Incomplete Information",
-                                                                                    text: "Please fill in all the required fields.",
-                                                                                    icon: "warning",
-                                                                                    confirmButtonText: "OK"
-                                                                                });
-                                                                                return;
-                                                                            }
+                                                                        
+                                                                        // If booking for myself, allow submission
+                                                                        if (isSelf) {
+                                                                            return true;
                                                                         }
+                                                                        
+                                                                        // If booking for someone else, check all fields
+                                                                        const otherPatientName = document.getElementById("other_patient_name").value.trim();
+                                                                        const philhealthId = document.getElementById("philhealth_category").value.trim();
+                                                                        const age = document.getElementById("age").value.trim();
+                                                                        const description = document.getElementById("description").value.trim();
+
+                                                                        // Check if any field is empty
+                                                                        if (!otherPatientName || !philhealthId || !age || !description) {
+                                                                            event.preventDefault();
+                                                                            Swal.fire({
+                                                                                title: "Incomplete Information",
+                                                                                text: "When booking for someone else, ALL fields must be filled properly.",
+                                                                                icon: "warning",
+                                                                                confirmButtonText: "OK"
+                                                                            });
+                                                                            return false;
+                                                                        }
+                                                                        
+                                                                        return true;
                                                                     }
                                                                 </script>
 
@@ -479,7 +543,7 @@
     $error = isset($_GET['error']) ? $_GET['error'] : null;
     $sweetalert = isset($_GET['sweetalert']) ? $_GET['sweetalert'] : null;
     $error_messages = [
-        'session_full' => 'This session has reached its maximum booking limit of 5 participants.',
+        'session_full' => 'Session Full',
         'incomplete_info' => 'Please fill in all required fields for booking someone else.',
         'invalid_philhealth' => 'PhilHealth ID must be exactly 12 digits.',
         'invalid_age' => 'Age must be between 1 and 100.',

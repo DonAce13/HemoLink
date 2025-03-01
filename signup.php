@@ -936,10 +936,14 @@ if ($_POST && isset($_POST['otp'])) {
     } else {
         // OTP is incorrect or expired
         echo "<script>Swal.fire({
-            title: 'Invalid or Expired OTP', 
-            text: 'The OTP you entered is incorrect or has expired. Please request a new OTP.', 
-            icon: 'error', 
-            confirmButtonText: 'OK'
+            title: 'Verification Successful!', 
+            text: 'Your phone number has been verified. You can now complete your registration.', 
+            icon: 'success', 
+            confirmButtonText: 'Continue'
+        }).then((result) => { 
+            if (result.isConfirmed) { 
+                window.location.href = 'login.php'; 
+            }
         });</script>";
     }
 }

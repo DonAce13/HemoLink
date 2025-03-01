@@ -102,8 +102,6 @@ if ($result->num_rows > 0) {
             <div class="bar"></div>
             <div class="bar"></div>
         </div>
-        
-        <!-- Menu Container -->
         <div class="menu" id="menu">
             <table class="menu-container" border="0">
                 <tr>
@@ -149,7 +147,7 @@ if ($result->num_rows > 0) {
                 </tr>
                 <tr class="menu-row" >
                     <td class="menu-btn menu-icon-dashbord " >
-                        <a href="index.php" class="non-style-link-menu "><div><p class="menu-text">Dashboard</p></a></div></a>
+                        <a href="index.php" class="non-style-link-menu "><div><p class="menu-text">Home</p></a></div></a>
                     </td>
                 </tr>
                 <!-- <tr class="menu-row" >
@@ -159,7 +157,7 @@ if ($result->num_rows > 0) {
                 </tr> -->
                 <tr class="menu-row">
                     <td class="menu-btn menu-icon-appoinment">
-                        <a href="appointment.php" class="non-style-link-menu"><div><p class="menu-text">My Booking History</p></a></div>
+                        <a href="appointment.php" class="non-style-link-menu"><div><p class="menu-text">Booking History</p></a></div>
                     </td>
                 </tr>
                 <tr class="menu-row" >
@@ -351,8 +349,7 @@ if ($result->num_rows > 0) {
             
            
             $dob=$row["pdob"];
-            $nic=$row['has_philhealth'];
-            $phone_number=$row['ptel'];
+            $phone_number=$row['phone_number'];
             echo '
             <div id="popup1" class="overlay">
                     <div class="popup">
@@ -392,16 +389,6 @@ if ($result->num_rows > 0) {
                             <tr>
                                 <td class="label-td" colspan="2">
                                 '.$email.'<br><br>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                    <label for="nic" class="form-label">PhilHealth ID: </label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                '.$nic.'<br><br>
                                 </td>
                             </tr>
                             <tr>
@@ -462,12 +449,10 @@ if ($result->num_rows > 0) {
             $row=$result->fetch_assoc();
             $name=$row["pname"];
             $email=$row["pemail"];
-           
-            
+            $nic=$row["hasPhilhealth"];
             
             $address=$row["paddress"];
-            $nic=$row['has_philhealth'];
-            $phone_number=$row['ptel'];
+            $phone_number=$row['phone_number'];
 
             $error_1=$_GET["error"];
                 $errorlist= array(
@@ -497,43 +482,28 @@ if ($result->num_rows > 0) {
                                     <tr>
                                         <td>
                                             <p style="padding: 0;margin: 0;text-align: left;font-size: 25px;font-weight: 500;">Edit User Account Details.</p>
-                                        User ID : '.$id.' (Auto Generated)<br><br>
+                                        <BR>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="label-td" colspan="2">
+                                            <label for="email" class="form-label">Email: </label>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td class="label-td" colspan="2">
-                                            <form action="edit-user.php" method="POST" class="add-new-form">
-                                            <label for="Email" class="form-label">Email: </label>
-                                            <input type="hidden" value="'.$id.'" name="id00">
+                                            <input type="email" name="email" class="input-text" placeholder="Email Address" value="'.$email.'" required><br>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="label-td" colspan="2">
-                                        <input type="hidden" name="oldemail" value="'.$email.'" >
-                                        <input type="email" name="email" class="input-text" placeholder="Email Address" value="'.$email.'" required><br>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        
                                         <td class="label-td" colspan="2">
                                             <label for="name" class="form-label">Name: </label>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td class="label-td" colspan="2">
-                                            <input type="text" name="name" class="input-text" placeholder="Doctor Name" value="'.$name.'" required><br>
-                                        </td>
-                                        
-                                    </tr>
-                                    
-                                    <tr>
-                                        <td class="label-td" colspan="2">
-                                            <label for="nic" class="form-label">PhilHealth ID: </label>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="label-td" colspan="2">
-                                            <input type="text" name="nic" class="input-text" placeholder="PhilHealth ID:" value="'.$nic.'" required><br>
+                                            <input type="text" name="name" class="input-text" placeholder="Your Name" value="'.$name.'" required><br>
                                         </td>
                                     </tr>
                                     <tr>
@@ -543,41 +513,60 @@ if ($result->num_rows > 0) {
                                     </tr>
                                     <tr>
                                         <td class="label-td" colspan="2">
-                                            <input type="tel" name="Tele" class="input-text" placeholder="Telephone Number" value="'.$phone_number.'" required><br>
+                                            <input type="tel" name="phone_number" class="input-text" placeholder="Telephone Number" value="'.$phone_number.'" required><br>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td class="label-td" colspan="2">
-                                            <label for="spec" class="form-label">Address</label>
-                                            
+                                            <label for="address" class="form-label">Address: </label>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td class="label-td" colspan="2">
-                                        <input type="text" name="address" class="input-text" placeholder="Address" value="'.$address.'" required><br>
+                                            <input type="text" name="address" class="input-text" placeholder="Address" value="'.$address.'" required><br>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td class="label-td" colspan="2">
-                                            <label for="password" class="form-label">Password: </label>
+                                            <label for="hasPhilhealth" class="form-label">PhilHealth ID: </label>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td class="label-td" colspan="2">
-                                            <input type="password" name="password" class="input-text" placeholder="New Password" required><br>
+                                            <input type="text" name="hasPhilhealth" class="input-text" placeholder="PhilHealth ID" value="'.$nic.'" required><br>
                                         </td>
-                                    </tr><tr>
+                                    </tr>
+                                                                        <tr>
+                                        <td class="label-td" colspan="2">
+                                            <form action="edit-user.php" method="POST" class="add-new-form">
+                                            <label for="current_password" class="form-label">Current Password: </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label-td" colspan="2">
+                                            <input type="password" name="current_password" class="input-text" placeholder="Current Password" required><br>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label-td" colspan="2">
+                                            <label for="password" class="form-label">New Password: </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label-td" colspan="2">
+                                            <input type="password" name="password" class="input-text" placeholder="New Password" ><br>
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <td class="label-td" colspan="2">
                                             <label for="cpassword" class="form-label">Confirm Password: </label>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td class="label-td" colspan="2">
-                                            <input type="password" name="cpassword" class="input-text" placeholder="Confirm Password" required><br>
+                                            <input type="password" name="cpassword" class="input-text" placeholder="Confirm Password" ><br>
                                         </td>
                                     </tr>
-                                    
-                        
                                     <tr>
                                         <td colspan="2">
                                             <input type="reset" value="Reset" class="login-btn btn-primary-soft btn" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

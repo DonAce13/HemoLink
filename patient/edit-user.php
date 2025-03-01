@@ -1,79 +1,60 @@
+<?php
+// Import database
+include("../connection.php");
 
-    <?php
-    
-    
+if ($_POST) {
+    // Check for all required fields
+    if (empty($_POST['name']) || empty($_POST['email']) || empty($_POST['phone_number']) || empty($_POST['current_password'])) {
+        $error = '3'; // Set error for missing fields
+    } else {
+        // Proceed with processing the form
+        $name = $_POST['name'];
+        $oldemail = $_POST['oldemail'];
+        $address = $_POST['address'];
+        $email = $_POST['email'];
+        $phone_number = $_POST['phone_number'];
+        $password = $_POST['password'];
+        $cpassword = $_POST['cpassword'];
+        $current_password = $_POST['current_password'];
+        $id = $_POST['id00'];
 
-    //import database
-    include("../connection.php");
-
-
-
-    if($_POST){
-        //print_r($_POST);
-        $result= $database->query("select * from webuser");
-        $name=$_POST['name'];
-        $nic=$_POST['nic'];
-        $oldemail=$_POST["oldemail"];
-        $address=$_POST['address'];
-        $email=$_POST['email'];
-        $phone_number=$_POST['phone_number'];
-        $password=$_POST['password'];
-        $cpassword=$_POST['cpassword'];
-        $id=$_POST['id00'];
-        
-        if ($password==$cpassword){
-            $error='3';
-
-            $sqlmain= "select patient.pid from patient inner join webuser on patient.pemail=webuser.email where webuser.email=?;";
-            $stmt = $database->prepare($sqlmain);
-            $stmt->bind_param("s",$email);
+        if ($password == $cpassword) {
+            // Check if user exists and validate current password
+            $sql = "SELECT ppassword FROM patient WHERE pid = ?";
+            $stmt = $database->prepare($sql);
+            $stmt->bind_param("i", $id);
             $stmt->execute();
             $result = $stmt->get_result();
-            //$resultqq= $database->query("select * from doctor where docid='$id';");
-            if($result->num_rows==1){
-                $id2=$result->fetch_assoc()["pid"];
-            }else{
-                $id2=$id;
-            }
-            
+            $row = $result->fetch_assoc();
 
-            if($id2!=$id){
-                $error='1';
-                //$resultqq1= $database->query("select * from doctor where docemail='$email';");
-                //$did= $resultqq1->fetch_assoc()["docid"];
-                //if($resultqq1->num_rows==1){
-                    
-            }else{
+            if (password_verify($current_password, $row['ppassword'])) {
+                // Update patient details
+                $sql1 = "UPDATE patient SET pemail=?, pname=?, ppassword=?, phone_number=?, paddress=? WHERE pid=?";
+                $stmt = $database->prepare($sql1);
+                $stmt->bind_param("ssssi", $email, $name, $password, $phone_number, $address, $id);
+                $stmt->execute();
 
-                //$sql1="insert into doctor(docemail,docname,docpassword,docnic,doctel,specialties) values('$email','$name','$password','$nic','$phone_number',$spec);";
-                $sql1="update patient set pemail='$email',pname='$name',ppassword='$password',has_philhealth='$nic',ptel='$phone_number',paddress='$address' where pid=$id ;";
-                $database->query($sql1);
-                echo $sql1;
-                $sql1="update webuser set email='$email' where email='$oldemail' ;";
-                $database->query($sql1);
-                echo $sql1;
-                
-                $error= '4';
-                
+                // Update webuser email
+                $sql1 = "UPDATE webuser SET email=? WHERE email=?";
+                $stmt = $database->prepare($sql1);
+                $stmt->bind_param("ss", $email, $oldemail);
+                $stmt->execute();
+                $error = '4';
+            } else {
+                // Handle incorrect current password
+                echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
+                echo '<script>Swal.fire({
+                    title: "Error!",
+                    text: "Current password is incorrect.",
+                    icon: "error",
+                    confirmButtonText: "OK"
+                });</script>';
             }
-            
-        }else{
-            $error='2';
+        } else {
+            $error = '2'; // Passwords do not match
         }
-    
-    
-        
-        
-    }else{
-        //header('location: signup.php');
-        $error='3';
     }
-    
+} // Removed else statement to avoid setting error 3 unnecessarily
 
-    header("location: settings.php?action=edit&error=".$error."&id=".$id);
-    ?>
-    
-   
-
-</body>
-</html>
+header("location: settings.php?action=edit&error=" . $error . "&id=" . $id);
+?>

@@ -643,7 +643,7 @@
                                     <tr>
                                         <td>
                                             <p style="padding: 0;margin: 0;text-align: left;font-size: 25px;font-weight: 500;">Edit Doctor Details.</p>
-                                        Doctor ID : '.$id.' (Auto Generated)<br><br>
+                                        <br>
                                         </td>
                                     </tr>
                                     <tr>
@@ -759,26 +759,19 @@
                     ';
         }else{
             echo '
-                <div id="popup1" class="overlay">
-                        <div class="popup">
-                        <center>
-                        <br><br><br><br>
-                            <h2>Edit Successfully!</h2>
-                            <a class="close" href="doctors.php">&times;</a>
-                            <div class="content">
-                                
-                                
-                            </div>
-                            <div style="display: flex;justify-content: center;">
-                            
-                            <a href="doctors.php" class="non-style-link"><button  class="btn-primary btn"  style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"><font class="tn-in-text">&nbsp;&nbsp;OK&nbsp;&nbsp;</font></button></a>
-
-                            </div>
-                            <br><br>
-                        </center>
-                </div>
-                </div>
-    ';
+            <script>
+                Swal.fire({
+                    title: "Edit Successfully!",
+                    text: "Your changes have been saved.",
+                    icon: "success",
+                    confirmButtonText: "OK"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "doctors.php"; // Redirect to doctors page after confirmation
+                    }
+                });
+            </script>
+            ';
 
 
 

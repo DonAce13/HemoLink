@@ -240,11 +240,13 @@ font.logo-sub{
     border-bottom: 3px solid var(--primarycolor);
 }
 
-.abc{
-  width: 100%;
-  height: 100%;
-
-  overflow: auto;
+.overlay-content {
+  max-height: 80%; /* Set maximum height for the content */
+  overflow-y: auto; /* Enable vertical scrolling */
+  background: white; /* Background color for content */
+  padding: 20px; /* Padding for content */
+  border-radius: 8px; /* Optional: rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional: shadow for depth */
 }
 
 
@@ -276,6 +278,7 @@ font.logo-sub{
     width: 50%;
     position: relative;
     transition: all 5s ease-in-out;
+    /* height: 90%; */
   }
   
   .popup h2 {
@@ -525,10 +528,16 @@ input[type=search]:focus {
 .btn-delete:hover{
   background-image: url('../img/icons/delete-white.svg');
 }
+.btn-done{
+  background-image: url('../img/icons/done.svg');
+}
+.btn-done:hover{
+  background-image: url('../img/icons/done-hover.svg');
+}
 
 .btn-filter{
   background-image: url('../img/icons/filter-iceblue.svg');
-  background-position: 15px 50%;
+
 }
 .btn-filter:hover{
   background-image: url('../img/icons/filter-white.svg');

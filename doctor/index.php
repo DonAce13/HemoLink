@@ -221,193 +221,201 @@ if (isset($_GET['action']) && $_GET['action'] == 'login_success' && !isset($_SES
                                     <center>
                                     <table class="filter-container" style="border: none;" border="0">
                             <tr>
+                            <td colspan="4">
+                    <center>
+                        <table class="filter-container" style="border: none;" border="0">
+                            <tr>
                                 <td colspan="4">
-                                    <p style="font-size: 20px;font-weight:600;padding-left: 12px;">Status</p>
+                                    <p style="font-size: 20px; font-weight: 600; padding-left: 12px;">Status</p>
                                 </td>
                             </tr>
-
                             <tr class="status-report">
                                 <td class="stats1">
                                     <a href="doctors.php" class="non-style-link">
                                         <div class="dashboard-items">
                                             <div>
-                                                <div class="h1-dashboard">
-                                                    <?php echo $doctorrow->num_rows; ?>
-                                                </div><br>
-                                                <div class="h3-dashboard">
-                                                    Doctors &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                </div>
+                                                <div class="h1-dashboard"><?php echo $doctorrow->num_rows; ?></div><br>
+                                                <div class="h3-dashboard">Doctors</div>
                                             </div>
                                             <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/doctors-hover.svg');"></div>
                                         </div>
                                     </a>
-                            </td>
-
+                                </td>
                                 <td class="stats1">
                                     <a href="patient.php" class="non-style-link">
                                         <div class="dashboard-items">
                                             <div>
-                                                <div class="h1-dashboard">
-                                                    <?php echo $patientrow->num_rows; ?>
-                                                </div><br>
-                                                <div class="h3-dashboard">
-                                                    Patients &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                </div>
+                                                <div class="h1-dashboard"><?php echo $patientrow->num_rows; ?></div><br>
+                                                <div class="h3-dashboard">Patients</div>
                                             </div>
                                             <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/patients-hover.svg');"></div>
                                         </div>
                                     </a>
-                            </td>
-
-
+                                </td>
                                 <td class="stats2">
                                     <a href="appointment.php" class="non-style-link">
                                         <div class="dashboard-items">
                                             <div>
-                                                <div class="h1-dashboard">
-                                                    <?php echo $appointmentrow->num_rows; ?>
-                                                </div><br>
-                                                <div class="h3-dashboard">
-                                                    New Booking &nbsp;&nbsp;
-                                                </div>
+                                                <div class="h1-dashboard"><?php echo $appointmentrow->num_rows; ?></div><br>
+                                                <div class="h3-dashboard">New Booking</div>
                                             </div>
                                             <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/book-hover.svg');"></div>
                                         </div>
                                     </a>
-                            </td>
-
+                                </td>
                                 <td class="stats2">
                                     <a href="schedule.php" class="non-style-link">
                                         <div class="dashboard-items">
                                             <div>
-                                                <div class="h1-dashboard">
-                                                    <?php echo $schedulerow->num_rows; ?>
-                                                </div><br>
-                                                <div class="h3-dashboard">
-                                                    All Sessions
-                                                </div>
+                                                <div class="h1-dashboard"><?php echo $schedulerow->num_rows; ?></div><br>
+                                                <div class="h3-dashboard">Current Session</div>
                                             </div>
                                             <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/session-iceblue.svg');"></div>
                                         </div>
                                     </a>
-                            </td>
-                        </tr>
-
-                        </table>
-                                    </center>
-
-
-
-
-
-
-
-
-                                </td>
-                               
-                 
-                                            </tbody>
-                                            <td>
-
-
-                            
-<p id="anim" style="font-size: 20px;font-weight:600;padding-left: 40px;">Your Upcoming Sessions until Next week</p>
-<center>
-    <div class="abc scroll" style="height: 250px;padding: 0;margin: 0;">
-    <table width="85%" class="sub-table scrolldown" border="0" >
-    <thead>
-        
-    <tr>
-            <th class="table-headin">
-                
-            
-            Session Title
-            
-            </th>
-            
-            <th class="table-headin">
-            Scheduled Date & Time
-            </th>
-            <th class="table-headin">
-                
-                 Time
-                
-            </th>
-                
-            </tr>
-    </thead>
-    <tbody>
-    
-        <?php
-        $nextweek=date("Y-m-d",strtotime("+1 week"));
-        $sqlmain= "select schedule.scheduleid,schedule.title,doctor.docname,schedule.scheduledate,schedule.scheduletime,schedule.nop from schedule inner join doctor on schedule.docid=doctor.docid  where schedule.scheduledate>='$today' and schedule.scheduledate<='$nextweek' order by schedule.scheduledate desc"; 
-            $result= $database->query($sqlmain);
-
-            if($result->num_rows==0){
-                echo '<tr>
-                <td colspan="4">
-                <br><br><br><br>
-                <center>
-                <img src="../img/notfound.svg" width="25%">
-                
-                <br>
-                <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">We cannot find anything related to your keywords !</p>
-                <a class="non-style-link" href="schedule.php"><button  class="login-btn btn-primary-soft btn"  style="display: flex;justify-content: center;align-items: center;margin-left:20px;">&nbsp; Show all Sessions &nbsp;</font></button>
-                </a>
-                </center>
-                <br><br><br><br>
-                </td>
-                </tr>';
-                
-            }
-            else{
-            for ( $x=0; $x<$result->num_rows;$x++){
-                $row=$result->fetch_assoc();
-                $scheduleid=$row["scheduleid"];
-                $title=$row["title"];
-                $docname=$row["docname"];
-                $scheduledate=$row["scheduledate"];
-                $scheduletime=$row["scheduletime"];
-                $nop=$row["nop"];
-                echo '<tr>
-                    <td style="padding:20px; text-align:center;"> &nbsp;'.
-                    substr($title,0,30)
-                    .'</td>
-                    <td style="font-size:13px;text-align:center;">
-                    '.substr($scheduledate,0,10).'
-                    </td>
-                    <td style="text-align:center;">
-                        '.substr($scheduletime,0,5).'
-                    </td>
-
-
-                   
-                </tr>';
-                
-            }
-        }
-             
-        ?>
-                
-                                        </table>
-                                        </div>
-                                        </center>
-
-
-
-
-
-
-
                                 </td>
                             </tr>
                         </table>
-                    </td>
-                <tr>
-            </table>
-        </div>
+                    </center>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <table width="100%" border="0" class="dashbord-tables">
+                        <tr>
+                            <td class="responsive-td">
+                                <p class="upcoming-appointments-title">
+                                    Upcoming Appointments until Next <?php echo date("l", strtotime("+1 week")); ?>
+                                </p>
+                                <p class="upcoming-appointments-description">
+                                    Here's Quick access to Upcoming Appointments until 7 days<br>
+                                    More details available in @Appointment section.
+                                </p>
+                            </td>
+                            <td class="responsive-td" width="50%">
+                                <center>
+                                    <div class="abc" style="max-height: 80vh; overflow-y: auto;">
+                                        <table width="100%" class="sub-table scrolldown" border="0">
+                                            <thead>
+                                                <tr>
+                                                    <th class="table-headin">Appointment number</th>
+                                                    <th class="table-headin">Patient name</th>
+                                                    <th class="table-headin">Doctor</th>
+                                                    <th class="table-headin">Session</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php
+                                                $nextweek = date("Y-m-d", strtotime("+1 week"));
+                                                $today = date("Y-m-d");
+                                                $sqlmain = "SELECT appointment.appoid, schedule.scheduleid, schedule.title, doctor.docname, patient.pname, schedule.scheduledate, schedule.scheduletime, appointment.apponum, appointment.appodate 
+                                                            FROM schedule 
+                                                            INNER JOIN appointment ON schedule.scheduleid = appointment.scheduleid 
+                                                            INNER JOIN patient ON patient.pid = appointment.pid 
+                                                            INNER JOIN doctor ON schedule.docid = doctor.docid  
+                                                            WHERE schedule.scheduledate >= '$today' AND schedule.scheduledate <= '$nextweek' 
+                                                            AND appointment.is_confirmed = 1
+                                                            AND (schedule.scheduledate > '$today' OR (schedule.scheduledate = '$today' AND schedule.scheduletime > CURRENT_TIME)) 
+                                                            ORDER BY schedule.scheduledate DESC";
+                                                    
+                                                $result = $database->query($sqlmain);
+
+                                                if ($result->num_rows == 0) {
+                                                    echo '<tr><td colspan="4">
+                                                              <center>
+                                                              <img src="../img/notfound.svg" width="25%">
+                                                              <p class="heading-main12" style="font-size:20px;color:rgb(49, 49, 49)">We couldn\'t find anything related to your keywords!</p>
+                                                              <a class="non-style-link" href="appointment.php">
+                                                                  <button class="login-btn btn-primary-soft btn">Find an Appointment Section</button>
+                                                              </a>
+                                                              </center>
+                                                          </td></tr>';
+                                                } else {
+                                                    while ($row = $result->fetch_assoc()) {
+                                                        $apponum = $row["apponum"];
+                                                        $pname = $row["pname"];
+                                                        $docname = $row["docname"];
+                                                        $title = $row["title"];
+                                                        echo '<tr>
+                                                              <td style="text-align:center;font-size:23px;font-weight:500;color:var(--btnnicetext);padding:15px;">' . $apponum . '</td>
+                                                              <td style="text-align:center;font-weight:600;">' . substr($pname, 0, 25) . '</td>
+                                                              <td style="text-align:center;font-weight:600;">'. substr($docname, 0, 25) . '</td>
+                                                              <td style="text-align:center;font-weight:600;">'. substr($title, 0, 15) . '</td>
+                                                          </tr>';
+                                                    }
+                                                }
+                                                ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </center>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td class="responsive-td">
+                    <p class="upcoming-session-title">
+                        Upcoming Sessions until Next <?php echo date("l", strtotime("+1 week")); ?>
+                    </p>
+                    <p class="upcoming-session-description">
+                        Here's Quick access to Upcoming Sessions that are scheduled until 7 days
+                        Add, Remove, and many features are available in the @Schedule section.
+                    </p>
+                </td>
+                <td class="responsive-td" width="50%" style="margin-top: 20px;">
+                    <center>
+                        <div class="abc scroll" style="height: 200px; padding: 0; margin: 0;">
+                            <table width="85%" class="sub-table scrolldown" border="0">
+                                <thead>
+                                    <tr>
+                                        <th class="table-headin">Session Title</th>
+                                        <th class="table-headin">Doctor</th>
+                                        <th class="table-headin">Scheduled Date & Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    $sqlmain = "SELECT schedule.scheduleid, schedule.title, doctor.docname, schedule.scheduledate, schedule.scheduletime 
+                                                FROM schedule 
+                                                INNER JOIN doctor ON schedule.docid = doctor.docid  
+                                                WHERE schedule.scheduledate >= '$today' AND schedule.scheduledate <= '$nextweek' 
+                                                ORDER BY schedule.scheduledate DESC"; 
+                                    $result = $database->query($sqlmain);
+
+                                    if ($result->num_rows == 0) {
+                                        echo '<tr><td colspan="4">
+                                                  <center>
+                                                  <img src="../img/notfound.svg" width="25%">
+                                                  <p class="heading-main12" style="font-size:20px;color:rgb(49, 49, 49)">We are unable find anything related to your keywords!</p>
+                                                  <a class="non-style-link" href="schedule.php">
+                                                      <button class="login-btn btn-primary-soft btn">Direct to Session Section</button>
+                                                  </a>
+                                                  </center>
+                                              </td></tr>';
+                                    } else {
+                                        while ($row = $result->fetch_assoc()) {
+                                            $title = $row["title"];
+                                            $docname = $row["docname"];
+                                            $scheduledate = $row["scheduledate"];
+                                            $scheduletime = $row["scheduletime"];
+                                            echo '<tr>
+                                                  <td style="text-align:center;font-weight:600;padding:15px;">' . substr($title, 0, 30) . '</td>
+                                                  <td style="text-align:center;font-weight:600;">'. substr($docname, 0, 20) . '</td>
+                                                  <td style="text-align:center;">' . substr($scheduledate, 0, 10) . ' ' . substr($scheduletime, 0, 5) . '</td>
+                                              </tr>';
+                                        }
+                                    }
+                                    ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </center>
+                </td>
+            </tr>
+        </table>
     </div>
-
-
+</div>
 </body>
 </html>

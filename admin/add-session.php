@@ -22,7 +22,7 @@
         $time=$_POST["time"];
         $session_duration=$_POST["session_duration"];
         $end_time=$_POST["end_time"];
-        $sql="insert into schedule (docid,title,scheduledate,scheduletime,nop,session_duration,end_time) values ($docid,'$title','$date','$time',$nop,$session_duration,'$end_time');";
+        $sql="insert into schedule (docid,title,scheduledate,scheduletime,nop,available_slots,session_duration,end_time) values ($docid,'$title','$date','$time',$nop,$nop,$session_duration,'$end_time');";
         $result= $database->query($sql);
         header("location: schedule.php?action=session-added&title=$title");
         

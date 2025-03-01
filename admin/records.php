@@ -200,17 +200,13 @@ if (!empty($appointmentQuery)) {
         
     <title>Admin Records</title>
     <style>
-        .popup{
-            animation: transitionIn-Y-bottom 0.5s;
-        }
-        .sub-table{
-            animation: transitionIn-Y-bottom 0.5s;
-        }
         .chart-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            padding: 20px;
+            gap: 10px;
+            padding: 30px;
+            width: 100%;
+            max-width: 100%;
         }
 
         .chart-container.resizable {
@@ -220,38 +216,40 @@ if (!empty($appointmentQuery)) {
             padding: 15px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             transition: all 0.3s ease;
-            resize: both;
-            overflow: auto;
-            min-width: 250px;
-            min-height: 250px;
-            max-width: 100%;
-            max-height: 500px;
             position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            width: 100%;
+            height: 350px;  /* Fixed height to prevent resize */
+        }
+
+        .chart-container.resizable:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            z-index: 10;
         }
 
         .chart-container.resizable h3 {
             text-align: center;
             color: #2d6a4f;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             font-size: 1rem;
+            flex-shrink: 0;
+            transition: color 0.3s ease;
         }
 
-        .chart-container.resizable:hover {
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-            transform: translateY(-5px);
+        .chart-container.resizable:hover h3 {
+            color: #1a4a33;  /* Slightly darker shade on hover */
         }
 
-        .global-filter {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-
-        .global-filter select {
-            padding: 10px;
-            margin-right: 10px;
-            border-radius: 5px;
-            border: 1px solid #ddd;
+        .chart-container.resizable canvas {
+            flex: 1;
+            width: 100% !important;
+            height: 100% !important;
+            max-width: 100%;
+            max-height: 100%;
+            overflow: hidden;
         }
 
         @media (max-width: 1200px) {
@@ -263,6 +261,10 @@ if (!empty($appointmentQuery)) {
         @media (max-width: 768px) {
             .chart-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .chart-container.resizable {
+                height: 300px;
             }
         }
         
@@ -289,6 +291,108 @@ if (!empty($appointmentQuery)) {
             margin-right: 5px;
             border-radius: 50%;
         }
+
+        .global-filter {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .global-filter select {
+            padding: 10px;
+            margin-right: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            color: #2d6a4f;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .global-filter select:hover {
+            border-color: #2d6a4f;
+            box-shadow: 0 0 5px rgba(45, 106, 79, 0.2);
+        }
+
+        .global-filter select:focus {
+            outline: none;
+            border-color: #2d6a4f;
+            box-shadow: 0 0 8px rgba(45, 106, 79, 0.3);
+        }
+
+        .statistics-section {
+            padding: 30px;
+            background-color: #f4f4f4;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+
+        .statistics-section h2 {
+            text-align: center;
+            color: #2d6a4f;
+            margin-bottom: 25px;
+            font-size: 1.5rem;
+        }
+
+        .statistics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .statistic-card {
+            display: flex;
+            align-items: center;
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .statistic-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        .statistic-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+        }
+
+        .statistic-icon i {
+            color: white;
+            font-size: 30px;
+        }
+
+        .statistic-content h3 {
+            color: #2d6a4f;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .statistic-content p {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        @media (max-width: 1200px) {
+            .statistics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .statistics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -311,9 +415,9 @@ if (!empty($appointmentQuery)) {
                             <tr>
                                  <tr>
                             <td colspan="2">
-        <button onclick="confirmLogout()" class="logout-btn btn-primary-soft btn">Log out</button>
-    </td>
-</tr>
+                                <button onclick="confirmLogout()" class="logout-btn btn-primary-soft btn">Log out</button>
+                            </td>
+                        </tr>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
@@ -396,39 +500,125 @@ if (!empty($appointmentQuery)) {
                     <option value="day" <?php echo ($filterType == 'day' ? 'selected' : ''); ?>>Today</option>
                 </select>
             </div>
-
-            <h1>Informative Charts</h1>
+            <h1 style="margin-left: 30px;">Informative Charts</h1>
+            
             <div class="chart-grid">
-                <div class="chart-container resizable" id="status-chart-container">
+                <div class="chart-container resizable" id="status-chart-container" style="flex: 1;">
                     <h3>Schedule Status</h3>
                     <canvas id="statusChart"></canvas>
                 </div>
-                <div class="chart-container resizable" id="age-group-chart-container">
+                <div class="chart-container resizable" id="age-group-chart-container" style="flex: 1;">
                     <h3>Patient Age Distribution</h3>
                     <canvas id="ageGroupChart"></canvas>
                 </div>
-                <div class="chart-container resizable" id="appointment-chart-container">
+                <div class="chart-container resizable full-width" id="appointment-chart-container" style="flex: 1;">
                     <h3>Appointment Overview</h3>
                     <canvas id="appointmentChart"></canvas>
+                </div>
+            </div>
+            <!-- Statistics Section -->
+            <div class="statistics-section">
+                <h2>Comprehensive Statistics</h2>
+                <div class="statistics-grid">
+                    <?php
+                    // Fetch total counts for various entities
+                    $totalPatientsQuery = "SELECT COUNT(*) as total_patients FROM patient";
+                    $totalAppointmentsQuery = "SELECT COUNT(*) as total_appointments FROM appointment WHERE status = 'Approved'";
+                    $totalDoctorsQuery = "SELECT COUNT(*) as total_doctors FROM doctor";
+                    $totalSchedulesQuery = "SELECT COUNT(*) as total_schedules FROM schedule WHERE deleted_at IS NULL";
+
+                    $totalPatientsResult = $database->query($totalPatientsQuery);
+                    $totalAppointmentsResult = $database->query($totalAppointmentsQuery);
+                    $totalDoctorsResult = $database->query($totalDoctorsQuery);
+                    $totalSchedulesResult = $database->query($totalSchedulesQuery);
+
+                    $totalPatients = $totalPatientsResult->fetch_assoc()['total_patients'];
+                    $totalAppointments = $totalAppointmentsResult->fetch_assoc()['total_appointments'];
+                    $totalDoctors = $totalDoctorsResult->fetch_assoc()['total_doctors'];
+                    $totalSchedules = $totalSchedulesResult->fetch_assoc()['total_schedules'];
+
+                    $statisticsCards = [
+                        [
+                            'icon' => 'fa-users',
+                            'title' => 'Total Patients',
+                            'count' => $totalPatients,
+                            'color' => '#3498db'
+                        ],
+                        [
+                            'icon' => 'fa-calendar-check',
+                            'title' => 'Total Appointments',
+                            'count' => $totalAppointments,
+                            'color' => '#2ecc71'
+                        ],
+                        [
+                            'icon' => 'fa-user-md',
+                            'title' => 'Total Doctors',
+                            'count' => $totalDoctors,
+                            'color' => '#e74c3c'
+                        ],
+                        [
+                            'icon' => 'fa-calendar',
+                            'title' => 'Active Schedules',
+                            'count' => $totalSchedules,
+                            'color' => '#f39c12'
+                        ]
+                    ];
+
+                    foreach ($statisticsCards as $card):
+                    ?>
+                    <div class="statistic-card">
+                        <div class="statistic-icon" style="background-color: <?php echo $card['color']; ?>">
+                            <i class="fas <?php echo $card['icon']; ?>"></i>
+                        </div>
+                        <div class="statistic-content">
+                            <h3><?php echo $card['title']; ?></h3>
+                            <p><?php echo number_format($card['count']); ?></p>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Color palette for consistent and accessible colors
+        // Color palette with more accessible and visually pleasing colors
         const colorPalette = [
-            '#1f77b4',  // Blue
-            '#ff7f0e',  // Orange
-            '#2ca02c',  // Green
-            '#d62728',  // Red
-            '#9467bd',  // Purple
-            '#8c564b',  // Brown
-            '#e377c2',  // Pink
-            '#7f7f7f',  // Gray
-            '#bcbd22',  // Olive
-            '#17becf'   // Cyan
+            '#3498db',  // Soft Blue
+            '#2ecc71',  // Emerald Green
+            '#e74c3c',  // Soft Red
+            '#f39c12',  // Sunflower Yellow
+            '#9b59b6',  // Amethyst Purple
+            '#1abc9c',  // Turquoise
+            '#34495e',  // Dark Blue Gray
+            '#d35400',  // Pumpkin Orange
         ];
+
+        // Enhanced chart options for better container fit
+        const commonChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: {
+                padding: {
+                    top: 10,
+                    bottom: 10,
+                    left: 10,
+                    right: 10
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0,0,0,0.8)',
+                    titleColor: 'white',
+                    bodyColor: 'white',
+                    borderColor: 'rgba(255,255,255,0.2)',
+                    borderWidth: 1
+                }
+            }
+        };
 
         // Schedule Status Chart
         const statusCtx = document.getElementById('statusChart').getContext('2d');
@@ -444,26 +634,17 @@ if (!empty($appointmentQuery)) {
             type: 'pie',
             data: statusData,
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                layout: {
-                    padding: {
-                        bottom: 50  // Space for legend
-                    }
-                },
+                ...commonChartOptions,
                 plugins: {
-                    legend: {
-                        display: false  // Hide default legend
-                    },
+                    ...commonChartOptions.plugins,
                     tooltip: {
+                        ...commonChartOptions.plugins.tooltip,
                         callbacks: {
                             label: function(context) {
-                                let label = context.label || '';
-                                if (label) {
-                                    label += ': ';
-                                }
-                                label += context.formattedValue;
-                                return label;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const value = context.parsed;
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                return `${context.label}: ${value} (${percentage}%)`;
                             }
                         }
                     }
@@ -481,6 +662,7 @@ if (!empty($appointmentQuery)) {
                 legendItem.className = 'chart-legend-item';
                 
                 const colorSpan = document.createElement('span');
+                colorSpan.className = 'color-box';
                 colorSpan.style.backgroundColor = statusData.datasets[0].backgroundColor[index];
                 
                 const labelSpan = document.createElement('span');
@@ -519,20 +701,23 @@ if (!empty($appointmentQuery)) {
             type: 'bar',
             data: ageGroupData,
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
+                ...commonChartOptions,
                 scales: {
                     y: {
                         beginAtZero: true,
                         title: {
                             display: true,
-                            text: 'Number of Patients'
+                            text: 'Number of Patients',
+                            color: '#2d6a4f'
+                        },
+                        grid: {
+                            color: 'rgba(0,0,0,0.05)'
                         }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: false
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
                     }
                 }
             }
@@ -547,32 +732,39 @@ if (!empty($appointmentQuery)) {
                 data: <?php echo json_encode(array_column($appointmentData, 'count')); ?>,
                 backgroundColor: colorPalette[5],
                 borderColor: colorPalette[5],
-                borderWidth: 1,
-                barThickness: 'flex',
-                maxBarThickness: 50
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4
             }]
         };
         const appointmentChart = new Chart(appointmentCtx, {
-            type: 'bar',
+            type: 'line',
             data: appointmentData,
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
+                ...commonChartOptions,
                 scales: {
                     y: {
                         beginAtZero: true,
                         title: {
                             display: true,
-                            text: 'Number of Appointments'
+                            text: 'Number of Appointments',
+                            color: '#2d6a4f'
+                        },
+                        grid: {
+                            color: 'rgba(0,0,0,0.05)'
                         },
                         ticks: {
-                            precision: 0  // Whole numbers only
+                            precision: 0
                         }
                     },
                     x: {
                         title: {
                             display: true,
-                            text: 'Date'
+                            text: 'Date',
+                            color: '#2d6a4f'
+                        },
+                        grid: {
+                            display: false
                         },
                         ticks: {
                             autoSkip: true,
@@ -581,19 +773,13 @@ if (!empty($appointmentQuery)) {
                         }
                     }
                 },
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        callbacks: {
-                            title: function(context) {
-                                return 'Date: ' + context[0].label;
-                            },
-                            label: function(context) {
-                                return 'Appointments: ' + context.formattedValue;
-                            }
-                        }
+                elements: {
+                    point: {
+                        radius: 5,
+                        hoverRadius: 7,
+                        backgroundColor: 'white',
+                        borderColor: colorPalette[5],
+                        borderWidth: 2
                     }
                 }
             }
@@ -615,17 +801,22 @@ if (!empty($appointmentQuery)) {
                 const container = document.getElementById(containerId);
                 const canvas = container.querySelector('canvas');
                 
-                // Adjust canvas size to container
-                canvas.width = container.clientWidth - 40;
-                canvas.height = container.clientHeight - 80;
+                // Ensure canvas takes full container size with some padding
+                canvas.style.width = '100%';
+                canvas.style.height = '100%';
                 
-                // Redraw the chart
+                // Resize and update chart without animation
                 chart.resize();
+                chart.update('none');
             });
         }
 
-        // Resize charts on window resize
-        window.addEventListener('resize', resizeCharts);
+        // Resize charts on window resize with debounce
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(resizeCharts, 250);
+        });
 
         // Initial resize and legend creation after charts are created
         document.addEventListener('DOMContentLoaded', () => {

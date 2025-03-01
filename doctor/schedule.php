@@ -214,7 +214,7 @@
                    <td colspan="4">
                        <center>
                         <div class="abc scroll">
-                        <table width="93%" class="sub-table scrolldown" border="0">
+                        <table width="93%" class="sub-table scrolldown" border="0" style="text-align:center;">
                         <thead>
                         <tr>
                                 <th class="table-headin">
@@ -368,7 +368,7 @@ if ($result->num_rows == 0) {
                             
                         </div>
                         <div class="abc scroll" style="display: flex;justify-content: center;">
-                        <table width="80%" class="sub-table scrolldown add-doc-form-container" border="0">
+                        <table width="80%" class="sub-table scrolldown add-doc-form-container"  style="text-align:center;">
                         
                             <tr>
                                 <td>
@@ -481,7 +481,7 @@ if ($result->num_rows == 0) {
                                              $apponum=$row["apponum"];
                                              $pid=$row["pid"];
                                              $pname=$row["pname"];
-                                             $ptel=$row["ptel"];
+                                             $phone_number=$row["phone_number"];
                                              
                                              echo '<tr style="text-align:center;">
                                                 <td>
@@ -496,7 +496,7 @@ if ($result->num_rows == 0) {
                                                  
                                                  </td>
                                                  <td>
-                                                 '.substr($ptel,0,25).'
+                                                 '.substr($phone_number,0,25).'
                                                  </td>
                                                  
                                                  

@@ -254,7 +254,7 @@
                    <td colspan="4">
                        <center>
                         <div class="abc scroll">
-                        <table width="93%" class="sub-table scrolldown"  style="border-spacing:0;">
+                        <table width="93%" class="sub-table scrolldown"  style="border-spacing:0; text-align:center">
                         <thead>
                         <tr>
                                 <th class="table-headin">
@@ -319,9 +319,9 @@
                                     $pid=$row["pid"];
                                     $name=$row["pname"];
                                     $email=$row["pemail"];
-                                    $nic=$row["has_philhealth"];
+                                    $nic=$row["hasPhilhealth"];
                                     $dob=$row["pdob"];
-                                    $tel=$row["ptel"];
+                                    $tel=$row["phone_number"];
                                     
                                     echo '<tr>
                                         <td> &nbsp;'.
@@ -378,7 +378,7 @@
             $email=$row["pemail"];
             $nic=$row["has_philhealth"];
             $dob=$row["pdob"];
-            $phone_number=$row["ptel"];
+            $phone_number=$row["phone_number"];
             $address=$row["paddress"];
             echo '
             <div id="popup1" class="overlay">
@@ -388,7 +388,7 @@
                         <div class="content">
 
                         </div>
-                        <div style="display: flex;justify-content: center;">
+                        <div style="display: flex;text-align:center: center;">
                         <table width="80%" class="sub-table scrolldown add-doc-form-container" border="0">
                         
                             <tr>
@@ -474,14 +474,13 @@
                                 </td>
                                 
                             </tr>
-                            <tr>
-                                <td colspan="2">
-                                    <a href="patient.php"><input type="button" value="OK" class="login-btn btn-primary-soft btn" ></a>
-                                
-                                    
-                                </td>
-                
-                            </tr>
+<tr>
+    <td colspan="2">
+        <div style="display: flex; text-align:center;">
+            <a href="patient.php"><input type="button" value="OK" class="login-btn btn-primary-soft btn"></a>
+        </div>
+    </td>
+</tr>
                            
 
                         </table>

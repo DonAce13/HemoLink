@@ -370,7 +370,7 @@ if ($result->num_rows == 0) {
                                     $email=$row["pemail"];
                                     $nic=$row["has_philhealth"];
                                     $dob=$row["pdob"];
-                                    $tel=$row["ptel"];
+                                    $tel=$row["phone_number"];
                                     
                                     echo '<tr>
                                         <td> &nbsp;'.
@@ -430,7 +430,7 @@ if ($result->num_rows == 0) {
             $email=$row["pemail"];
             $nic=$row["has_philhealth"];
             $dob=$row["pdob"];
-            $phone_number=$row["ptel"];
+            $phone_number=$row["phone_number"];
             $address=$row["paddress"];
             echo '
             <div id="popup1" class="overlay">

@@ -54,11 +54,13 @@ CREATE TABLE `appointment` (
   `scheduletime` time DEFAULT NULL,
   `is_self` tinyint(1) NOT NULL DEFAULT 0,
   `other_patient_name` varchar(255) DEFAULT NULL,
-  `description` text DEFAULT NULL,
   `philhealth_id` varchar(20) DEFAULT NULL,
+  `description` text DEFAULT NULL,
   `age` int(11) DEFAULT NULL,
   `status` enum('scheduled','done','canceled','ongoing') DEFAULT 'scheduled',
   `is_confirmed` tinyint(1) NOT NULL DEFAULT 0,
+  `rejection_timestamp` DATETIME DEFAULT NULL,
+  `rejection_reason` VARCHAR(255) DEFAULT NULL,
   PRIMARY KEY (`appoid`),
   KEY `pid` (`pid`),
   KEY `scheduleid` (`scheduleid`),
@@ -71,9 +73,9 @@ CREATE TABLE `appointment` (
 -- Dumping data for table `appointment`
 --
 
-INSERT INTO `appointment` (`appoid`, `pid`, `apponum`, `scheduleid`, `appodate`, `scheduletime`, `is_self`, `other_patient_name`, `description`, `philhealth_id`, `age`, `status`, `is_confirmed`) VALUES
-(2, 1, 1, 1, '2024-12-17', '10:00:00', 0, NULL, NULL, NULL, NULL, 'done', 0),
-(3, 2, 2, 2, '2024-12-18', '14:00:00', 1, 'John Doe', 'General checkup', 'PH987654321', 30, 'done', 0);
+INSERT INTO `appointment` (`appoid`, `pid`, `apponum`, `scheduleid`, `appodate`, `scheduletime`, `is_self`, `other_patient_name`, `philhealth_id`, `description`, `age`, `status`, `is_confirmed`, `rejection_timestamp`, `rejection_reason`) VALUES
+(2, 1, 1, 1, '2024-12-17', '10:00:00', 0, NULL, NULL, NULL, NULL, 'done', 0, NULL, NULL),
+(3, 2, 2, 2, '2024-12-18', '14:00:00', 1, 'John Doe', 'PH987654321', 'General checkup', 30, 'done', 0, NULL, NULL);
 
 --
 -- Triggers `appointment`
@@ -195,7 +197,6 @@ INSERT INTO `patient` (`pid`, `pemail`, `pname`, `ppassword`, `paddress`, `hasPh
 --
 -- Table structure for table `schedule`
 --
-
 CREATE TABLE `schedule` (
   `scheduleid` int(11) NOT NULL AUTO_INCREMENT,
   `docid` varchar(255) DEFAULT NULL,
@@ -205,6 +206,10 @@ CREATE TABLE `schedule` (
   `session_duration` int(4) DEFAULT NULL,
   `end_time` time DEFAULT NULL,
   `nop` int(4) DEFAULT NULL,
+  `total_slots` int(4) DEFAULT NULL,
+  `available_slots` int(4) DEFAULT NULL,
+  `approved_bookings` int(4) DEFAULT 0,
+  `max_approved_bookings` int(4) DEFAULT 5,
   `deleted_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`scheduleid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
@@ -213,8 +218,20 @@ CREATE TABLE `schedule` (
 -- Dumping data for table `schedule`
 --
 
-INSERT INTO `schedule` (`scheduleid`, `docid`, `title`, `scheduledate`, `scheduletime`, `session_duration`, `end_time`, `nop`, `deleted_at`) VALUES
-(9, '1', 'Current Test Session 1', '2025-02-02', '18:39:38', 60, '19:39:38', 10, NULL);
+INSERT INTO `schedule` 
+(`scheduleid`, `docid`, `title`, `scheduledate`, `scheduletime`, `session_duration`, `end_time`, `nop`, `total_slots`, `available_slots`, `approved_bookings`, `max_approved_bookings`, `deleted_at`) 
+VALUES
+(9, '1', 'Current Test Session 1', '2025-02-24', '18:39:38', 60, '19:39:38', 10, 10, 10, 0, 5, NULL),
+(10, '1', 'General Check-up', '2025-02-24', '13:00:00', 300, '18:00:00', 40, 40, 40, 0, 5, NULL),
+(11, '1', 'TB DOTS', '2025-02-24', '13:00:00', 240, '17:00:00', 30, 30, 30, 0, 5, NULL),
+(12, '1', 'Family Planning', '2025-02-25', '13:00:00', 180, '16:00:00', 20, 20, 20, 0, 5, NULL),
+(13, '1', 'General Check-up', '2025-02-25', '13:00:00', 300, '18:00:00', 40, 40, 40, 0, 5, NULL),
+(14, '1', 'TB DOTS', '2025-02-25', '13:00:00', 240, '17:00:00', 30, 30, 30, 0, 5, NULL),
+(15, '1', 'Family Planning', '2025-02-25', '13:00:00', 180, '16:00:00', 20, 20, 20, 0, 5, NULL),
+(16, '1', 'Immunization', '2025-02-26', '13:00:00', 300, '18:00:00', 40, 40, 40, 0, 5, NULL),
+(17, '1', 'General Check-up', '2025-02-27', '13:00:00', 300, '18:00:00', 40, 40, 40, 0, 5, NULL),
+(18, '1', 'Family Planning', '2025-02-27', '13:00:00', 180, '16:00:00', 20, 20, 20, 0, 5, NULL),
+(19, '1', 'Prenatal', '2025-02-28', '13:00:00', 300, '18:00:00', 20, 20, 20, 0, 5, NULL);
 
 -- --------------------------------------------------------
 
@@ -322,7 +339,7 @@ DELIMITER $$
 --
 -- Events
 --
-CREATE DEFINER=`root`@`localhost` EVENT `update_appointment_status` ON SCHEDULE EVERY 1 MINUTE STARTS '2025-02-02 18:39:39' ON COMPLETION NOT PRESERVE ENABLE DO BEGIN
+CREATE DEFINER=`root`@`localhost` EVENT `update_appointment_status` ON SCHEDULE EVERY 1 MINUTE STARTS '2025-02-02 18:39:38' ON COMPLETION NOT PRESERVE ENABLE DO BEGIN
    -- Set appointments to 'ongoing' if the current date and time match the scheduled date/time
    UPDATE `appointment`
    SET `status` = 'ongoing'
@@ -352,8 +369,6 @@ DO BEGIN
 END$$
 
 DELIMITER ;
-
-
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

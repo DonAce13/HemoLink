@@ -233,7 +233,7 @@
                                 </td>
                             </tr>
                             <tr>
-                            <td style="width: 25%;">
+                            <!-- <td style="width: 25%;">
                                     <a href="?action=drop&id=<?php echo $userid.'&name='.$username ?>" class="non-style-link">
                                     <div  class="dashboard-items setting-tabs"  style="padding:20px;margin:auto;width:95%;display: flex;">
                                         <div class="btn-icon-back dashboard-icons-setting" style="background-image: url('../img/icons/patients-hover.svg');"></div>
@@ -249,7 +249,7 @@
                                                 
                                     </div>
                                     </a>
-                                </td>
+                                </td> -->
                                 
                             </tr>
                         </table>
@@ -370,14 +370,7 @@
                             '.$spcil_name.'<br><br>
                             </td>
                             </tr>
-                            <tr>
-                                <td colspan="2">
-                                    <a href="settings.php"><input type="button" value="OK" class="login-btn btn-primary-soft btn" ></a>
-                                
-                                    
-                                </td>
-                
-                            </tr>
+
                            
 
                         </table>
@@ -429,7 +422,7 @@
                                     <tr>
                                         <td>
                                             <p style="padding: 0;margin: 0;text-align: left;font-size: 25px;font-weight: 500;">Edit Doctor Details.</p>
-                                        Doctor ID : '.$id.' (Auto Generated)<br><br>
+                                        <br>
                                         </td>
                                     </tr>
                                     <tr>

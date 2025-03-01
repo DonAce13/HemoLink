@@ -273,7 +273,7 @@
                                         substr($nic,0,12).'
                                         </td>
                                         <td style="text-align: center;"> &nbsp;'.
-                                        substr($tel,0,10).'
+                                        $tel.'
                                         </td>
                                         <td style="text-align: center;"> &nbsp;'.
                                         substr($email,0,20).'
@@ -320,7 +320,7 @@
             $email=$row["pemail"];
             $nic = strtolower($row["hasPhilhealth"]) === 'yes' ? 'Yes' : 'No';
             $dob=$row["pdob"];
-            $phone_number=$row["ptel"];
+            $phone_number=$row["phone_number"];
             $address=$row["paddress"];
             echo '
             <div id="popup1" class="overlay">

@@ -119,12 +119,7 @@
                 
                 <tr class="menu-row" >
                     <td class="menu-btn menu-icon-session menu-active menu-icon-session-active">
-                        <a href="schedule.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">Scheduled Sessions</p></div></a>
-                    </td>
-                </tr>
-                <tr class="menu-row" >
-                    <td class="menu-btn menu-icon-appoinment">
-                        <a href="appointment.php" class="non-style-link-menu"><div><p class="menu-text">My Bookings</p></a></div>
+                        <a href="schedule.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">My Bookings</p></div></a>
                     </td>
                 </tr>
                 <tr class="menu-row" >
@@ -144,7 +139,16 @@
         </script>
         <?php
 
-                $sqlmain= "SELECT *, DAYNAME(scheduledate) as day_name FROM schedule INNER JOIN doctor ON schedule.docid = doctor.docid WHERE schedule.scheduledate >= ? ORDER BY DAYOFWEEK(scheduledate), scheduletime";
+                $sqlmain= "SELECT *, DAYNAME(scheduledate) as day_name FROM schedule INNER JOIN doctor ON schedule.docid = doctor.docid 
+                                    LEFT JOIN (
+                                        SELECT scheduleid, 
+                                        COUNT(CASE WHEN status = 'Approved' THEN 1 END) as approved_bookings,
+                                        COUNT(*) as total_bookings 
+                                        FROM appointment 
+                                        GROUP BY scheduleid
+                                    ) as booking_counts ON schedule.scheduleid = booking_counts.scheduleid
+                                    WHERE schedule.scheduledate >= ? 
+                                    ORDER BY DAYOFWEEK(scheduledate), scheduletime";
                 $stmt = $database->prepare($sqlmain);
                 $stmt->bind_param("s", $today);
 
@@ -153,13 +157,31 @@
                 if ($_POST) {
                     if (!empty($_POST["scheduledate"])) {
                         $scheduledate = $_POST["scheduledate"];
-                        $sqlmain = "SELECT *, DAYNAME(scheduledate) as day_name FROM schedule INNER JOIN doctor ON schedule.docid = doctor.docid WHERE schedule.scheduledate = ? ORDER BY DAYOFWEEK(scheduledate), scheduletime";
+                        $sqlmain = "SELECT *, DAYNAME(scheduledate) as day_name FROM schedule INNER JOIN doctor ON schedule.docid = doctor.docid 
+                                    LEFT JOIN (
+                                        SELECT scheduleid, 
+                                        COUNT(CASE WHEN status = 'Approved' THEN 1 END) as approved_bookings,
+                                        COUNT(*) as total_bookings 
+                                        FROM appointment 
+                                        GROUP BY scheduleid
+                                    ) as booking_counts ON schedule.scheduleid = booking_counts.scheduleid
+                                    WHERE schedule.scheduledate = ? 
+                                    ORDER BY DAYOFWEEK(scheduledate), scheduletime";
                         $stmt = $database->prepare($sqlmain);
                         $stmt->bind_param("s", $scheduledate);
                     }
                     if (!empty($_POST["search"])) {
                         $keyword = $_POST["search"];
-                        $sqlmain = "SELECT *, DAYNAME(scheduledate) as day_name FROM schedule INNER JOIN doctor ON schedule.docid = doctor.docid WHERE schedule.scheduledate >= ? AND (doctor.docname LIKE ? OR schedule.title LIKE ?) ORDER BY DAYOFWEEK(scheduledate), scheduletime";
+                        $sqlmain = "SELECT *, DAYNAME(scheduledate) as day_name FROM schedule INNER JOIN doctor ON schedule.docid = doctor.docid 
+                                    LEFT JOIN (
+                                        SELECT scheduleid, 
+                                        COUNT(CASE WHEN status = 'Approved' THEN 1 END) as approved_bookings,
+                                        COUNT(*) as total_bookings 
+                                        FROM appointment 
+                                        GROUP BY scheduleid
+                                    ) as booking_counts ON schedule.scheduleid = booking_counts.scheduleid
+                                    WHERE schedule.scheduledate >= ? AND (doctor.docname LIKE ? OR schedule.title LIKE ?) 
+                                    ORDER BY DAYOFWEEK(scheduledate), scheduletime";
                         $stmt = $database->prepare($sqlmain);
                         $likeKeyword = "%" . $keyword . "%";
                         $stmt->bind_param("sss", $today, $likeKeyword, $likeKeyword);
@@ -274,13 +296,9 @@
                                             $row_get_nop = $result_get_nop->fetch_assoc();
                                             $max_participants = $row_get_nop['nop'];
 
-                                            $sql_check_full = "SELECT COUNT(*) as count FROM appointment WHERE scheduleid = ?";
-                                            $stmt_check_full = $database->prepare($sql_check_full);
-                                            $stmt_check_full->bind_param("i", $scheduleid);
-                                            $stmt_check_full->execute();
-                                            $result_check_full = $stmt_check_full->get_result();
-                                            $row_check_full = $result_check_full->fetch_assoc();
-                                            $is_full = $row_check_full['count'] >= $max_participants;
+                                            $approved_bookings = $session['approved_bookings'];
+
+                                            $is_full = $approved_bookings >= $max_participants;
 
                                             $button_state = "book-now"; // Default state
                                             if ($is_full) {

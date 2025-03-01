@@ -231,7 +231,7 @@
                    <td colspan="4">
                        <center>
                         <div class="abc scroll">
-                        <table width="93%" class="sub-table scrolldown" border="0">
+                        <table width="93%" class="sub-table scrolldown" border="0" style="text-align:center;">
                         <thead>
                         <tr>
                                 <th class="table-headin">

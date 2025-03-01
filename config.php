@@ -1,9 +1,17 @@
 <?php
 // Database Configuration
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '');
+define('DB_SERVER', 'localhost');
+define('DB_USERNAME', 'root');
+define('DB_PASSWORD', '');
 define('DB_NAME', 'sql_database_hemolink');
+
+// Create connection
+$connection = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
+
+// Check connection
+if (!$connection) {
+    die("Connection failed: " . mysqli_connect_error());
+}
 
 // Twilio Configuration
 define('TWILIO_SID', 'ACe042a0f5dea2cb97ac2c45b1cbef4211');

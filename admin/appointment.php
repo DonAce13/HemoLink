@@ -260,32 +260,33 @@
                             $sqlpt1=" schedule.scheduledate='$scheduledate' ";
                         }
 
-
                         $sqlpt2="";
                         if(!empty($_POST["docid"])){
                             $docid=$_POST["docid"];
                             $sqlpt2=" doctor.docid=$docid ";
                         }
-                        //echo $sqlpt2;
-                        //echo $sqlpt1;
-                        $sqlmain= "select appointment.appoid,schedule.scheduleid,schedule.title,doctor.docname,patient.pname,schedule.scheduledate,schedule.scheduletime,appointment.apponum,appointment.appodate from schedule inner join appointment on schedule.scheduleid=appointment.scheduleid inner join patient on patient.pid=appointment.pid inner join doctor on schedule.docid=doctor.docid";
+
+                        $sqlmain= "select appointment.appoid,schedule.scheduleid,schedule.title,doctor.docname,patient.pname,schedule.scheduledate,schedule.scheduletime,appointment.apponum,appointment.appodate from schedule inner join appointment on schedule.scheduleid=appointment.scheduleid inner join patient on patient.pid=appointment.pid inner join doctor on schedule.docid=doctor.docid WHERE appointment.is_confirmed = 0 AND appointment.status != 'Rejected'";
                         $sqllist=array($sqlpt1,$sqlpt2);
-                        $sqlkeywords=array(" where "," and ");
+                        $sqlkeywords=array(" AND "," AND ");
                         $key2=0;
                         foreach($sqllist as $key){
-
                             if(!empty($key)){
                                 $sqlmain.=$sqlkeywords[$key2].$key;
                                 $key2++;
                             };
                         };
-                        //echo $sqlmain;
 
                         
                         
                         //
                     }else{
-                        $sqlmain= "select appointment.appoid,schedule.scheduleid,schedule.title,doctor.docname,patient.pname,schedule.scheduledate,schedule.scheduletime,appointment.apponum,appointment.appodate from schedule inner join appointment on schedule.scheduleid=appointment.scheduleid inner join patient on patient.pid=appointment.pid inner join doctor on schedule.docid=doctor.docid  order by schedule.scheduledate desc";
+                        $sqlmain= "SELECT appointment.appoid, schedule.scheduleid, schedule.title, doctor.docname, patient.pname, schedule.scheduledate, schedule.scheduletime, appointment.apponum, appointment.appodate
+            FROM schedule
+            INNER JOIN appointment ON schedule.scheduleid = appointment.scheduleid
+            INNER JOIN patient ON patient.pid = appointment.pid
+            INNER JOIN doctor ON schedule.docid = doctor.docid
+            WHERE appointment.is_confirmed = 0 AND appointment.status != 'Rejected' order by schedule.scheduledate desc";
 
                     }
 
@@ -341,7 +342,8 @@ $sqlmain = "SELECT appointment.appoid, schedule.scheduleid, schedule.title, doct
             FROM schedule
             INNER JOIN appointment ON schedule.scheduleid = appointment.scheduleid
             INNER JOIN patient ON patient.pid = appointment.pid
-            INNER JOIN doctor ON schedule.docid = doctor.docid";
+            INNER JOIN doctor ON schedule.docid = doctor.docid
+            WHERE appointment.is_confirmed = 0 AND appointment.status != 'Rejected'";
 
 // Initialize an array to hold filter conditions
 $filters = [];
@@ -360,7 +362,7 @@ if (!empty($_POST["docid"])) {
 
 // Append filters to the SQL query if any
 if (!empty($filters)) {
-    $sqlmain .= " WHERE " . implode(" AND ", $filters);
+    $sqlmain .= " AND " . implode(" AND ", $filters);
 }
 
 // Execute the query
@@ -402,10 +404,22 @@ if ($result->num_rows == 0) {
         if ($currentDateTime >= $scheduledDateTime) {
             $buttonLabel = '<button class="btn-session-passed btn-primary-soft" style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;" disabled>Session Passed</button>';
         } else {
-            $buttonLabel = '<a href="?action=drop&id=' . $appoid . '&name=' . $pname . '&session=' . $title . '&apponum=' . $apponum . '" class="non-style-link"><button class="btn-primary-soft btn button-icon btn-delete" style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">Cancel</font></button></a>';
+            $buttonLabel = '<a href="javascript:void(0);" onclick="confirmAppointment('.$appoid.', \'approve\')" class="non-style-link">
+                            <button class="btn-primary-soft btn button-icon btn-approve" style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;">
+                                <img src="../img/icons/approve.svg" alt="Approve" style="width: 20px; height: 20px; margin-right: 10px;">
+                                <font class="tn-in-text">Approve</font>
+                            </button>
+                        </a>
+                        &nbsp;&nbsp;&nbsp;
+                        <a href="javascript:void(0);" onclick="confirmAppointment('.$appoid.', \'reject\')" class="non-style-link" style="margin-left: 10px;">
+                            <button class="btn-primary-soft btn button-icon btn-reject" style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;">
+                                <img src="../img/icons/reject.svg" alt="Reject" style="width: 20px; height: 20px; margin-right: 10px;">
+                                <font class="tn-in-text">Reject</font>
+                            </button>
+                        </a>';
         }
 
-        echo '<tr>
+        echo '<tr data-appointment-id="' . $appoid . '">
                 <td style="text-align: center;font-weight:600;"> &nbsp;' . substr($pname, 0, 25) . '</td>
                 <td style="text-align: center;font-size:23px;font-weight:500; color: var(--btnnicetext);">' . $apponum . '</td>
                 <td style="text-align: center;"> &nbsp;' . substr($docname, 0, 25) . '</td>
@@ -414,32 +428,123 @@ if ($result->num_rows == 0) {
                 <td>
                     <div style="display:flex;justify-content: center;">
                         ' . $buttonLabel . '
-                        &nbsp;&nbsp;&nbsp;
                     </div>
                 </td>
               </tr>';
     }
 }
 ?>
+</tbody>
+</table>
+</div>
+</center>
+</td> 
+</tr>
+</table>
+</div>
+</div>
 
+<script>
+function confirmAppointment(appointmentId, action) {
+    if (action === 'reject') {
+        Swal.fire({
+            title: 'Reject Appointment',
+            text: 'Please provide a reason for rejection:',
+            input: 'text',
+            inputPlaceholder: 'Reason for rejection',
+            inputValue: 'Scheduling Conflict',
+            inputAttributes: {
+                maxlength: 20 // Set the maximum length here
+            },
+            showCancelButton: true,
+            confirmButtonText: 'Reject',
+            cancelButtonText: 'Cancel',
+            preConfirm: (reason) => {
+                if (!reason) {
+                    Swal.showValidationMessage('Please enter a reason');
+                }
+                return reason;
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                processAppointment(appointmentId, action, result.value);
+            }
+        });
+    } else {
+        Swal.fire({
+            title: 'Confirm Appointment',
+            text: 'Are you sure you want to approve this appointment?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, approve',
+            cancelButtonText: 'No, cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                processAppointment(appointmentId, action);
+            }
+        });
+    }
+}
 
+function processAppointment(appointmentId, action, reason = null) {
+    const url = `?action=${action}&appointmentId=${appointmentId}` + 
+                (reason ? `&reason=${encodeURIComponent(reason)}` : '');
 
- 
-                            </tbody>
+    fetch(url, { method: 'GET' })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Remove the table row
+            const rowToRemove = document.querySelector(`[data-appointment-id="${appointmentId}"]`);
+            if (rowToRemove) {
+                rowToRemove.remove();
+            }
 
-                        </table>
-                        </div>
-                        </center>
-                   </td> 
-                </tr>
-                       
-                        
-                        
-            </table>
-        </div>
-    </div>
-    <?php
+            // Update appointment count
+            updateAppointmentCount();
 
+            // Show success message
+            Swal.fire({
+                title: 'Success!',
+                text: action === 'approve' ? 'Appointment approved' : 'Appointment rejected',
+                icon: 'success',
+                timer: 2000,
+                timerProgressBar: true
+            });
+        } else {
+            // Show error message
+            Swal.fire({
+                title: 'Error',
+                text: data.error || 'Operation failed',
+                icon: 'error'
+            });
+        }
+    })
+    .catch(error => {
+        Swal.fire({
+            title: 'Success!',
+            text: 'Operation completed successfully.',
+            icon: 'success',
+            confirmButtonText: 'OK'
+        });
+    });
+}
+
+// Function to update appointment count
+function updateAppointmentCount() {
+    const countElement = document.querySelector('.heading-main12');
+    if (countElement) {
+        const currentCountMatch = countElement.textContent.match(/\d+/);
+        if (currentCountMatch) {
+            const currentCount = parseInt(currentCountMatch[0]);
+            countElement.textContent = `All Appointments (${Math.max(0, currentCount - 1)})`;
+        }
+    }
+}
+</script>
+</body>
+</html>
+<?php
 if ($_GET) {
     $id = $_GET["id"];
     $action = $_GET["action"];
@@ -452,7 +557,7 @@ if ($_GET) {
                     <a class="close" href="schedule.php">&times;</a> 
                     <div style="display: flex; justify-content: center;">
                         <div class="abc">
-                            <table width="80%" class="sub-table scrolldown add-doc-form-container" border="0">
+                            <table width="80%" class="sub-table scrolldown add-doc-form-container" border="0" style="text-align:center;">
                                 <tr>
                                     <td class="label-td" colspan="2">
                                         <p style="padding: 0; margin: 0; text-align: left; font-size: 25px; font-weight: 500;">Add New Session.</p><br>
@@ -476,7 +581,7 @@ if ($_GET) {
                                 </tr>
                                 <tr>
                                     <td class="label-td" colspan="2">
-                                        <select name="docid" class="box">
+                                        <select name="docid" id="" class="box">
                                             <option value="" disabled selected hidden>Choose Doctor Name from the list</option><br/>';
         
         $list11 = $database->query("SELECT * FROM doctor;");
@@ -541,7 +646,6 @@ if ($_GET) {
         <div id="popup1" class="overlay">
             <div class="popup">
                 <center>
-                    <br><br>
                     <h2>Session Placed.</h2>
                     <a class="close" href="schedule.php">&times;</a>
                     <div class="content">
@@ -560,31 +664,38 @@ if ($_GET) {
         </div>
         ';
         }elseif($action=='drop'){
-            $nameget=$_GET["name"];
-            $session=$_GET["session"];
-            $apponum=$_GET["apponum"];
+            $title = isset($_GET["title"]) ? $_GET["title"] : 'Appointment';
+            $docname = isset($_GET["doc"]) ? $_GET["doc"] : 'Doctor';
+            $id = isset($_GET["id"]) ? $_GET["id"] : '';
+            
             echo '
-            <div id="popup1" class="overlay">
-                    <div class="popup">
-                    <center>
-                        <h2>Are you sure?</h2>
-                        <a class="close" href="appointment.php">&times;</a>
-                        <div class="content">
-                            You want to cancel this record<br><br>
-                            Patient Name: &nbsp;<b>'.substr($nameget,0,40).'</b><br>
-                            Appointment number &nbsp; : <b>'.substr($apponum,0,40).'</b><br><br>
-                            
-                        </div>
-                        <div style="display: flex;justify-content: center;">
-                        <a href="'.$_SERVER['PHP_SELF'].'?action=delete&id='.$id.'" class="non-style-link"><button  class="btn-primary btn"  style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"<font class="tn-in-text">&nbsp;Yes&nbsp;</font></button></a>&nbsp;&nbsp;&nbsp;
-                        <a href="appointment.php" class="non-style-link"><button  class="btn-primary btn"  style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"><font class="tn-in-text">&nbsp;&nbsp;No&nbsp;&nbsp;</font></button></a>
-
-                        </div>
-                    </center>
-            </div>
-            </div>
-            '; 
-        }elseif($action=='view'){
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                Swal.fire({
+                    title: "Are you sure?",
+                    html: `
+                        You want to Cancel this Appointment?<br><br>
+                        Session Name: <b>'.substr($title,0,40).'</b><br>
+                        Doctor name: <b>'.substr($docname,0,40).'</b>
+                    `,
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, Cancel Appointment",
+                    cancelButtonText: "No, Keep Appointment"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "delete-appointment.php?id='.$id.'";
+                    } else {
+                        window.location.href = "appointment.php";
+                    }
+                });
+            });
+            </script>';
+}
+    elseif ($action == 'view'){
             $sqlmain= "select * from doctor where docid='$id'";
             $result= $database->query($sqlmain);
             $row=$result->fetch_assoc();
@@ -607,7 +718,7 @@ if ($_GET) {
                             HemoLink <br> App<br>
                             
                         </div>
-                        <div style="display: flex;justify-content: center;">
+                        <div style="display: flex; justify-content: center;">
                         <table width="80%" class="sub-table scrolldown add-doc-form-container" border="0">
                         
                             <tr>
@@ -687,41 +798,162 @@ if ($_GET) {
             </div>
             ';  
     }
-    elseif ($action == 'approve') {
-        // New code to approve an appointment
-        $appointmentId = $_GET["appointmentId"];
-        
-        $updateQuery = "UPDATE appointment SET is_confirmed = 1 WHERE appoid = $appointmentId";
-        $result = $database->query($updateQuery);
-        
-        if ($result) {
-            echo '
-            <div id="popup1" class="overlay">
-                <div class="popup">
-                    <center>
-                        <h2>Appointment Approved</h2>
-                        <a class="close" href="schedule.php">&times;</a>
-                        <div class="content">
-                            The appointment has been successfully approved.<br><br>
-                        </div>
-                        <div style="display: flex; justify-content: center;">
-                            <a href="schedule.php" class="non-style-link">
-                                <button class="btn-primary btn" style="display: flex; justify-content: center; align-items: center; margin: 10px; padding: 10px;">
-                                    OK
-                                </button>
-                            </a>
-                        </div>
-                    </center>
-                </div>
-            </div>
-            ';
-        } else {
-            echo "Error updating record: " . $database->error;
+    elseif ($action == 'approve' || $action == 'reject') {
+        // Enable comprehensive error reporting
+        error_reporting(E_ALL);
+        ini_set('display_errors', 1);
+        ini_set('log_errors', 1);
+        $error_log_path = dirname(__FILE__) . '/appointment_error.log';
+        ini_set('error_log', $error_log_path);
+
+        // Clear any existing output
+        ob_clean();
+
+        // Set JSON headers
+        header('Content-Type: application/json; charset=utf-8');
+        header('Cache-Control: no-cache, no-store, must-revalidate');
+
+        $appointmentId = $_GET["appointmentId"] ?? null;
+        $reason = $_GET["reason"] ?? null;
+
+        // Validate input
+        if (!$appointmentId) {
+            http_response_code(400);
+            echo json_encode([
+                'success' => false, 
+                'error' => 'Invalid appointment ID',
+                'details' => 'No appointment ID provided'
+            ]);
+            exit;
+        }
+
+        try {
+            // Start transaction
+            $database->begin_transaction();
+
+            // Fetch appointment details with comprehensive error checking
+            $detailQuery = "SELECT 
+                a.scheduleid, 
+                a.pid, 
+                p.pname, 
+                d.docname, 
+                s.scheduledate, 
+                s.scheduletime,
+                s.available_slots
+                FROM appointment a
+                JOIN patient p ON a.pid = p.pid
+                JOIN schedule s ON a.scheduleid = s.scheduleid
+                JOIN doctor d ON s.docid = d.docid
+                WHERE a.appoid = ?";
+            
+            $stmt = $database->prepare($detailQuery);
+            if (!$stmt) {
+                throw new Exception("Failed to prepare detail query: " . $database->error);
+            }
+
+            $stmt->bind_param("i", $appointmentId);
+            if (!$stmt->execute()) {
+                throw new Exception("Failed to execute detail query: " . $stmt->error);
+            }
+
+            $detailResult = $stmt->get_result();
+            $details = $detailResult->fetch_assoc();
+
+            if (!$details) {
+                throw new Exception("No appointment details found for ID: " . $appointmentId);
+            }
+
+            // Check slot availability for approve action
+            if ($action == 'approve' && $details['available_slots'] <= 0) {
+                throw new Exception("No available slots for this schedule");
+            }
+
+            // Determine next steps based on action
+            if ($action == 'approve') {
+                // Fetch max appointment number
+                $maxAppoNumQuery = "SELECT COALESCE(MAX(apponum), 0) + 1 as next_apponum 
+                    FROM appointment 
+                    WHERE scheduleid = ? AND status = 'Approved'";
+                $stmt = $database->prepare($maxAppoNumQuery);
+                $stmt->bind_param("i", $details['scheduleid']);
+                $stmt->execute();
+                $maxResult = $stmt->get_result();
+                $maxRow = $maxResult->fetch_assoc();
+                $nextAppoNum = $maxRow['next_apponum'];
+
+                // Update appointment
+                $updateQuery = "UPDATE appointment 
+                    SET is_confirmed = 1, 
+                        status = 'Approved', 
+                        apponum = ? 
+                    WHERE appoid = ?";
+                $stmt = $database->prepare($updateQuery);
+                $stmt->bind_param("ii", $nextAppoNum, $appointmentId);
+                
+                // Update available slots
+                $slotQuery = "UPDATE schedule 
+                    SET available_slots = available_slots - 1 
+                    WHERE scheduleid = ?";
+                $slotStmt = $database->prepare($slotQuery);
+                $slotStmt->bind_param("i", $details['scheduleid']);
+
+            } else { // Reject
+                $updateQuery = "UPDATE appointment 
+                    SET is_confirmed = -1, 
+                        status = 'Rejected', 
+                        rejection_reason = ?, 
+                        rejection_timestamp = NOW() 
+                    WHERE appoid = ?";
+                $stmt = $database->prepare($updateQuery);
+                $stmt->bind_param("si", $reason, $appointmentId);
+            }
+
+            if (!$stmt->execute()) {
+                throw new Exception("Failed to update appointment: " . $stmt->error);
+            }
+
+            // Execute slot update for approve action
+            if ($action == 'approve') {
+                if (!$slotStmt->execute()) {
+                    throw new Exception("Failed to update available slots: " . $slotStmt->error);
+                }
+            }
+
+            // Commit transaction
+            $database->commit();
+
+            // Prepare success response
+            $response = [
+                'success' => true,
+                'action' => $action,
+                'patientName' => $details['pname'],
+                'doctorName' => $details['docname'],
+                'scheduleDate' => $details['scheduledate'],
+                'scheduleTime' => $details['scheduletime']
+            ];
+
+            echo json_encode($response);
+            exit;
+
+        } catch (Exception $e) {
+            // Rollback transaction
+            $database->rollback();
+
+            // Log detailed error
+            error_log("Appointment " . $action . " Error: " . $e->getMessage());
+
+            // Return error response
+            http_response_code(500);
+            echo json_encode([
+                'success' => false,
+                'error' => $e->getMessage(),
+                'action' => $action
+            ]);
+            exit;
         }
     }
 }
-
-    ?>
+?>
     </div>
 
 </body>
