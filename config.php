@@ -1,9 +1,19 @@
 <?php
-// Database Configuration
+
+// define('DB_SERVER', 'localhost'); 
+// define('DB_USERNAME', 'u763411610_Ayysue');
+// define('DB_PASSWORD', 'BarkForMeDog011303');
+// define('DB_NAME', 'u763411610_Mabayuan_HC');
+
 define('DB_SERVER', 'localhost');
 define('DB_USERNAME', 'root');
 define('DB_PASSWORD', '');
 define('DB_NAME', 'sql_database_hemolink');
+
+
+
+
+
 
 // Create connection
 $connection = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
@@ -18,6 +28,7 @@ define('TWILIO_SID', 'ACe042a0f5dea2cb97ac2c45b1cbef4211');
 define('TWILIO_AUTH_TOKEN', '162f2dcca26f8207e4481aff9e29af1c');
 define('TWILIO_VERIFY_SID', 'VAd879fde2196ca8355bb3da60bd1c960c');
 define('TWILIO_PHONE_NUMBER', '+18506000203');
+define('TWILIO_MESSAGING_SERVICE_SID', 'MGb906d5e7b721f8736b524379fd1ad982');
 
 // Additional Security Settings
 ini_set('display_errors', 1);

@@ -61,6 +61,8 @@ CREATE TABLE `appointment` (
   `is_confirmed` tinyint(1) NOT NULL DEFAULT 0,
   `rejection_timestamp` DATETIME DEFAULT NULL,
   `rejection_reason` VARCHAR(255) DEFAULT NULL,
+  `booking_attempt_timestamp` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `attended` TINYINT(1) NOT NULL DEFAULT 0, -- 1 = Attended, 0 = Pending, -1 = Not Visited
   PRIMARY KEY (`appoid`),
   KEY `pid` (`pid`),
   KEY `scheduleid` (`scheduleid`),
@@ -73,9 +75,19 @@ CREATE TABLE `appointment` (
 -- Dumping data for table `appointment`
 --
 
-INSERT INTO `appointment` (`appoid`, `pid`, `apponum`, `scheduleid`, `appodate`, `scheduletime`, `is_self`, `other_patient_name`, `philhealth_id`, `description`, `age`, `status`, `is_confirmed`, `rejection_timestamp`, `rejection_reason`) VALUES
-(2, 1, 1, 1, '2024-12-17', '10:00:00', 0, NULL, NULL, NULL, NULL, 'done', 0, NULL, NULL),
-(3, 2, 2, 2, '2024-12-18', '14:00:00', 1, 'John Doe', 'PH987654321', 'General checkup', 30, 'done', 0, NULL, NULL);
+INSERT INTO `appointment` (`appoid`, `pid`, `apponum`, `scheduleid`, `appodate`, `scheduletime`, `is_self`, `other_patient_name`, `philhealth_id`, `description`, `age`, `status`, `is_confirmed`, `rejection_timestamp`, `rejection_reason`, `booking_attempt_timestamp`, `attended`) VALUES
+(2, 1, 1, 1, '2024-12-17', '10:00:00', 0, NULL, NULL, NULL, NULL, 'done', 0, NULL, NULL, '2025-03-04 15:06:00', 0),
+(3, 2, 2, 2, '2024-12-18', '14:00:00', 1, 'John Doe', 'PH987654321', 'General checkup', 30, 'done', 0, NULL, NULL, '2025-03-04 15:06:00', 0),
+-- DEMO APPROVED APPOINTMENTS FOR TESTING
+(1001, 1, 3, 1, '2025-03-04', '18:39:38', 0, NULL, NULL, NULL, NULL, 'scheduled', 1, NULL, NULL, '2025-03-04 16:00:00', 0),
+(1002, 2, 4, 2, '2025-03-04', '13:00:00', 1, 'Jane Test', 'PH123456789', 'Follow-up', 40, 'scheduled', 1, NULL, NULL, '2025-03-04 16:05:00', 0),
+(1003, 1, 5, 1, '2025-03-05', '10:00:00', 0, NULL, NULL, NULL, NULL, 'done', 1, NULL, NULL, '2025-03-05 10:00:00', 0),
+(1004, 2, 6, 2, '2025-03-05', '14:00:00', 1, 'John Doe', 'PH987654321', 'Checkup', 30, 'done', 1, NULL, NULL, '2025-03-05 10:05:00', 0),
+-- SAMPLE FOR NOT VISITED
+(1005, 3, 7, 3, '2025-03-06', '09:00:00', 0, NULL, NULL, NULL, NULL, 'scheduled', 1, NULL, NULL, '2025-03-06 08:00:00', -1),
+(1006, 4, 8, 4, '2025-03-07', '10:00:00', 0, NULL, NULL, NULL, NULL, 'scheduled', 1, NULL, NULL, '2025-03-07 09:00:00', 0),
+(1007, 5, 9, 5, '2025-03-08', '11:00:00', 0, NULL, NULL, NULL, NULL, 'scheduled', 1, NULL, NULL, '2025-03-08 10:00:00', 0),
+(1008, 6, 10, 6, '2025-03-09', '12:00:00', 0, NULL, NULL, NULL, NULL, 'scheduled', 1, NULL, NULL, '2025-03-09 11:00:00', 0);
 
 --
 -- Triggers `appointment`
@@ -88,11 +100,22 @@ CREATE TRIGGER `validate_is_self_fields` BEFORE INSERT ON `appointment` FOR EACH
         SET NEW.description = NULL;
         SET NEW.philhealth_id = NULL;
         SET NEW.age = NULL;
+        
+        -- Set booking_attempt_timestamp to current time if not already set
+        IF NEW.booking_attempt_timestamp IS NULL THEN
+            SET NEW.booking_attempt_timestamp = CURRENT_TIMESTAMP;
+        END IF;
+    
     -- When is_self is 1 (appointment for others), these fields must not be NULL
     ELSEIF NEW.is_self = 1 THEN
         IF NEW.other_patient_name IS NULL OR NEW.description IS NULL OR NEW.philhealth_id IS NULL OR NEW.age IS NULL THEN
             SIGNAL SQLSTATE '45000'
             SET MESSAGE_TEXT = 'All fields for other patient (name, description, PhilHealth ID, and age) must be provided when is_self is 1';
+        END IF;
+        
+        -- Set booking_attempt_timestamp to current time if not already set
+        IF NEW.booking_attempt_timestamp IS NULL THEN
+            SET NEW.booking_attempt_timestamp = CURRENT_TIMESTAMP;
         END IF;
     END IF;
 END
@@ -148,7 +171,7 @@ INSERT INTO `doctor` (`docid`, `docemail`, `docname`, `docpassword`, `docnic`, `
 
 CREATE TABLE `otp_verifications` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `phone_number` varchar(15) NOT NULL,
+  `pemail` varchar(255) NOT NULL UNIQUE,
   `otp` varchar(6) NOT NULL,
   `expires_at` datetime NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
@@ -169,7 +192,8 @@ CREATE TABLE `patient` (
   `paddress` varchar(255) DEFAULT NULL,
   `hasPhilhealth` varchar(15) DEFAULT NULL,
   `pdob` date DEFAULT NULL,
-  `phone_number` varchar(15) NOT NULL,
+  `phone_number` varchar(15) NULL,
+  `patient_category` varchar(100) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `is_deleted` tinyint(1) DEFAULT 0,
@@ -182,15 +206,13 @@ CREATE TABLE `patient` (
 -- Dumping data for table `patient`
 --
 
-INSERT INTO `patient` (`pid`, `pemail`, `pname`, `ppassword`, `paddress`, `hasPhilhealth`, `pdob`, `phone_number`, `created_at`, `updated_at`, `is_deleted`) VALUES
-(1, 'patient@gmail.com', 'test patient', 'test123', '#12a De Aro Avenue, Mabayuan, Olongapo City', 'yes', '1955-02-04', '+639685837376', '2025-02-05 16:04:24', '2025-02-05 16:04:24', 0),
-(2, 'john.test@gmail.com', 'John Tester', 'John2Test', '#45 Amagis Avenue, Olongapo City', 'no', '1965-05-15', '+639123456789', '2025-02-05 16:10:00', '2025-02-05 16:10:00', 0),
-(3, 'maria.grace@gmail.com', 'Maria Grace', 'Maria2Grace', '#78 Grace Pauline Street, Olongapo City', 'yes', '1975-11-20', '+639987654321', '2025-02-05 16:15:00', '2025-02-05 16:15:00', 0),
-(4, 'alex.leyva@gmail.com', 'Alex Leyva', 'Alex2Leyva', '#22 Leyva Street, Olongapo City', 'no', '1985-08-10', '+639567890123', '2025-02-05 16:20:00', '2025-02-05 16:20:00', 0),
-(5, 'sarah.mercurio@gmail.com', 'Sarah Mercurio', 'Sarah2Mercurio', '#56 Mercurio Street, Olongapo City', 'yes', '1995-03-25', '+639234567890', '2025-02-05 16:25:00', '2025-02-05 16:25:00', 0),
-(6, 'emma.rose@gmail.com', 'Emma Rose', 'Emma2Rose', '#33 Rosete Street, Olongapo City', 'no', '1960-07-12', '+639876543210', '2025-02-05 16:30:00', '2025-02-05 16:30:00', 0),
-(7, 'michael.park@gmail.com', 'Michael Park', 'Michael2Park', '#67 Napalan Street, Olongapo City', 'yes', '1970-09-18', '+639345678901', '2025-02-05 16:35:00', '2025-02-05 16:35:00', 0),
-(8, 'lisa.wong@gmail.com', 'Lisa Wong', 'Lisa2Wong', '#89 Nieves Street, Olongapo City', 'no', '1980-12-30', '+639654321987', '2025-02-05 16:40:00', '2025-02-05 16:40:00', 0);
+INSERT INTO `patient` (`pid`, `pemail`, `pname`, `ppassword`, `paddress`, `hasPhilhealth`, `pdob`, `phone_number`, `patient_category`, `created_at`, `updated_at`, `is_deleted`) VALUES
+(1, 'seannandreidatu@gmail.com', 'Seann Andrei Datu', '@Kindred130605', '#12a Otero Avenue, Mabayuan, Olongapo City', 'no', '2002-12-10', NULL, NULL, '2025-06-02 09:04:04', '2025-06-02 09:04:04', 0),
+(2, 'ravenlegarde23@gmail.com', 'Raven Legarde', '123!', '#12a Leyva Avenue, Mabayuan, Olongapo City', 'no', '2007-06-09', NULL, NULL, '2025-06-09 07:32:54', '2025-06-09 07:32:54', 0),
+(3, 'markbuffalo232@gmail.com', 'Mark Corea', 'Test12345@', '#35 Labrador Avenue, Mabayuan, Olongapo City', 'no', '1972-07-02', NULL, NULL, '2025-06-12 10:26:02', '2025-06-12 10:26:02', 0),
+(4, 'juliusrusscruz@gmail.com', 'Julius Russ Cruz', 'cruzfam1992@', '#35 Otero Avenue, Mabayuan, Olongapo City', 'yes', '1972-07-02', NULL, 'SENIOR CITIZEN', '2025-06-12 13:24:10', '2025-06-12 13:24:10', 0),
+(5, 'evalyndorigo@gmail.com', 'EVALYN DORIGO', 'evalyn08!', '#123 Amagis Avenue, Mabayuan, Olongapo City', 'no', '1987-04-08', NULL, 'PWD', '2025-06-12 16:15:26', '2025-06-12 16:15:26', 0),
+(6, 'cruzjedediahyco@gmail.com', 'Juan Dela Cruz', 'juanD123@', '#35a Otero Avenue, Mabayuan, Olongapo City', 'no', '1964-06-01', NULL, 'SENIOR CITIZEN', '2025-06-12 23:14:15', '2025-06-12 23:14:15', 0);
 
 -- --------------------------------------------------------
 
@@ -212,26 +234,14 @@ CREATE TABLE `schedule` (
   `max_approved_bookings` int(4) DEFAULT 5,
   `deleted_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`scheduleid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `schedule`
 --
 
-INSERT INTO `schedule` 
-(`scheduleid`, `docid`, `title`, `scheduledate`, `scheduletime`, `session_duration`, `end_time`, `nop`, `total_slots`, `available_slots`, `approved_bookings`, `max_approved_bookings`, `deleted_at`) 
-VALUES
-(9, '1', 'Current Test Session 1', '2025-02-24', '18:39:38', 60, '19:39:38', 10, 10, 10, 0, 5, NULL),
-(10, '1', 'General Check-up', '2025-02-24', '13:00:00', 300, '18:00:00', 40, 40, 40, 0, 5, NULL),
-(11, '1', 'TB DOTS', '2025-02-24', '13:00:00', 240, '17:00:00', 30, 30, 30, 0, 5, NULL),
-(12, '1', 'Family Planning', '2025-02-25', '13:00:00', 180, '16:00:00', 20, 20, 20, 0, 5, NULL),
-(13, '1', 'General Check-up', '2025-02-25', '13:00:00', 300, '18:00:00', 40, 40, 40, 0, 5, NULL),
-(14, '1', 'TB DOTS', '2025-02-25', '13:00:00', 240, '17:00:00', 30, 30, 30, 0, 5, NULL),
-(15, '1', 'Family Planning', '2025-02-25', '13:00:00', 180, '16:00:00', 20, 20, 20, 0, 5, NULL),
-(16, '1', 'Immunization', '2025-02-26', '13:00:00', 300, '18:00:00', 40, 40, 40, 0, 5, NULL),
-(17, '1', 'General Check-up', '2025-02-27', '13:00:00', 300, '18:00:00', 40, 40, 40, 0, 5, NULL),
-(18, '1', 'Family Planning', '2025-02-27', '13:00:00', 180, '16:00:00', 20, 20, 20, 0, 5, NULL),
-(19, '1', 'Prenatal', '2025-02-28', '13:00:00', 300, '18:00:00', 20, 20, 20, 0, 5, NULL);
+INSERT INTO schedule (scheduleid, docid, title, scheduledate, scheduletime, session_duration, end_time, nop, total_slots, available_slots, approved_bookings, max_approved_bookings, deleted_at) VALUES
+(1, 1, 'Sample Session', '2025-07-01', '09:00:00', 60, '10:00:00', 10, 10, 10, 0, 5, NULL);
 
 -- --------------------------------------------------------
 
@@ -326,49 +336,15 @@ CREATE TABLE `webuser` (
 INSERT INTO `webuser` (`email`, `usertype`) VALUES
 ('administrator@gmail.com', 'a'),
 ('doctor@gmail.com', 'd'),
-('patient@gmail.com', 'p'),
-('john.test@gmail.com', 'p'),
-('maria.grace@gmail.com', 'p'),
-('alex.leyva@gmail.com', 'p'),
-('sarah.mercurio@gmail.com', 'p'),
-('emma.rose@gmail.com', 'p'),
-('michael.park@gmail.com', 'p'),
-('lisa.wong@gmail.com', 'p');
+('seannandreidatu@gmail.com', 'p'),
+('ravenlegarde23@gmail.com', 'p'),
+('markbuffalo232@gmail.com', 'p'),
+('juliusrusscruz@gmail.com', 'p'),
+('evalyndorigo@gmail.com', 'p'),
+('cruzjedediahyco@gmail.com', 'p');
 
-DELIMITER $$
---
--- Events
---
-CREATE DEFINER=`root`@`localhost` EVENT `update_appointment_status` ON SCHEDULE EVERY 1 MINUTE STARTS '2025-02-02 18:39:38' ON COMPLETION NOT PRESERVE ENABLE DO BEGIN
-   -- Set appointments to 'ongoing' if the current date and time match the scheduled date/time
-   UPDATE `appointment`
-   SET `status` = 'ongoing'
-   WHERE `appodate` = CURDATE() AND `scheduletime` <= CURTIME()
-   AND `status` = 'scheduled';
+DELETE FROM webuser WHERE email NOT IN (SELECT pemail FROM patient);
 
-   -- Set appointments to 'done' if the scheduled time has passed
-   UPDATE `appointment`
-   SET `status` = 'done'
-   WHERE `appodate` < CURDATE() OR (`appodate` = CURDATE() AND `scheduletime` < CURTIME())
-   AND `status` = 'ongoing';
-
-   -- Optionally, set appointments to 'cancelled' if they haven't been attended yet
-   UPDATE `appointment`
-   SET `status` = 'canceled'
-   WHERE `appodate` > CURDATE() OR (`appodate` = CURDATE() AND `scheduletime` > CURTIME())
-   AND `status` = 'scheduled';
-END$$
-
-CREATE EVENT `cleanup_old_appointments` 
-ON SCHEDULE EVERY 1 WEEK 
-STARTS '2025-02-02 00:00:00' 
-DO BEGIN
-    -- Delete appointments older than 2 years
-    DELETE FROM `appointment` 
-    WHERE `appodate` < DATE_SUB(CURDATE(), INTERVAL 2 YEAR);
-END$$
-
-DELIMITER ;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

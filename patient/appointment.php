@@ -10,11 +10,50 @@
         
     <title>Appointments</title>
     <style>
+        a.login-btn.btn-primary-soft.btn.non-style-link:hover {
+            color: #fff !important;
+        }
+        /* --- Mobile Sticky Hamburger Header --- */
+        @media (max-width: 992px) {
+            #mobile-hamburger-header {
+                display: block !important;
+                position: sticky;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 54px;
+                background: #2d6a4f;
+                z-index: 2000;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.09);
+            }
+            .hamburger {
+                position: fixed;
+                top: 8px;
+                left: 18px;
+                z-index: 2100;
+                background: #fff;
+                border-radius: 8px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.09);
+                padding: 8px 10px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                width: 46px;
+                height: 38px;
+                transition: box-shadow 0.2s;
+            }
+            .hamburger .bar {
+                background: #2d6a4f;
+            }
+        }
+        /* --- End Mobile Sticky Hamburger Header --- */
         .popup{
             animation: transitionIn-Y-bottom 0.5s;
         }
-        .sub-table{
+        .sub-table {
             animation: transitionIn-Y-bottom 0.5s;
+            margin-top: 0px !important;
         }
         .responsive-td {
             width: 25%;
@@ -128,6 +167,12 @@
     $stmt->execute();
     $result = $stmt->get_result();
     ?>
+    <!-- Sticky Mobile Hamburger Header -->
+    <div id="mobile-hamburger-header" style="display:none; align-items:center; justify-content:center;">
+        <div style="display:flex;align-items:center;justify-content:center;height:54px;width:100vw;">
+            <span style="color:#fff;font-size:1.25em;font-weight:bold;letter-spacing:1px;line-height:1;">Mabayuan Health Care</span>
+        </div>
+    </div>
     <div class="container">
         <div class="hamburger" id="hamburger">
             <div class="bar"></div>
@@ -150,9 +195,10 @@
                             </tr>
                             <tr>
                                 <td colspan="2">
-                                    <a href="../logout.php" ><input type="button" value="Log out" class="logout-btn btn-primary-soft btn"></a>
+                                    <button onclick="confirmLogout()" class="logout-btn btn-primary-soft btn">Log out</button>
                                 </td>
                             </tr>
+                            
                     </table>
                     </td>
                 </tr>
@@ -210,10 +256,6 @@
                                                    style="margin: 0;width: 95%;"
                                                    value="<?php echo $filtered_date ?? $current_date->format('Y-m-d'); ?>">
                                     </td>
-                                    <td width="12%">
-                                        <input type="submit" name="filter" value=" Filter" class="btn-primary-soft btn button-icon btn-filter" style="padding: 15px; margin:0;width:100%">
-                                        </form>
-                                    </td>
                                    
                                 </tr>
                             </table>
@@ -233,15 +275,6 @@
                     </td>
     
                
-                <!-- <tr>
-                    <td colspan="4" >
-                        <div style="display: flex;margin-top: 40px;">
-                        <div class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49);margin-top: 5px;">Schedule a Session</div>
-                        <a href="?action=add-session&id=none&error=0" class="non-style-link"><button  class="login-btn btn-primary-soft btn button-icon"  style="margin-left:25px;background-image: url('../img/icons/add.svg');">Add a Session</font></button>
-                        </a>
-                        </div>
-                    </td>
-                </tr> -->
                 <tr>
 
 
@@ -258,7 +291,7 @@
                    <td colspan="4">
                        <center>
                         <div class="abc scroll">
-                        <table width="93%" class="sub-table scrolldown" border="0" style="border:none">
+                        <table border="0" class="scrolldown" style="width:93%; border:none; margin-top:0px; animation: transitionIn-Y-bottom 0.5s;">
                         
                         <tbody>
                         
@@ -273,14 +306,14 @@
                                     
                                     <br>
                                     <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">We  couldn\'t find anything related to your keywords !</p>
-                                    <a class="non-style-link" href="appointment.php"><button  class="login-btn btn-primary-soft btn"  style="display: flex;justify-content: center;align-items: center;margin-left:20px;">&nbsp; Show all Appointments &nbsp;</font></button></a>
+                                    <a class="login-btn btn-primary-soft btn non-style-link" href="index.php" style="display: flex;justify-content: center;align-items: center;margin-left:20px;">&nbsp; Go back to home page &nbsp;</a>
                                     </center>
                                     <br><br><br><br>
                                     </td>
                                     </tr>';
                                 } else {
                                     // Display the current month
-                                    echo "<tr><td colspan='7'><h2>" . date('F Y') . "</h2></td></tr>";
+                                    echo "<tr><td colspan='7' class='day-header'><h3 style='margin-left: 20px;'>". date('F Y') . "</h3></td></tr>";
 
                                     // Initialize an array to store appointments by day
                                     $appointments_by_day = [];
@@ -293,8 +326,8 @@
 
                                     // Iterate over each day and display appointments
                                     foreach ($appointments_by_day as $day => $appointments) {
-                                        echo "<tr><td colspan='7'><h3>$day</h3></td></tr>";
-                                        echo "<tr>";
+                                        echo "<tr><td colspan='7' class='day-header'><h3 style='margin-left: 20px;'>$day</h3></td></tr>";
+                                        echo "<tr class='appointment-row'>";
                                         $counter = 0;
                                         foreach ($appointments as $appointment) {
                                             $scheduleid = $appointment["scheduleid"];
@@ -347,9 +380,9 @@
                                                 '<a href="?action=drop&id='.$appoid.'&title='.$title.'&doc='.$docname.'"><button class="login-btn btn-primary-soft btn" style="padding-top:11px;padding-bottom:11px;width:100%"><font class="tn-in-text">Cancel Booking</font></button></a>');
 
                                             $statusBadge = $is_confirmed == 1 ? 
-                                                '<span class="status-badge" style="background-color: #28a745; color: white;">Confirmed</span>' : 
+                                                '<span class="status-badge" style="background-color: #28a745; color: white;">Approved</span>' : 
                                                 ($is_confirmed == -1 ? 
-                                                '<span class="status-badge" style="background-color: #dc3545; color: white;">Rejected</span>' : 
+                                                '<span class="status-badge" style="background-color: #dc3545; color: white;">Declined</span>' : 
                                                 '<span class="status-badge" style="background-color: #ffc107; color: black;">Pending</span>');
 
                                             // Check for rejection reason from URL
@@ -357,54 +390,81 @@
 
                                             $rejectionDetails = $is_confirmed == -1 ? 
                                                 "<div class='h4-search' style='color: black; margin-top: 5px;'>" .
-                                                "Rejected on: " . htmlspecialchars($appointment['rejection_timestamp'] ?? 'N/A') . 
+                                                "Rejected on: " . htmlspecialchars(DateTime::createFromFormat('Y-m-d H:i:s', $appointment['rejection_timestamp'] ?? date('Y-m-d H:i:s'))->format('F j, Y h:i A') ?? 'Automatic Rejection') . 
                                                 "<br>Reason: " . htmlspecialchars($appointment['rejection_reason'] ?? $rejectionReasonFromUrl ?? 'No specific reason provided') . 
                                                 "</div>" : '';
 
                                             // Start a new row every 4 appointments
                                             if ($counter > 0 && $counter % 4 == 0) {
-                                                echo "</tr><tr>";
+                                                echo "</tr><tr class='appointment-row'>";
                                             }
 
                                             echo '
                                             <td class="responsive-td">
                                                     <div  class="dashboard-items search-items"  >
                                                     <div style="width:100%">
-                                                    <div class="h3-search">
-                                                                Booking Date: '.substr($appodate,0,30).'<br>
-                                                                Reference Number: OC-000-'.$appoid.'
+                                                            <div class="h1-search" style="text-align:center;font-size: 24px;font-weight: 600;color: #2d6a4f">
+                                                                '.substr($title,0,21).'
                                                             </div>
-                                                            <div class="h1-search">
-                                                                '.substr($title,0,21).'<br>
+                                                            <div class="h3-search" style="font-size: 34px; text-align:center;color: #2d6a4f;margin-top: 5px; margin-bottom: 15px">
+                                                                Appointment Number:'.$apponum.'
                                                             </div>
-                                                            <div class="h3-search">
-                                                                Appointment Number:<div class="h1-search">0'.$apponum.'</div>
+
+                                                            <div class="h4-search" style="text-align:left;font-size: 16px">
+                                                                Scheduled Date: '.DateTime::createFromFormat('Y-m-d', $scheduledate)->format('F j, Y').'  <b>'.DateTime::createFromFormat("H:i", substr($scheduletime, 0, 5))->format("h:i A").'</b>
                                                             </div>
-                                                            <div class="h4-search">Booked For: ' . ($is_self == 0 ? 'For Myself' : htmlspecialchars($other_patient_name) ) . '</div>
-                                                            <div class="h3-search">
+
+                                                            <div class="h4-search" style="text-align:left;font-size: 16px">Booked For: ' . ($is_self == 0 ? 'Myself' : htmlspecialchars($other_patient_name) ) . '</div>
+                                                            <div class="h3-search" style="text-align:left;font-size: 16px">
                                                                 '.substr($docname,0,30).'
                                                             </div>
                                                             
-                                                            
                                                             <div class="h4-search">
-                                                                Scheduled Date: '.$scheduledate.'<br>Starts: <b>@'.substr($scheduletime,0,5).'</b> (24h)
-                                                            </div>
-                                                            <div class="h4-search">
-                                                                Current Time: '.$currentDateTime->format('Y-m-d H:i:s').'
-                                                            </div>
-                                                            <div class="h4-search">
-                                                                Cancellation Deadline: '.$oneDayBefore->format('Y-m-d H:i:s').'
+                                                                Cancellation Deadline: '.$oneDayBefore->format('F j').', 2025
                                                             </div>
                                                             <div class="h4-search">
                                                                 Confirmation Status: '.$statusBadge.'
                                                             </div>
-                                            ' . ($is_confirmed == -1 ? 
-                                            '<div class="h4-search" style="color: black; margin-top: 5px;">' .
-                                            "Rejected on: " . htmlspecialchars($appointment['rejection_timestamp'] ?? 'Automatic Rejection') . 
-                                            "<br>Reason: " . htmlspecialchars($appointment['rejection_reason'] ?? $rejectionReasonFromUrl ?? 'Due to failure of approving the appointment') . 
-                                            '</div>' : '') . '
-                                            <br>';
+                                                        ' . ($is_confirmed == 1 ? 
+                                                            '<div class="h4-search" style="background-color: #d4edda; border-left: 4px solid #28a745; padding: 10px; margin-top: 10px; border-radius: 4px;">' .
+                                                            '<div style="display: flex; align-items: center; margin-bottom: 5px;">' .
+                                                            '<img src="../img/icons/approve.svg" alt="Approved" style="width: 20px; height: 20px; margin-right: 10px;">' .
+                                                            '<strong style="color: #155724;">Appointment Confirmed</strong>' .
+                                                            '</div>' .
+                                                            '<div style="text-align: right; margin-top: 5px; font-size: 0.8em; color: #6c757d;">' .
+                                                            "Approved on: " . htmlspecialchars(DateTime::createFromFormat('Y-m-d H:i:s', $appointment['approval_timestamp'] ?? date('Y-m-d H:i:s'))->format('F j, h:i A') ?? 'Automatic Approval') . 
+                                                            '</div>' .
+                                                            '</div>' : '') . 
+                                                            ($is_confirmed == -1 ? 
+                                                            '<div class="h4-search" style="background-color: #f8d7da; border-left: 4px solid #dc3545; padding: 10px; margin-top: 10px; border-radius: 4px;">' .
+                                                            '<div style="display: flex; align-items: center; margin-bottom: 5px;">' .
+                                                            '<img src="../img/icons/reject.svg" alt="Declined" style="width: 20px; height: 20px; margin-right: 10px;">' .
+                                                            '<strong style="color: #721c24;">Scheduling Conflict: ' . 
+                                                            htmlspecialchars($appointment['rejection_reason'] ?? $rejectionReasonFromUrl ?? 'Booking Declined') . 
+                                                            '</strong>' .
+                                                            '</div>' .
+                                                            '<div style="text-align: right; margin-top: 5px; font-size: 0.8em; color: #6c757d;">' .
+                                                            "Was Declined on: " . htmlspecialchars(DateTime::createFromFormat('Y-m-d H:i:s', $appointment['rejection_timestamp'] ?? date('Y-m-d H:i:s'))->format('F j, Y h:i A') ?? 'Automatic Rejection') . 
+                                                            '</div>' .
+                                                            '</div>' : '') . 
+                                                            ($is_confirmed == 0 ? 
+                                                            '<div class="h4-search" style="background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 10px; margin-top: 10px; border-radius: 4px;">' .
+                                                            '<div style="display: flex; align-items: center; margin-bottom: 5px;">' .
+                                                            '<img src="../img/icons/pending.svg" alt="Pending" style="width: 20px; height: 20px; margin-right: 10px;">' .
+                                                            '<strong style="color: #856404;">Appointment Pending</strong>' .
+                                                            '</div>' .
+                                                            '<div style="text-align: right; margin-top: 5px; font-size: 0.8em; color: #6c757d;">' .
+                                                            "Booked on: " . htmlspecialchars(date('F j, h:i A', strtotime($appointment['booking_attempt_timestamp'] ?? date('Y-m-d H:i:s')))) . 
+                                                            '</div>' .
+                                                            '</div>' : '') . '
+                                            <br>
+                                                            <div class="h3-search"  style="text-align:right ">
+                                                                Booking Date: '.substr($appodate,0,30).'<br>
+                                                                Reference Number: OC-000-'.$appoid.'
+                                                            </div>'
+                                            ;
 
+                                            
                                             echo $cancelButtonText;
 
                                             echo '</div>
@@ -595,6 +655,7 @@
         }
     }
 
+    
     // Add SweetAlert script
     $sweetalert = isset($_GET['sweetalert']) ? $_GET['sweetalert'] : null;
     
@@ -664,14 +725,59 @@
         }
     </script>
     <script>
-            const hamburger = document.getElementById('hamburger');
-            const menu = document.getElementById('menu');
-            hamburger.addEventListener('click', () => {
-                console.log("Hamburger clicked!");
-                menu.classList.toggle('show');
-            });
-        </script>
+        const hamburger = document.getElementById('hamburger');
+        const menu = document.getElementById('menu');
+        hamburger.addEventListener('click', () => {
+            console.log("Hamburger clicked!");
+            menu.classList.toggle('show');
+            // Prevent body scroll when menu is open (mobile only)
+            if (window.innerWidth <= 992) {
+                if (menu.classList.contains('show')) {
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    document.body.style.overflow = '';
+                }
+            }
+        });
+        // Also restore scroll if menu is closed by resizing window
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 992) {
+                document.body.style.overflow = '';
+            } else if (!menu.classList.contains('show')) {
+                document.body.style.overflow = '';
+            }
+        });
+    </script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+    function confirmLogout() {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "Do you really want to log out?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, log out",
+            cancelButtonText: "No, stay logged in",
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "../logout.php";
+            }
+        });
+    }
+</script>
     </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var dateInput = document.getElementById('date');
+        if (dateInput) {
+            dateInput.addEventListener('change', function() {
+                this.form.submit();
+            });
+        }
+    });
+    </script>
 
 </body>
 </html>

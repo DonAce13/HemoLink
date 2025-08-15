@@ -37,11 +37,13 @@ function getFilterCondition($filterType, $currentDate) {
 
 // Fetch data for schedule status
 $statusQuery = "";
+$currentDateTime = date('Y-m-d H:i:s');
 switch($filterType) {
     case 'year':
         $statusQuery = "SELECT 
             CASE 
-                WHEN deleted_at IS NULL THEN 'Active Schedules'
+                WHEN deleted_at IS NULL AND scheduledate < DATE('$currentDate') THEN 'Passed Sessions'
+                WHEN deleted_at IS NULL AND scheduledate >= DATE('$currentDate') THEN 'Active Schedules'
                 ELSE 'Inactive Schedules'
             END as status, 
             COUNT(*) as count 
@@ -52,7 +54,8 @@ switch($filterType) {
     case 'month':
         $statusQuery = "SELECT 
             CASE 
-                WHEN deleted_at IS NULL THEN 'Active Schedules'
+                WHEN deleted_at IS NULL AND scheduledate < DATE('$currentDate') THEN 'Passed Sessions'
+                WHEN deleted_at IS NULL AND scheduledate >= DATE('$currentDate') THEN 'Active Schedules'
                 ELSE 'Inactive Schedules'
             END as status, 
             COUNT(*) as count 
@@ -64,7 +67,8 @@ switch($filterType) {
     case 'week':
         $statusQuery = "SELECT 
             CASE 
-                WHEN deleted_at IS NULL THEN 'Active Schedules'
+                WHEN deleted_at IS NULL AND scheduledate < DATE('$currentDate') THEN 'Passed Sessions'
+                WHEN deleted_at IS NULL AND scheduledate >= DATE('$currentDate') THEN 'Active Schedules'
                 ELSE 'Inactive Schedules'
             END as status, 
             COUNT(*) as count 
@@ -76,7 +80,8 @@ switch($filterType) {
     case 'day':
         $statusQuery = "SELECT 
             CASE 
-                WHEN deleted_at IS NULL THEN 'Active Schedules'
+                WHEN deleted_at IS NULL AND scheduledate < DATE('$currentDate') THEN 'Passed Sessions'
+                WHEN deleted_at IS NULL AND scheduledate >= DATE('$currentDate') THEN 'Active Schedules'
                 ELSE 'Inactive Schedules'
             END as status, 
             COUNT(*) as count 
@@ -129,61 +134,58 @@ while($row = $ageGroupResult->fetch_assoc()) {
     $ageGroupData[] = $row;
 }
 
-// Fetch appointment overview data from schedule and appointment tables
-$appointmentData = [];
-$appointmentQuery = "";
-
+// Fetch booking approval/rejection statistics
+$bookingStatusQuery = "";
 switch($filterType) {
     case 'year':
-        $appointmentQuery = "SELECT 
-            s.scheduledate as date, 
-            COUNT(a.scheduleid) as count 
-        FROM schedule s
-        LEFT JOIN appointment a ON s.scheduleid = a.scheduleid
-        WHERE YEAR(s.scheduledate) = YEAR('$currentDate')
-        GROUP BY s.scheduledate
-        ORDER BY s.scheduledate";
+        $bookingStatusQuery = "SELECT 
+            is_confirmed, 
+            COUNT(*) as count 
+        FROM appointment 
+        WHERE YEAR(appodate) = YEAR('$currentDate')
+        GROUP BY is_confirmed
+        ORDER BY is_confirmed";
         break;
     case 'month':
-        $appointmentQuery = "SELECT 
-            s.scheduledate as date, 
-            COUNT(a.scheduleid) as count 
-        FROM schedule s
-        LEFT JOIN appointment a ON s.scheduleid = a.scheduleid
-        WHERE YEAR(s.scheduledate) = YEAR('$currentDate') 
-        AND MONTH(s.scheduledate) = MONTH('$currentDate')
-        GROUP BY s.scheduledate
-        ORDER BY s.scheduledate";
+        $bookingStatusQuery = "SELECT 
+            is_confirmed, 
+            COUNT(*) as count 
+        FROM appointment 
+        WHERE YEAR(appodate) = YEAR('$currentDate') 
+        AND MONTH(appodate) = MONTH('$currentDate')
+        GROUP BY is_confirmed
+        ORDER BY is_confirmed";
         break;
     case 'week':
-        $appointmentQuery = "SELECT 
-            s.scheduledate as date, 
-            COUNT(a.scheduleid) as count 
-        FROM schedule s
-        LEFT JOIN appointment a ON s.scheduleid = a.scheduleid
-        WHERE YEAR(s.scheduledate) = YEAR('$currentDate') 
-        AND WEEK(s.scheduledate) = WEEK('$currentDate')
-        GROUP BY s.scheduledate
-        ORDER BY s.scheduledate";
+        $bookingStatusQuery = "SELECT 
+            is_confirmed, 
+            COUNT(*) as count 
+        FROM appointment 
+        WHERE YEAR(appodate) = YEAR('$currentDate') 
+        AND WEEK(appodate) = WEEK('$currentDate')
+        GROUP BY is_confirmed
+        ORDER BY is_confirmed";
         break;
     case 'day':
-        $appointmentQuery = "SELECT 
-            s.scheduledate as date, 
-            COUNT(a.scheduleid) as count 
-        FROM schedule s
-        LEFT JOIN appointment a ON s.scheduleid = a.scheduleid
-        WHERE DATE(s.scheduledate) = DATE('$currentDate')
-        GROUP BY s.scheduledate
-        ORDER BY s.scheduledate";
+        $bookingStatusQuery = "SELECT 
+            is_confirmed, 
+            COUNT(*) as count 
+        FROM appointment 
+        WHERE DATE(appodate) = DATE('$currentDate')
+        GROUP BY is_confirmed
+        ORDER BY is_confirmed";
         break;
 }
 
-if (!empty($appointmentQuery)) {
-    $appointmentResult = $database->query($appointmentQuery);
-    while($row = $appointmentResult->fetch_assoc()) {
-        $appointmentData[] = $row;
-    }
+$bookingStatusResult = $database->query($bookingStatusQuery);
+$bookingStatusData = [];
+while($row = $bookingStatusResult->fetch_assoc()) {
+    $bookingStatusData[] = $row;
 }
+
+// Debug: Print out the actual booking status data
+error_log('Booking Status Data: ' . print_r($bookingStatusData, true));
+
 ?>
 
 <!DOCTYPE html>
@@ -221,7 +223,7 @@ if (!empty($appointmentQuery)) {
             flex-direction: column;
             overflow: hidden;
             width: 100%;
-            height: 350px;  /* Fixed height to prevent resize */
+            height: 600px;  /* Increased height */
         }
 
         .chart-container.resizable:hover {
@@ -244,12 +246,8 @@ if (!empty($appointmentQuery)) {
         }
 
         .chart-container.resizable canvas {
-            flex: 1;
-            width: 100% !important;
-            height: 100% !important;
-            max-width: 100%;
-            max-height: 100%;
-            overflow: hidden;
+            flex-grow: 1;
+            max-height: calc(100% - 100px);  /* Leave space for legend */
         }
 
         @media (max-width: 1200px) {
@@ -269,27 +267,31 @@ if (!empty($appointmentQuery)) {
         }
         
         .chart-legend {
-            position: absolute;
-            bottom: 10px;
-            left: 10px;
-            right: 10px;
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
             gap: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            margin-top: 10px;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .chart-legend-item {
             display: flex;
             align-items: center;
             font-size: 0.8rem;
+            margin: 0 5px;
         }
 
-        .chart-legend-item span {
+        .chart-legend-item .color-box {
             width: 12px;
             height: 12px;
             margin-right: 5px;
             border-radius: 50%;
+            display: inline-block;
         }
 
         .global-filter {
@@ -392,6 +394,93 @@ if (!empty($appointmentQuery)) {
             .statistics-grid {
                 grid-template-columns: 1fr;
             }
+        }
+        
+        @media print {
+            * {
+                -webkit-print-color-adjust: exact !important;
+                color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                print-color-adjust: economy !important;
+            }
+
+            html, body {
+                width: 210mm;
+                height: 297mm;
+                margin: 0 !important;
+                padding: 0 !important;
+                overflow: visible !important;
+            }
+            
+            .container {
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            .dash-body {
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 10mm !important;
+                page-break-before: always;
+            }
+            
+            body * {
+                visibility: hidden;
+            }
+            
+            .dash-body, .dash-body * {
+                visibility: visible;
+            }
+            
+            .chart-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 10px;
+                padding: 10px;
+                width: 100%;
+                page-break-inside: avoid;
+            }
+            
+            .chart-container.resizable {
+                page-break-inside: avoid;
+                page-break-after: auto;
+                width: 100% !important;
+                height: 250px !important;
+                max-height: 250px !important;
+                margin-bottom: 10px;
+                overflow: visible !important;
+            }
+            
+            .chart-container.resizable canvas {
+                width: 100% !important;
+                height: 100% !important;
+            }
+            
+            .statistics-section {
+                page-break-inside: avoid;
+                margin-top: 10px;
+            }
+            
+            .statistics-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            
+            .menu, .hamburger, .global-filter {
+                display: none !important;
+            }
+            
+            @page {
+                size: A4 portrait;
+                margin: 10mm;
+                bleed: 5mm;
+            }
+        }
+        
+        .btn-primary-soft.btn:hover {
+            background-color: #2d6a4f;
+            color: white;
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -499,6 +588,9 @@ if (!empty($appointmentQuery)) {
                     <option value="week" <?php echo ($filterType == 'week' ? 'selected' : ''); ?>>This Week</option>
                     <option value="day" <?php echo ($filterType == 'day' ? 'selected' : ''); ?>>Today</option>
                 </select>
+                <button onclick="preparePrintView()" class="btn-primary-soft btn" style="margin-left: 10px;">
+                    <i class="fas fa-print"></i> Print Report
+                </button>
             </div>
             <h1 style="margin-left: 30px;">Informative Charts</h1>
             
@@ -511,9 +603,9 @@ if (!empty($appointmentQuery)) {
                     <h3>Patient Age Distribution</h3>
                     <canvas id="ageGroupChart"></canvas>
                 </div>
-                <div class="chart-container resizable full-width" id="appointment-chart-container" style="flex: 1;">
-                    <h3>Appointment Overview</h3>
-                    <canvas id="appointmentChart"></canvas>
+                <div class="chart-container resizable full-width" id="booking-status-chart-container" style="flex: 1;">
+                    <h3>Booking Approval/Rejection Statistics</h3>
+                    <canvas id="bookingStatusChart"></canvas>
                 </div>
             </div>
             <!-- Statistics Section -->
@@ -630,49 +722,76 @@ if (!empty($appointmentQuery)) {
                 backgroundColor: colorPalette.slice(0, <?php echo count($statusData); ?>),
             }]
         };
-        const statusChart = new Chart(statusCtx, {
-            type: 'pie',
-            data: statusData,
-            options: {
-                ...commonChartOptions,
-                plugins: {
-                    ...commonChartOptions.plugins,
-                    tooltip: {
-                        ...commonChartOptions.plugins.tooltip,
-                        callbacks: {
-                            label: function(context) {
-                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                const value = context.parsed;
-                                const percentage = ((value / total) * 100).toFixed(1);
-                                return `${context.label}: ${value} (${percentage}%)`;
-                            }
+        const statusChartOptions = {
+            ...commonChartOptions,
+            responsive: true,
+            maintainAspectRatio: true,  // Changed to true to maintain aspect ratio
+            aspectRatio: 1,  // Force 1:1 aspect ratio
+            layout: {
+                padding: {
+                    top: 10,
+                    bottom: 10,
+                    left: 100,
+                    right: 100
+                }
+            },
+            plugins: {
+                ...commonChartOptions.plugins,
+                tooltip: {
+                    ...commonChartOptions.plugins.tooltip,
+                    callbacks: {
+                        label: function(context) {
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const value = context.parsed;
+                            const percentage = ((value / total) * 100).toFixed(1);
+                            return `${context.label}: ${value} (${percentage}%)`;
                         }
                     }
                 }
             }
+        };
+        const statusChart = new Chart(statusCtx, {
+            type: 'pie',
+            data: statusData,
+            options: statusChartOptions
         });
 
         // Create custom legend for status chart
         function createStatusChartLegend() {
+            // Remove any existing legend
+            const existingLegend = document.querySelector('#status-chart-container .chart-legend');
+            if (existingLegend) {
+                existingLegend.remove();
+            }
+
             const legendContainer = document.createElement('div');
             legendContainer.className = 'chart-legend';
             
-            statusData.labels.forEach((label, index) => {
+            // Sort data by value in descending order
+            const sortedData = statusData.labels.map((label, index) => ({
+                label, 
+                value: statusData.datasets[0].data[index],
+                color: statusData.datasets[0].backgroundColor[index]
+            })).sort((a, b) => b.value - a.value);
+
+            // Create legend items
+            sortedData.forEach(item => {
                 const legendItem = document.createElement('div');
                 legendItem.className = 'chart-legend-item';
                 
                 const colorSpan = document.createElement('span');
                 colorSpan.className = 'color-box';
-                colorSpan.style.backgroundColor = statusData.datasets[0].backgroundColor[index];
+                colorSpan.style.backgroundColor = item.color;
                 
                 const labelSpan = document.createElement('span');
-                labelSpan.textContent = `${label}: ${statusData.datasets[0].data[index]}`;
+                labelSpan.textContent = `${item.label}: ${item.value}`;
                 
                 legendItem.appendChild(colorSpan);
                 legendItem.appendChild(labelSpan);
                 legendContainer.appendChild(legendItem);
             });
 
+            // Append legend to the chart container
             document.getElementById('status-chart-container').appendChild(legendContainer);
         }
 
@@ -723,81 +842,205 @@ if (!empty($appointmentQuery)) {
             }
         });
 
-        // Appointment Chart
-        const appointmentCtx = document.getElementById('appointmentChart').getContext('2d');
-        const appointmentData = {
-            labels: <?php echo json_encode(array_column($appointmentData, 'date')); ?>,
+        // Booking Status Chart
+        const bookingStatusCtx = document.getElementById('bookingStatusChart').getContext('2d');
+        
+        // Map numeric labels to descriptive status
+        const statusMap = {
+            '1': 'Approved',
+            '0': 'Pending',
+            '-1': 'Declined'
+        };
+        
+        const bookingStatusData = {
+            labels: <?php echo json_encode(array_column($bookingStatusData, 'is_confirmed')); ?>.map(status => statusMap[status] || status),
             datasets: [{
-                label: 'Appointments',
-                data: <?php echo json_encode(array_column($appointmentData, 'count')); ?>,
-                backgroundColor: colorPalette[5],
-                borderColor: colorPalette[5],
-                borderWidth: 3,
-                fill: true,
-                tension: 0.4
+                label: 'Booking Status',
+                data: <?php echo json_encode(array_column($bookingStatusData, 'count')); ?>,
+                backgroundColor: [
+                    colorPalette[2],   // Approved - Green
+                    colorPalette[4],   // Pending - Purple
+                    colorPalette[3]    // Rejected - Red
+                ],
             }]
         };
-        const appointmentChart = new Chart(appointmentCtx, {
-            type: 'line',
-            data: appointmentData,
-            options: {
-                ...commonChartOptions,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Number of Appointments',
-                            color: '#2d6a4f'
-                        },
-                        grid: {
-                            color: 'rgba(0,0,0,0.05)'
-                        },
-                        ticks: {
-                            precision: 0
+        const bookingStatusChartOptions = {
+            ...commonChartOptions,
+            responsive: true,
+            maintainAspectRatio: true,
+            aspectRatio: 1,
+            layout: {
+                padding: {
+                    top: 10,
+                    bottom: 10,
+                    left: 100,
+                    right: 100
+                }
+            },
+            plugins: {
+                ...commonChartOptions.plugins,
+                tooltip: {
+                    ...commonChartOptions.plugins.tooltip,
+                    callbacks: {
+                        label: function(context) {
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const value = context.parsed;
+                            const percentage = ((value / total) * 100).toFixed(1);
+                            return `${context.label}: ${value} (${percentage}%)`;
                         }
-                    },
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Date',
-                            color: '#2d6a4f'
-                        },
-                        grid: {
-                            display: false
-                        },
-                        ticks: {
-                            autoSkip: true,
-                            maxRotation: 45,
-                            minRotation: 45
-                        }
-                    }
-                },
-                elements: {
-                    point: {
-                        radius: 5,
-                        hoverRadius: 7,
-                        backgroundColor: 'white',
-                        borderColor: colorPalette[5],
-                        borderWidth: 2
                     }
                 }
             }
+        };
+        const bookingStatusChart = new Chart(bookingStatusCtx, {
+            type: 'pie',
+            data: bookingStatusData,
+            options: bookingStatusChartOptions
         });
 
+        // Create custom legend for booking status chart
+        function createBookingStatusChartLegend() {
+            // Remove any existing legend
+            const existingLegend = document.querySelector('#booking-status-chart-container .chart-legend');
+            if (existingLegend) {
+                existingLegend.remove();
+            }
+
+            const legendContainer = document.createElement('div');
+            legendContainer.className = 'chart-legend';
+            
+            // Sort data by value in descending order
+            const sortedData = bookingStatusData.labels.map((label, index) => ({
+                label, 
+                value: bookingStatusData.datasets[0].data[index],
+                color: bookingStatusData.datasets[0].backgroundColor[index]
+            })).sort((a, b) => b.value - a.value);
+
+            // Create legend items
+            sortedData.forEach(item => {
+                const legendItem = document.createElement('div');
+                legendItem.className = 'chart-legend-item';
+                
+                const colorSpan = document.createElement('span');
+                colorSpan.className = 'color-box';
+                colorSpan.style.backgroundColor = item.color;
+                
+                const labelSpan = document.createElement('span');
+                labelSpan.textContent = `${item.label}: ${item.value}`;
+                
+                legendItem.appendChild(colorSpan);
+                legendItem.appendChild(labelSpan);
+                legendContainer.appendChild(legendItem);
+            });
+
+            // Append legend to the chart container
+            const chartContainer = document.getElementById('booking-status-chart-container');
+            chartContainer.appendChild(legendContainer);
+
+            // Ensure legend doesn't overlap
+            const canvas = chartContainer.querySelector('canvas');
+            if (canvas) {
+                canvas.style.maxHeight = 'calc(100% - 50px)';
+            }
+        }
+
+        // Modify the existing updateCharts function to include new legend
         function updateCharts() {
-            const filter = document.getElementById('globalFilter').value;
-            window.location.href = 'records.php?filter=' + filter;
+            const filterSelect = document.getElementById('globalFilter');
+            const selectedFilter = filterSelect.value;
+            window.location.href = `records.php?filter=${selectedFilter}`;
+        }
+
+        // Call legend creation functions after charts are rendered
+        createStatusChartLegend();
+        createBookingStatusChartLegend();
+
+        function preparePrintView() {
+            // Remove any existing print-specific elements
+            const existingPrintElements = document.querySelectorAll('.print-only');
+            existingPrintElements.forEach(el => el.remove());
+
+            // Temporarily resize charts for print
+            const charts = [statusChart, ageGroupChart, bookingStatusChart];
+            const containers = [
+                document.getElementById('status-chart-container'),
+                document.getElementById('age-group-chart-container'),
+                document.getElementById('booking-status-chart-container')
+            ];
+
+            // Temporarily adjust chart configurations for print
+            charts.forEach((chart, index) => {
+                const container = containers[index];
+                
+                // Set fixed height and width
+                container.style.height = '300px';
+                container.style.width = '100%';
+                
+                // Temporarily modify chart options for print
+                const originalOptions = {...chart.options};
+                chart.options.responsive = true;
+                chart.options.maintainAspectRatio = false;
+                
+                // Resize and update chart
+                chart.resize();
+                chart.update('none');
+                
+                // Store original options to restore later
+                chart.originalOptions = originalOptions;
+            });
+
+            // Create a print-specific message
+            const printInfo = document.createElement('div');
+            printInfo.className = 'print-only';
+            printInfo.style.textAlign = 'center';
+            printInfo.style.marginBottom = '20px';
+            printInfo.innerHTML = `
+                <h1>Mabayuan Health Care Medical Records Report</h1>
+                <p>Generated on: ${new Date().toLocaleString()}</p>
+            `;
+            
+            // Insert print info at the top of the dash-body
+            const dashBody = document.querySelector('.dash-body');
+            dashBody.insertBefore(printInfo, dashBody.firstChild);
+
+            // Small delay to ensure layout is ready
+            setTimeout(() => {
+                // Force full page width for better PDF rendering
+                document.body.style.width = '100%';
+                
+                // Trigger print dialog
+                window.print();
+                
+                // Restore original configurations
+                charts.forEach((chart, index) => {
+                    const container = containers[index];
+                    
+                    // Restore original container styles
+                    container.style.height = '';
+                    container.style.width = '';
+                    
+                    // Restore original chart options
+                    chart.options = chart.originalOptions;
+                    
+                    // Resize back to original
+                    chart.resize();
+                    chart.update('none');
+                });
+
+                // Clean up
+                printInfo.remove();
+                document.body.style.width = '';
+            }, 100);
         }
 
         function resizeCharts() {
             const charts = [
-                { chart: statusChart, containerId: 'status-chart-container' },
+                { chart: statusChart, containerId: 'status-chart-container', legendFunc: createStatusChartLegend },
                 { chart: ageGroupChart, containerId: 'age-group-chart-container' },
-                { chart: appointmentChart, containerId: 'appointment-chart-container' }
+                { chart: bookingStatusChart, containerId: 'booking-status-chart-container', legendFunc: createBookingStatusChartLegend }
             ];
 
-            charts.forEach(({ chart, containerId }) => {
+            charts.forEach(({ chart, containerId, legendFunc }) => {
                 const container = document.getElementById(containerId);
                 const canvas = container.querySelector('canvas');
                 
@@ -808,6 +1051,11 @@ if (!empty($appointmentQuery)) {
                 // Resize and update chart without animation
                 chart.resize();
                 chart.update('none');
+
+                // Recreate legend if function provided
+                if (legendFunc) {
+                    legendFunc();
+                }
             });
         }
 
@@ -822,6 +1070,7 @@ if (!empty($appointmentQuery)) {
         document.addEventListener('DOMContentLoaded', () => {
             resizeCharts();
             createStatusChartLegend();
+            createBookingStatusChartLegend();
         });
     </script>
 </body>

@@ -21,10 +21,6 @@ class SecurityUtils {
         return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
     }
 
-    // Validate phone number
-    public function validatePhoneNumber($phone) {
-        return preg_match('/^\+?[0-9]{10,14}$/', $phone);
-    }
 
     // Log security events
     public function logSecurityEvent($eventType, $details) {

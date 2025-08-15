@@ -294,7 +294,8 @@
                                             $stmt_get_nop->execute();
                                             $result_get_nop = $stmt_get_nop->get_result();
                                             $row_get_nop = $result_get_nop->fetch_assoc();
-                                            $max_participants = $row_get_nop['nop'];
+                                            // Fix: Avoid warning if no row is found
+                                            $max_participants = $row_get_nop ? $row_get_nop['nop'] : 0;
 
                                             $approved_bookings = $session['approved_bookings'];
 

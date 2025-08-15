@@ -34,6 +34,15 @@
             $scheduleid = $_POST["scheduleid"];
             $date = $_POST["date"];
             $scheduletime = $_POST["scheduletime"];
+            
+            // Server-side date validation
+            $current_date = date('Y-m-d');
+            if (strtotime($date) < strtotime($current_date)) {
+                // Redirect with an error message for past date booking attempt
+                header("location: appointment.php?action=booking-failed&titleget=none&sweetalert=error&reason=Session%20already%20passed");
+                exit;
+            }
+
             $is_self = $_POST["is_self"];
             $other_patient_name = $_POST["other_patient_name"];
             $description = $_POST["description"];
@@ -42,27 +51,51 @@
             $status = 'pending';
             $is_confirmed = 0;
 
+            // --- Booking validation for self/others ---
+            if ($is_self == 0) {
+                // Only allow one booking for self per session (pending or approved)
+                $self_check_query = "SELECT COUNT(*) as count FROM appointment WHERE pid = ? AND scheduleid = ? AND is_self = 0 AND is_confirmed IN (0, 1)";
+                $self_check_stmt = $database->prepare($self_check_query);
+                $self_check_stmt->bind_param("ii", $userid, $scheduleid);
+                $self_check_stmt->execute();
+                $self_check_result = $self_check_stmt->get_result();
+                $self_check_row = $self_check_result->fetch_assoc();
+                if ($self_check_row['count'] > 0) {
+                    $database->rollback();
+                    header("location: appointment.php?action=booking-failed&titleget=none&sweetalert=error&reason=You%20can%20only%20book%20once%20for%20yourself%20per%20session");
+                    exit;
+                }
+            } else {
+                // Check if this other_patient_name is already booked for this session by this user (pending or approved)
+                $duplicate_name_query = "SELECT COUNT(*) as count FROM appointment WHERE pid = ? AND scheduleid = ? AND is_self = 1 AND other_patient_name = ? AND is_confirmed IN (0, 1)";
+                $duplicate_name_stmt = $database->prepare($duplicate_name_query);
+                $duplicate_name_stmt->bind_param("iis", $userid, $scheduleid, $other_patient_name);
+                $duplicate_name_stmt->execute();
+                $duplicate_name_result = $duplicate_name_stmt->get_result();
+                $duplicate_name_row = $duplicate_name_result->fetch_assoc();
+                if ($duplicate_name_row['count'] > 0) {
+                    $database->rollback();
+                    header("location: appointment.php?action=booking-failed&titleget=none&sweetalert=error&reason=This%20other%20patient%20name%20has%20already%20been%20booked%20for%20this%20session");
+                    exit;
+                }
+                // Only allow booking for up to 5 unique others per session (pending or approved)
+                $others_check_query = "SELECT COUNT(DISTINCT other_patient_name) as count FROM appointment WHERE pid = ? AND scheduleid = ? AND is_self = 1 AND is_confirmed IN (0, 1)";
+                $others_check_stmt = $database->prepare($others_check_query);
+                $others_check_stmt->bind_param("ii", $userid, $scheduleid);
+                $others_check_stmt->execute();
+                $others_check_result = $others_check_stmt->get_result();
+                $others_check_row = $others_check_result->fetch_assoc();
+                if ($others_check_row['count'] >= 5) {
+                    $database->rollback();
+                    header("location: appointment.php?action=booking-failed&titleget=none&sweetalert=error&reason=You%20can%20only%20book%20for%20a%20maximum%20of%205%20other%20patients%20per%20session");
+                    exit;
+                }
+            }
+
             // Start a transaction to ensure data integrity
             $database->begin_transaction();
 
             try {
-                // Check patient's total attempts for this session
-                $patient_attempt_check = "SELECT COUNT(*) as total_attempts 
-                    FROM appointment 
-                    WHERE pid = ? AND scheduleid = ?";
-                $stmt_attempt_check = $database->prepare($patient_attempt_check);
-                $stmt_attempt_check->bind_param("ii", $userid, $scheduleid);
-                $stmt_attempt_check->execute();
-                $attempt_result = $stmt_attempt_check->get_result();
-                $attempt_row = $attempt_result->fetch_assoc();
-
-                // Check if patient has reached max attempts for this session
-                if ($attempt_row['total_attempts'] >= 5) {
-                    $database->rollback();
-                    header("location: appointment.php?action=booking-failed&titleget=none&sweetalert=error&reason=Max booking attempts reached for this session");
-                    exit;
-                }
-
                 // Check session availability for approved bookings
                 $slots_query = "SELECT available_slots FROM schedule WHERE scheduleid = ?";
                 $slots_stmt = $database->prepare($slots_query);
@@ -89,10 +122,10 @@
                 $apponum_row = $apponum_result->fetch_assoc();
                 $next_apponum = $apponum_row['next_apponum'];
 
-                // Prepare and execute the insert statement
-                $sql2 = "INSERT INTO appointment (pid, apponum, scheduleid, appodate, scheduletime, is_self, other_patient_name, description, philhealth_id, age, status, is_confirmed) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                // Modify the main insert to include booking_attempt_timestamp
+                $sql2 = "INSERT INTO appointment (pid, apponum, scheduleid, appodate, scheduletime, is_self, other_patient_name, description, philhealth_id, age, status, is_confirmed, booking_attempt_timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)";
                 $stmt = $database->prepare($sql2);
-                $stmt->bind_param("iisssissisis", $userid, $next_apponum, $scheduleid, $date, $scheduletime, $is_self, $other_patient_name, $description, $philhealth_id, $age, $status, $is_confirmed);
+                $stmt->bind_param("iisssississi", $userid, $next_apponum, $scheduleid, $date, $scheduletime, $is_self, $other_patient_name, $description, $philhealth_id, $age, $status, $is_confirmed);
 
                 if ($stmt->execute()) {
                     // Commit the transaction
@@ -183,20 +216,202 @@
         }
         .form-group input, 
         .form-group textarea {
-            width: 100%;
+            width: 50%;
             padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            border: 4px solid #ddd;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .form-group input:focus, 
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #2d6a4f;
+            box-shadow: 0 4px 8px rgba(0,123,255,0.2);
+            transform: translateY(-5px);
+        }
+        .form-group input:active, 
+        .form-group textarea:active {
+            transform: translateY(-4px);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
         }
 
-        /* Enhanced radio button styling */
-        .radio-group {
+        .booking-option-wrapper {
             display: flex;
-            gap: 15px;
+            gap: 20px;
+            justify-content: center;
+        }
+        .booking-option {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        .booking-option-icon {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+        .booking-option-label {
+            font-size: 18px;
+            margin-right: 10px;
+        }
+        .booking-option-check {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ccc;
+            border-radius: 50%;
+            background-color: #fff;
+            transition: background-color 0.2s ease-in-out;
+        }
+        .booking-option input[type="radio"]:checked + .booking-option-check {
+            background-color: #007bff;
+        }
+
+        /* Responsive styles for booking UI */
+        .booking-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .booking-section {
+            flex: 1 1 350px;
+            min-width: 300px;
+            max-width: 100%;
+            margin-bottom: 20px;
+        }
+        .dashboard-items {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            padding: 20px;
+            margin-bottom: 10px;
+        }
+        .h1-search {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #22543d;
+            margin-bottom: 10px;
+        }
+        .h3-search {
+            font-size: 1.1rem;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .dashboard-icons {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #22543d;
+            background: #e9ecef;
+            border-radius: 12px;
+            padding: 18px 0;
+            margin: 10px 0;
+            width: 100%;
+            max-width: 220px;
+        }
+        .booking-option-wrapper {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
             margin-bottom: 15px;
         }
-        .radio-group input {
-            margin-right: 5px;
+        .booking-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 10px 18px;
+            cursor: pointer;
+            border: 2px solid #e9ecef;
+            transition: border 0.2s;
+        }
+        .booking-option input[type="radio"] {
+            accent-color: #2d6a4f;
+        }
+        .booking-option-icon {
+            font-size: 1.3rem;
+        }
+        .booking-option-label {
+            font-size: 1rem;
+            font-weight: 500;
+        }
+        .booking-option-check {
+            display: none;
+        }
+        .form-group label {
+            font-weight: 600;
+            color: #22543d;
+            margin-bottom: 5px;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1.5px solid #e9ecef;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+        @media (max-width: 900px) {
+            .booking-container {
+                flex-direction: column;
+                gap: 0;
+            }
+            .booking-section {
+                min-width: 0;
+                width: 100%;
+            }
+            .dashboard-icons {
+                max-width: 100%;
+                font-size: 2rem;
+                padding: 12px 0;
+            }
+        }
+        @media (max-width: 600px) {
+            .booking-container {
+                flex-direction: column;
+                gap: 0;
+            }
+            .booking-section {
+                min-width: 0;
+                width: 100%;
+                padding: 0;
+            }
+            .dashboard-items {
+                padding: 12px;
+            }
+            .h1-search {
+                font-size: 1.1rem;
+            }
+            .h3-search {
+                font-size: 0.95rem;
+            }
+            .dashboard-icons {
+                font-size: 1.5rem;
+                padding: 8px 0;
+            }
+            .booking-option-wrapper {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .form-group label {
+                font-size: 0.98rem;
+            }
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                font-size: 0.98rem;
+                padding: 8px;
+            }
+        }
+        /* Sticky header for menu */
+        .menu-container {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: #40916c;
         }
     </style>
 </head>
@@ -324,9 +539,7 @@
                                         <input type="Submit" value="Search" class="btn-primary-soft btn button-icon btn-search" style="padding-left: 25px;padding-right: 25px;padding-top: 10px;padding-bottom: 10px;">
                                     </form>
                                 </td>
-                                <td width="10%">
-                                    <button  class="btn-label"  style="display: flex;justify-content: center;align-items: center;"><img src="../img/calendar.svg" width="100%"></button>
-                                </td>
+
                             </tr>
                             <tr>
                                 <td colspan="4" style="padding-top:10px;width: 100%;" >
@@ -426,7 +639,7 @@
                                                                                     Your Appointment Number
                                                                                 </div>
                                                                                 <center>
-                                                                                    <div class="dashboard-icons" style="margin-left: 0px;width:90%;font-size:70px;font-weight:800;text-align:center;color:var(--btnnictext);background-color: var(--btnice)">' . $next_apponum . '</div>
+                                                                                    <div class="dashboard-icons" style="margin-left: 0px;width:80%;height:100%; font-size:70px;font-weight:800;text-align:center;color:white;background-color: var(--btnice)">' . $next_apponum . '</div>
                                                                                 </center>
                                                                             </div>
                                                                         </div>
@@ -440,10 +653,20 @@
                                                                     <div class="form-group">
                                                                     <br>
                                                                     <br>
-                                                                        <label for="is_self">Choose an option:</label><br>
-                                                                        <div class="radio-group">
-                                                                            <input type="radio" id="self" name="is_self" value="0" onclick="toggleOtherPatientForm()" checked> Myself<br>
-                                                                            <input type="radio" id="others" name="is_self" value="1" onclick="toggleOtherPatientForm()"> Someone Else<br><br>
+                                                                        <label for="is_self" style="text-align: center; display: block; font-weight: bold; margin-bottom: 15px; font-size: 18px;">Choose Booking Option</label>
+                                                                        <div class="booking-option-wrapper">
+                                                                            <label class="booking-option">
+                                                                                <input type="radio" id="self" name="is_self" value="0" onclick="toggleOtherPatientForm()" checked>
+                                                                                <span class="booking-option-icon">👤</span>
+                                                                                <span class="booking-option-label">Book for Myself</span>
+                                                                                <span class="booking-option-check"></span>
+                                                                            </label>
+                                                                            <label class="booking-option">
+                                                                                <input type="radio" id="others" name="is_self" value="1" onclick="toggleOtherPatientForm()">
+                                                                                <span class="booking-option-icon">👥</span>
+                                                                                <span class="booking-option-label">Book for Others</span>
+                                                                                <span class="booking-option-check"></span>
+                                                                            </label>
                                                                         </div>
                                                                     </div>
                                                                     <div id="otherPatientForm" style="display: none;">
@@ -452,7 +675,7 @@
                                                                             <input type="text" id="other_patient_name" name="other_patient_name"><br><br>
 
                                                                             <label for="philhealth_category">PhilHealth Category:</label><br>
-                                                                            <select id="philhealth_category" name="philhealth_id" class="input-text" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                                                            <select id="philhealth_category" name="philhealth_id" class="input-text" style="width: 50%; padding: 8px; border: 4px solid #ddd; border-radius: 12px;">
                                                                                 <option value="">Select PhilHealth Category</option>
                                                                                 <option value="employed">Employed</option>
                                                                                 <option value="self_employed">Self-Employed</option>
@@ -470,7 +693,7 @@
                                                                             <textarea id="description" name="description"></textarea><br><br>
                                                                         </div>
                                                                     </div>
-                                                                    <input type="submit" class="login-btn btn-primary btn btn-book" style="margin-left:10px;padding-left: 25px;padding-right: 25px;padding-top: 10px;padding-bottom: 10px;width:95%;text-align: center;" value="Book now" name="booknow" onclick="validateForm(event)">
+                                                                    <input type="submit" class="login-btn btn-primary btn btn-book" style="margin-left:10px;padding-left: 25px;padding-right: 25px;padding-top: 10px;padding-bottom: 10px;width:10%;text-align: center;" value="Book now" name="booknow" onclick="validateForm(event)">
                                                                 </form>
 
                                                                 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

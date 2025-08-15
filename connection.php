@@ -1,6 +1,10 @@
 <?php
+
+
 // Establish connection to MySQL on localhost (XAMPP)
 $database = new mysqli("localhost", "root", "", "sql_database_hemolink");
+// $database = new mysqli("localhost", "u763411610_Ayysue", "BarkForMeDog011303", "u763411610_Mabayuan_HC");
+
 
 // Enhanced Connection Error Handling
 if ($database->connect_error) {

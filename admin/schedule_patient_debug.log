@@ -1,0 +1,202 @@
+[26-May-2025 11:36:17 Asia/Manila] Debug Parameters: {"schedule_id":"127","current_datetime":"2025-05-26 11:36:17"}
+[26-May-2025 11:36:17 Asia/Manila] Patient Retrieval Query for Schedule ID 127: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=127 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[26-May-2025 11:36:17 Asia/Manila] Total Patients Found: 0
+[26-May-2025 11:36:17 Asia/Manila] Debug Parameters: {"schedule_id":"127","current_datetime":"2025-05-26 11:36:17"}
+[26-May-2025 11:42:48 Asia/Manila] Debug Parameters: {"schedule_id":"102","current_datetime":"2025-05-26 11:42:48"}
+[26-May-2025 11:42:48 Asia/Manila] Patient Retrieval Query for Schedule ID 102: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=102 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[26-May-2025 11:42:48 Asia/Manila] Total Patients Found: 0
+[26-May-2025 11:42:48 Asia/Manila] Debug Parameters: {"schedule_id":"102","current_datetime":"2025-05-26 11:42:48"}
+[26-May-2025 11:42:53 Asia/Manila] Debug Parameters: {"schedule_id":"128","current_datetime":"2025-05-26 11:42:53"}
+[26-May-2025 11:42:53 Asia/Manila] Patient Retrieval Query for Schedule ID 128: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=128 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[26-May-2025 11:42:53 Asia/Manila] Total Patients Found: 1
+[26-May-2025 11:42:53 Asia/Manila] Debug Parameters: {"schedule_id":"128","current_datetime":"2025-05-26 11:42:53"}
+[26-May-2025 11:42:53 Asia/Manila] Patient Details: {"pid":"1","pname":"test patient","apponum":"1","is_confirmed":"1","status":""}
+[27-May-2025 21:36:08 Asia/Manila] Debug Parameters: {"schedule_id":"1","current_datetime":"2025-05-27 21:36:08"}
+[27-May-2025 21:36:08 Asia/Manila] Patient Retrieval Query for Schedule ID 1: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=1 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[27-May-2025 21:36:08 Asia/Manila] Total Patients Found: 1
+[27-May-2025 21:36:08 Asia/Manila] Debug Parameters: {"schedule_id":"1","current_datetime":"2025-05-27 21:36:08"}
+[27-May-2025 21:36:08 Asia/Manila] Patient Details: {"pid":"1","pname":"test patient","apponum":"1","is_confirmed":"1","status":""}
+[27-May-2025 22:18:18 Asia/Manila] Debug Parameters: {"schedule_id":"1","current_datetime":"2025-05-27 22:18:18"}
+[27-May-2025 22:18:18 Asia/Manila] Patient Retrieval Query for Schedule ID 1: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=1 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[27-May-2025 22:18:18 Asia/Manila] Total Patients Found: 1
+[27-May-2025 22:18:18 Asia/Manila] Debug Parameters: {"schedule_id":"1","current_datetime":"2025-05-27 22:18:18"}
+[27-May-2025 22:18:18 Asia/Manila] Patient Details: {"pid":"1","pname":"test patient","apponum":"1","is_confirmed":"1","status":""}
+[29-May-2025 06:23:04 Asia/Manila] Debug Parameters: {"schedule_id":"100","current_datetime":"2025-05-29 06:23:04"}
+[29-May-2025 06:23:04 Asia/Manila] Patient Retrieval Query for Schedule ID 100: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=100 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[29-May-2025 06:23:04 Asia/Manila] Total Patients Found: 0
+[29-May-2025 06:23:04 Asia/Manila] Debug Parameters: {"schedule_id":"100","current_datetime":"2025-05-29 06:23:04"}
+[29-May-2025 06:23:27 Asia/Manila] Debug Parameters: {"schedule_id":"1","current_datetime":"2025-05-29 06:23:27"}
+[29-May-2025 06:23:27 Asia/Manila] Patient Retrieval Query for Schedule ID 1: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=1 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[29-May-2025 06:23:27 Asia/Manila] Total Patients Found: 0
+[29-May-2025 06:23:27 Asia/Manila] Debug Parameters: {"schedule_id":"1","current_datetime":"2025-05-29 06:23:27"}
+[29-May-2025 06:23:52 Asia/Manila] Debug Parameters: {"schedule_id":"146","current_datetime":"2025-05-29 06:23:52"}
+[29-May-2025 06:23:52 Asia/Manila] Patient Retrieval Query for Schedule ID 146: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=146 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[29-May-2025 06:23:52 Asia/Manila] Total Patients Found: 1
+[29-May-2025 06:23:52 Asia/Manila] Debug Parameters: {"schedule_id":"146","current_datetime":"2025-05-29 06:23:52"}
+[29-May-2025 06:23:52 Asia/Manila] Patient Details: {"pid":"1","pname":"test patient","apponum":"1","is_confirmed":"1","status":""}
+[15-Jun-2025 18:05:30 Asia/Manila] Debug Parameters: {"schedule_id":"100","current_datetime":"2025-06-15 18:05:30"}
+[15-Jun-2025 18:05:30 Asia/Manila] Patient Retrieval Query for Schedule ID 100: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=100 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[15-Jun-2025 18:05:30 Asia/Manila] Total Patients Found: 0
+[15-Jun-2025 18:05:30 Asia/Manila] Debug Parameters: {"schedule_id":"100","current_datetime":"2025-06-15 18:05:30"}
+[15-Jun-2025 18:05:31 Asia/Manila] Debug Parameters: {"schedule_id":"102","current_datetime":"2025-06-15 18:05:31"}
+[15-Jun-2025 18:05:31 Asia/Manila] Patient Retrieval Query for Schedule ID 102: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=102 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[15-Jun-2025 18:05:31 Asia/Manila] Total Patients Found: 0
+[15-Jun-2025 18:05:31 Asia/Manila] Debug Parameters: {"schedule_id":"102","current_datetime":"2025-06-15 18:05:31"}
+[03-Jul-2025 11:11:17 Asia/Manila] Debug Parameters: {"schedule_id":"29","current_datetime":"2025-07-03 11:11:17"}
+[03-Jul-2025 11:11:17 Asia/Manila] Patient Retrieval Query for Schedule ID 29: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=29 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[03-Jul-2025 11:11:17 Asia/Manila] Total Patients Found: 0
+[03-Jul-2025 11:11:17 Asia/Manila] Debug Parameters: {"schedule_id":"29","current_datetime":"2025-07-03 11:11:17"}
+[06-Jul-2025 21:30:03 Asia/Manila] Debug Parameters: {"schedule_id":"22","current_datetime":"2025-07-06 21:30:03"}
+[06-Jul-2025 21:30:03 Asia/Manila] Patient Retrieval Query for Schedule ID 22: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=22 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[06-Jul-2025 21:30:03 Asia/Manila] Total Patients Found: 1
+[06-Jul-2025 21:30:03 Asia/Manila] Debug Parameters: {"schedule_id":"22","current_datetime":"2025-07-06 21:30:03"}
+[06-Jul-2025 21:30:03 Asia/Manila] Patient Details: {"pid":"7","pname":"Michael Park","apponum":"1","is_confirmed":"1","status":""}
+[06-Jul-2025 21:30:05 Asia/Manila] Debug Parameters: {"schedule_id":"23","current_datetime":"2025-07-06 21:30:05"}
+[06-Jul-2025 21:30:05 Asia/Manila] Patient Retrieval Query for Schedule ID 23: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=23 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[06-Jul-2025 21:30:05 Asia/Manila] Total Patients Found: 2
+[06-Jul-2025 21:30:05 Asia/Manila] Debug Parameters: {"schedule_id":"23","current_datetime":"2025-07-06 21:30:05"}
+[06-Jul-2025 21:30:05 Asia/Manila] Patient Details: {"pid":"7","pname":"Michael Park","apponum":"1","is_confirmed":"1","status":""}
+[06-Jul-2025 21:30:05 Asia/Manila] Patient Details: {"pid":"1","pname":"test patient","apponum":"2","is_confirmed":"1","status":""}

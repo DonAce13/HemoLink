@@ -1,4 +1,7 @@
 <?php
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+require 'vendor/autoload.php';
 session_start(); // This must be at the top
 ob_start(); // Optional: Buffer output to prevent header errors
 ?>
@@ -15,6 +18,7 @@ ob_start(); // Optional: Buffer output to prevent header errors
     <link rel="stylesheet" href="css/animations.css">  
     <link rel="stylesheet" href="css/main.css">  
     <link rel="stylesheet" href="css/signup.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <title>Sign Up - Mabayuan Health</title>
     <style>
@@ -165,6 +169,13 @@ ob_start(); // Optional: Buffer output to prevent header errors
             text-decoration: none;
             font-weight: 600;
         }
+        .text-decoration-none {
+            color: #2d6a4f; /* Same as your primary button color */
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            font-size:1.5rem;
+        }
 
         .error-label {
             color: #dc3545;
@@ -222,6 +233,58 @@ ob_start(); // Optional: Buffer output to prevent header errors
                 font-size: 1rem;
             }
         }
+
+        .go-back-link:hover svg circle {
+            fill: #b7e4c7;
+        }
+        .go-back-link .go-back-text {
+            transition: color 0.2s;
+        }
+        .go-back-link:hover .go-back-text {
+            color: #40916c;
+        }
+        @media (max-width: 480px) {
+            .go-back-link svg {
+                width: 32px;
+                height: 32px;
+            }
+            .go-back-link .go-back-text {
+                font-size: 1rem;
+            }
+        }
+        
+        .password-input-wrapper {
+            position: relative;
+        }
+        .password-container {
+            position: relative;
+            width: 100%;
+            margin-bottom: 0;
+        }
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 2;
+            pointer-events: auto;
+        }
+        #password-guide {
+            margin-top: 5px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border: 1px solid #dee2e6;
+            position: static;
+        }
+        
+        #password-requirements {
+            margin-left: 20px;
+        }
+        
+        #password-requirements li {
+            margin-bottom: 5px;
+        }
     </style>
 </head>
 <body>
@@ -229,6 +292,15 @@ ob_start(); // Optional: Buffer output to prevent header errors
 <center>
     <div class">
         <div class="container">
+        <div style="width:100%; text-align:left; margin-bottom:-12px;">
+        <a href="/index.html" class="go-back-link" aria-label="Go back to home" style="display:inline-flex; align-items:center; gap:10px; margin-bottom: 24px;">
+            <svg width="40" height="40" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle;">
+                <circle cx="16" cy="16" r="16" fill="#e9ecef"/>
+                <path d="M18.5 10L13 16L18.5 22" stroke="#2d6a4f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="go-back-text" style="font-size: 1.2rem; color: #2d6a4f; font-weight: 600; letter-spacing: 0.5px;">Go Back</span>
+        </a>
+    </div>
             <p class="header-text">Let's Get Started</p>
             <p class="sub-text">Add Your Personal Details to Continue</p>
             
@@ -251,167 +323,232 @@ ob_start(); // Optional: Buffer output to prevent header errors
                     </tr>
 
 
-                    <!-- Address Field -->
-                    <tr>
-                        <td class="label-td" colspan="2">
-                            <label for="address" class="form-label">Address:</label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="label-td" colspan="2">
-                            <!-- Street Number Input -->
-                            <input type="text" 
-                                name="street_number" 
-                                id="street_number" 
-                                class="input-text" 
-                                placeholder="Enter Street Number (e.g., #12a)" 
-                                pattern="^#?\d+[a-zA-Z]?$" 
-                                title="Enter a number optionally followed by a letter (e.g., 12a or #12a)"
-                                required>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="label-td" colspan="2">
-                            <!-- Street Name Dropdown -->
-                            <select name="street_name" id="street_name" class="input-text" required>
-                                <option value="" disabled selected>Select Street Name</option>
-                                <option value="Amagis">Amagis Avenue</option>
-                                <option value="Calimbas">Calimbas Street </option>
-                                <option value="De Aro">De Aro Street</option>
-                                <option value="Grace Pauline">Grace Pauline Street</option>
-                                <option value="Labrador">Labrador Street</option>
-                                <option value="Leyva">Leyva Street</option>
-                                <option value="Mercurio">Mercurio Street</option>
-                                <option value="Napalan">Napalan Street</option>
-                                <option value="Nieves">Nieves Street</option>
-                                <option value="Otero">Otero Avenue</option>
-                                <option value="Rodriquez">Rodriquez Street</option>
-                                <option value="Rosete">Rosete Street</option>
-                            </select>
-                        </td>
-                    </tr>
+                <!-- Address Field -->
+                <tr>
+                    <td class="label-td" colspan="2">
+                        <label for="address" class="form-label">Address:</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label-td" colspan="2">
+                        <!-- Street Number Input -->
+                        <input type="text" 
+                            name="street_number" 
+                            id="street_number" 
+                            class="input-text" 
+                            placeholder="Enter Street Number (e.g., #12a)" 
+                            pattern="^#?\d+[a-zA-Z]?$" 
+                            title="Enter a number optionally followed by a letter (e.g., 12a or #12a)"
+                            required>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label-td" colspan="2">
+                        <!-- Street Name Dropdown -->
+                        <select name="street_name" id="street_name" class="input-text" required>
+                            <option value="" disabled selected>Select Street Name</option>
+                            <option value="Amagis">Amagis Avenue</option>
+                            <option value="Calimbas">Calimbas Street </option>
+                            <option value="De Aro">De Aro Street</option>
+                            <option value="Grace Pauline">Grace Pauline Street</option>
+                            <option value="Labrador">Labrador Street</option>
+                            <option value="Leyva">Leyva Street</option>
+                            <option value="Mercurio">Mercurio Street</option>
+                            <option value="Napalan">Napalan Street</option>
+                            <option value="Nieves">Nieves Street</option>
+                            <option value="Otero">Otero Avenue</option>
+                            <option value="Rodriquez">Rodriquez Street</option>
+                            <option value="Rosete">Rosete Street</option>
+                        </select>
+                    </td>
+                </tr>
 
-                    <!-- PhilHealth Field -->
-                    <tr>
-                        <td class="label-td" colspan="2">
-                            <label for="hasPhilhealth" class="form-label">Do you have a PhilHealth Number?</label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="label-td">
-                            <input type="radio" name="hasPhilhealth" value="yes" id="philhealth-yes"> Yes
-                        </td>
-                        <td class="label-td">
-                            <input type="radio" name="hasPhilhealth" value="no" id="philhealth-no" checked> No
-                        </td>
-                    </tr>
+                <!-- PhilHealth Field -->
+                <tr>
+                    <td class="label-td" colspan="2">
+                        <label for="hasPhilhealth" class="form-label">Do you have a PhilHealth Number?</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label-td">
+                        <input type="radio" name="hasPhilhealth" value="yes" id="philhealth-yes"> Yes
+                    </td>
+                    <td class="label-td">
+                        <input type="radio" name="hasPhilhealth" value="no" id="philhealth-no" checked> No
+                    </td>
+                </tr>
+                
+                <!-- PWD/SENIOR/IP Field -->
+                <tr>
+                    <td class="label-td" colspan="3">
+                        <label for="hasPhilhealth" class="form-label">
+                            Where do you classify in this category (Leave blank if none)
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label-td">
+                        <input type="checkbox" name="categories[]" value="IP" class="category-option"> Indigenous People
+                    </td>
+                    <td class="label-td">
+                        <input type="checkbox" name="categories[]" value="SENIOR CITIZEN" class="category-option"> Senior Citizen
+                    </td>
+                    <td class="label-td">
+                        <input type="checkbox" name="categories[]" value="PWD" class="category-option"> PWD
+                    </td>
+                </tr>
 
-                    <!-- Date of Birth Field -->
-                    <tr>
-                        <td class="label-td" colspan="2">
-                            <label for="dob" class="form-label">Date of Birth:</label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="label-td" colspan="2">
-                            <?php
-                            $today = date('Y-m-d');
-                            $minDate = date('Y-m-d', strtotime('-100 years', strtotime($today)));
-                            $maxDate = date('Y-m-d', strtotime('-18 years', strtotime($today)));
-                            echo '<input type="date" name="dob" class="input-text" min="' . $minDate . '" max="' . $maxDate . '" onchange="calculateAge(this.value)" required>';
-                            ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" id="ageDisplay" style="text-align: center; padding: 10px 0; font-weight: bold; color: #2d6a4f;"></td>
-                    </tr>
+                <!-- Date of Birth Field -->
+                <tr>
+                    <td class="label-td" colspan="2">
+                        <label for="dob" class="form-label">Date of Birth:</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label-td" colspan="2">
+                        <?php
+                        $today = date('Y-m-d');
+                        $minDate = date('Y-m-d', strtotime('-100 years', strtotime($today)));
+                        $maxDate = date('Y-m-d', strtotime('-18 years', strtotime($today)));
+                        echo '<input type="date" name="dob" class="input-text" min="' . $minDate . '" max="' . $maxDate . '" onchange="calculateAge(this.value)" required>';
+                        ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" id="ageDisplay" style="text-align: center; padding: 10px 0; font-weight: bold; color: #2d6a4f;"></td>
+                </tr>
 
-                    <!-- Email Field -->
-                    <tr>
-                        <td class="label-td" colspan="2">
-                            <label for="email" class="form-label">Email:</label>
-                            <input type="email" name="email" class="input-text" placeholder="Email Address" required>
-                        </td>
-                    </tr>
+                <!-- Email Field with Send OTP Button -->
+                <tr>
+                    <td class="label-td" colspan="2">
+                        <label for="email" class="form-label">Email:</label>
+                        <input type="email" name="email" id="email" class="input-text" placeholder="Email Address" required>
+                        <button type="button" id="sendOtpButton" disabled onclick="sendOtp()">Send OTP</button>
+                    </td>
+                </tr>
 
-                    <!-- Password Fields -->
-                    <tr>
-                        <td class="label-td">
-                            <label for="password" class="form-label">Password:</label>
-                            <input type="password" name="password" class="input-text" placeholder="Password" required>
-                        </td>
-                        <td class="label-td">
-                            <label for="confirm_password" class="form-label">Confirm Password:</label>
-                            <input type="password" name="confirm_password" class="input-text" placeholder="Confirm Password" required>
-                        </td>
-                    </tr>
+                <!-- OTP Field (initially hidden) -->
+                <tr id="otpRow" style="display: none;">
+                    <td class="label-td" colspan="2">
+                        <label for="otp" class="form-label">Enter OTP:</label>
+                        <input type="text" name="otp" id="otp" class="input-text" placeholder="OTP" required>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <div id="otpMessage" style="color: green; font-weight: bold; text-align: center;"></div>
+                    </td>
+                </tr>
 
-                  <!-- Telephone Field with Send OTP Button -->
-<tr>
-    <td class="label-td" colspan="2">
-        <label for="phone_number" class="form-label">Telephone:</label>
-        <input type="tel" name="phone_number" id="phone_number" class="input-text" placeholder="Telephone Number" required pattern="^09\d{9}$" title="The number should start at 09 and be exactly 11 digits long.">
-        <button type="button" id="sendOtpButton" disabled onclick="sendOtp()">Send OTP</button>
-    </td>
-</tr>
+                <!-- Password Fields -->
+                <tr>
+                    <td class="label-td" colspan="2">
+                        <label for="password" class="form-label">Password:</label>
+                        <div class="password-input-wrapper">
+                            <div class="password-container">
+                                <input type="password" name="password" id="password" class="input-text" placeholder="Password" required>
+                                <i class="fas fa-eye password-toggle" onclick="togglePassword('password')"></i>
+                            </div>
+                            <div id="password-guide" style="display:none;"></div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label-td" colspan="2">
+                        <label for="confirm_password" class="form-label">Confirm Password:</label>
+                        <div class="password-input-wrapper">
+                            <div class="password-container">
+                                <input type="password" name="confirm_password" id="confirm_password" class="input-text" placeholder="Confirm Password" required>
+                                <i class="fas fa-eye password-toggle" onclick="togglePassword('confirm_password')"></i>
+                            </div>
+                            <div id="confirm-feedback" style="margin-top:5px;"></div>
+                        </div>
+                    </td>
+                </tr>
 
-<!-- OTP Field (initially hidden) -->
-<tr id="otpRow" style="display: none;">
-    <td class="label-td" colspan="2">
-        <label for="otp" class="form-label">Enter OTP:</label>
-        <input type="text" name="otp" id="otp" class="input-text" placeholder="OTP" required>
-    </td>
-</tr>
-<tr>
-    <td colspan="2">
-        <div id="otpMessage" style="color: green; font-weight: bold; text-align: center;"></div>
-    </td>
-</tr>   
+                <!-- Terms and Conditions Checkbox -->
+                <tr>
+                    <td class="label-td" colspan="2">
+                        <label>
+                            <input type="checkbox" id="termsCheckbox" name="termsAccepted" required> I accept the <a href="#" id="termsLink">Terms and Conditions</a>
+                        </label>
+                    </td>
+                </tr>
 
-                    <!-- Terms and Conditions Checkbox -->
-                    <tr>
-                        <td class="label-td" colspan="2">
-                            <label>
-                                <input type="checkbox" id="termsCheckbox" name="termsAccepted" required> I accept the <a href="#" id="termsLink">Terms and Conditions</a>
-                            </label>
-                        </td>
-                    </tr>
+                <!-- Privacy Policy Checkbox -->
+                <tr>
+                    <td class="label-td" colspan="2">
+                        <label>
+                            <input type="checkbox" id="privacyCheckbox" name="privacyAccepted" required> I accept the <a href="#" id="privacyPolicyLink">Privacy Policy</a>
+                        </label>
+                    </td>
+                </tr>
 
-                    <!-- Privacy Policy Checkbox -->
-                    <tr>
-                        <td class="label-td" colspan="2">
-                            <label>
-                                <input type="checkbox" id="privacyCheckbox" name="privacyAccepted" required> I accept the <a href="#" id="privacyPolicyLink">Privacy Policy</a>
-                            </label>
-                        </td>
-                    </tr>
+                <tr>
+                    <td class="label-td" colspan="2">
+                        <div class="cf-turnstile" data-sitekey="0x4AAAAAAA8HgcMMy1gC84ju"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label-td" colspan="2">
+                        <div class="cf-turnstile" data-sitekey="0x4AAAAAAA8HgcMMy1gC84ju"></div>
+                    </td>
+                </tr>
 
-                    <tr>
-                        <td class="label-td" colspan="2">
-                            <div class="cf-turnstile" data-sitekey="0x4AAAAAAA8HgcMMy1gC84ju"></div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="label-td" colspan="2">
-                            <div class="cf-turnstile" data-sitekey="0x4AAAAAAA8HgcMMy1gC84ju"></div>
-                        </td>
-                    </tr>
+                <!-- Submit and Reset Buttons -->
+                <tr>
+                    <td>
+                        <input type="reset" value="Reset" class="login-btn btn-primary-soft btn">
+                    </td>
+                    <td>
+                        <input type="submit" value="Next" class="login-btn btn-primary btn">
+                    </td>
+                </tr>
 
-                    <!-- Submit and Reset Buttons -->
-                    <tr>
-                        <td>
-                            <input type="reset" value="Reset" class="login-btn btn-primary-soft btn">
-                        </td>
-                        <td>
-                            <input type="submit" value="Next" class="login-btn btn-primary btn">
-                        </td>
-                    </tr>
-                </table>
-            </form>
-        </div>
+            </table>
+            
+            <td>
+                <p class="text-center mb-0" style="font-size: 1.2rem;">
+                    Already have an account?
+                    <a href="login.php" class="text-decoration-none">Sign In</a>
+                </p>
+            </td>        
+        </form>
     </div>
 </center>
 <script>
+
+document.addEventListener('DOMContentLoaded', function() {
+    const resetBtn = document.querySelector('input[type="reset"]');
+    if (resetBtn) {
+        resetBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'This will clear all the information you have entered.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, reset',
+                cancelButtonText: 'Cancel',
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#2d6a4f'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    e.target.form.reset();
+                    // Hide OTP input and message if present
+                    const otpRow = document.getElementById('otpRow');
+                    if (otpRow) otpRow.style.display = 'none';
+                    const otpMsg = document.getElementById('otpMessage');
+                    if (otpMsg) otpMsg.innerHTML = '';
+                    const ageDisplay = document.getElementById('ageDisplay');
+                    if (ageDisplay) ageDisplay.innerText = '';
+                }
+            });
+        });
+    }
+    setupPasswordGuide();
+});
+
 // Terms and Conditions Alert
 document.getElementById('termsLink').addEventListener('click', function(e) {
     e.preventDefault();
@@ -452,14 +589,14 @@ document.getElementById('termsLink').addEventListener('click', function(e) {
                 <h4style="margin-top: 15px;">6.1 Senior Citizens' Rights</h4>
                 <p>In accordance with Republic Act No. 7432, which was later amended by RA 9472, senior citizens have the right to priority services in various establishments, including healthcare facilities. Mabayuan Health will ensure that priority is given to senior citizens during healthcare appointments, in line with the provisions of these laws.</p>
 
-                <h4 style="margin-top: 15px;">6.2 Indigenous Peoples' Rights</h4>
-                <p>In line with the Indigenous Peoples' Rights Act of 1997, Mabayuan Health recognizes and respects the rights of indigenous peoples, ensuring that they are provided with accessible healthcare services. Indigenous individuals will not be discriminated against in any manner, and their unique cultural and health needs will be taken into account.</p>
-
-                <h4 style="margin-top: 15px;">6.3 Persons with Disabilities (PWD) Rights</h4>
+                <h4 style="margin-top: 15px;">6.2 Persons with Disabilities (PWD) Rights</h4>
                 <p>As per Republic Act No. 10754, which expands the benefits and privileges for persons with disabilities, Mabayuan Health is committed to offering priority service to PWDs. This includes providing express lanes for PWDs in all healthcare appointments. In the absence of express lanes, Mabayuan Health ensures that priority is given to persons with disabilities to ensure timely access to necessary medical services.</p>
 
                 <h4 style="margin-top: 15px;">7. Privacy and Data Protection</h4>
                 <p>We take your privacy seriously and are committed to protecting your personal information. Please review our privacy policy for details on how we collect, store, and protect your personal information.</p>
+
+                <h4 style="margin-top: 15px;">8. Booking Service Policy</h4>
+                <p>Cancellation of Approved Booking Services must be only available up until 2 days before the session will commence a day before that will not be applicable or honored.</p>
             </div>
         `,
         width: '600px',
@@ -503,6 +640,19 @@ document.querySelector('form').addEventListener('submit', function(event) {
         Swal.fire({
             title: 'Password Mismatch',
             text: 'Password confirmation does not match! Please try again.',
+            icon: 'error',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#2d6a4f'
+        });
+        return;
+    }
+
+    // Password strength validation
+    if (password.length < 4 || !/[^a-zA-Z0-9]/.test(password)) {
+        event.preventDefault();
+        Swal.fire({
+            title: 'Weak Password',
+            text: 'Password must be at least 4 characters and contain at least one special character.',
             icon: 'error',
             confirmButtonText: 'OK',
             confirmButtonColor: '#2d6a4f'
@@ -553,6 +703,7 @@ document.getElementById('privacyPolicyLink').addEventListener('click', function(
 
                 <h4 style="margin-top: 15px;">5. Data Disclosure</h4>
                 <p>Your personal information will only be disclosed to authorized personnel within Mabayuan Health who are directly involved in providing healthcare services. We do not sell, share, or rent your personal data to third parties for marketing or any other purposes without your explicit consent. In certain cases, we may disclose information to legal authorities if required by law or if it is necessary to protect your safety or the safety of others.</p>
+                <p><b>For further verification of identity, all patients must present a valid ID when showing up for their approved booking. Administrators will verify the appropriate ID before allowing access to healthcare services.</b></p>
 
                 <h4 style="margin-top: 15px;">6. Your Rights</h4>
                 <ul style="margin-left: 20px;">
@@ -638,25 +789,25 @@ function showOtpInput() {
 
 // Function to enable Send OTP button
 function enableSendOtpButton() {
-    const teleInput = document.getElementById('phone_number'); 
+    const emailInput = document.getElementById('email'); 
     const sendOtpButton = document.getElementById('sendOtpButton');
-    sendOtpButton.disabled = !teleInput.value.match(/^09\d{9}$/);
+    sendOtpButton.disabled = !emailInput.value.match(/^\S+@\S+\.\S+$/);
 }
 
-// Add event listener to telephone input for enabling Send OTP button
-document.getElementById('phone_number').addEventListener('input', enableSendOtpButton);
+// Add event listener to email input for enabling Send OTP button
+document.getElementById('email').addEventListener('input', enableSendOtpButton);
 // AJAX call to send OTP
 function sendOtp() {
-    var tele = document.getElementById('phone_number').value;
+    var email = document.getElementById('email').value;
 
-    // Validate phone number (must be 11 digits starting with 09)
-    if (tele.match(/^09\d{9}$/)) {
-        fetch('send_otp.php', {
+    // Validate email format
+    if (email.match(/^\S+@\S+\.\S+$/)) {
+        fetch('send_otp', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
-            body: 'phone_number=' + encodeURIComponent(tele) // Encode the phone number for safety
+            body: 'email=' + encodeURIComponent(email)
         })
         .then(response => {
             if (!response.ok) {
@@ -665,16 +816,64 @@ function sendOtp() {
             return response.text();
         })
         .then(data => {
-            console.log(data); // Logs response in the console
-            document.getElementById('otpMessage').innerHTML = data; // Display message on the frontend
-            showOtpInput(); // Show the OTP input if successful
+            // Check if the response contains the success message
+            if (data.includes('OTP has been sent to your email')) {
+                Swal.fire({
+                    title: 'OTP Sent!',
+                    text: 'Please check your email for the verification code.',
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#2d6a4f'
+                });
+                document.getElementById('otpMessage').innerHTML = 'OTP has been sent to your email. Please check your inbox';
+                showOtpInput(); // Show the OTP input
+            } else if (
+                data.includes('already registered') ||
+                data.includes('already sent') ||
+                data.includes('Invalid email') ||
+                data.includes('required') ||
+                data.includes('Failed to send OTP')
+            ) {
+                Swal.fire({
+                    title: 'OTP Error',
+                    text: data,
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#2d6a4f'
+                });
+                document.getElementById('otpMessage').innerHTML = '';
+            } else {
+                // Handle any other response
+                Swal.fire({
+                    title: 'OTP Sent!',
+                    text: 'Please check your email for the verification code.',
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#2d6a4f'
+                });
+                document.getElementById('otpMessage').innerHTML = 'OTP has been sent to your email. Please check your inbox';
+                showOtpInput(); // Show the OTP input
+            }
         })
         .catch(error => {
             console.error('Error:', error);
-            document.getElementById('otpMessage').innerHTML = "An error occurred. Please try again."; // Error message
+            Swal.fire({
+                title: 'Network Error',
+                text: 'An error occurred. Please try again.',
+                icon: 'error',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#2d6a4f'
+            });
+            document.getElementById('otpMessage').innerHTML = '';
         });
     } else {
-        alert('Invalid phone number! Please enter a valid 11-digit number starting with 09.');
+        Swal.fire({
+            title: 'Invalid Email',
+            text: 'Invalid email address! Please enter a valid email.',
+            icon: 'error',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#2d6a4f'
+        });
     }
 }
 
@@ -691,6 +890,132 @@ function calculateAge(dob) {
         age--;
     }
     document.getElementById('ageDisplay').innerText = 'Age: ' + age;
+    if (age < 18 && dob) {
+        setTimeout(() => {
+        Swal.fire({
+            title: 'Age Restriction',
+            text: 'Only users 18 years old and above can register.',
+            icon: 'error',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#2d6a4f'
+            }).then(() => {
+        document.querySelector('input[name="dob"]').value = '';
+        document.getElementById('ageDisplay').innerText = '';
+            });
+        }, 100);
+    }
+}
+function togglePassword(fieldId) {
+    const field = document.getElementById(fieldId);
+    const icon = field.nextElementSibling;
+    
+    if (field.type === 'password') {
+        field.type = 'text';
+        icon.classList.replace('fa-eye', 'fa-eye-slash');
+    } else {
+        field.type = 'password';
+        icon.classList.replace('fa-eye-slash', 'fa-eye');
+    }
+}
+function setupPasswordGuide() {
+    const passwordField = document.getElementById('password');
+    const confirmField = document.getElementById('confirm_password');
+    
+    // Password requirements guide
+    const guide = document.createElement('div');
+    guide.id = 'password-guide';
+    guide.style.display = 'none';
+    guide.style.marginTop = '5px';
+    guide.style.padding = '10px';
+    guide.style.backgroundColor = '#f8f9fa';
+    guide.style.borderRadius = '5px';
+    guide.style.border = '1px solid #dee2e6';
+    guide.innerHTML = `
+        <p style="margin-bottom: 8px; font-weight: 600; color: #495057;">Password Requirements:</p>
+        <ul id="password-requirements" style="margin-left: 5px; list-style: none; padding-left: 5px;">
+            <li id="req-length" style="margin-bottom: 5px;"><i class="fas fa-check-circle" style="margin-right: 8px;"></i>At least 8 characters</li>
+            <li id="req-upper" style="margin-bottom: 5px;"><i class="fas fa-check-circle" style="margin-right: 8px;"></i>At least 1 uppercase letter</li>
+            <li id="req-number" style="margin-bottom: 5px;"><i class="fas fa-check-circle" style="margin-right: 8px;"></i>At least 1 number</li>
+            <li id="req-special"><i class="fas fa-check-circle" style="margin-right: 8px;"></i>At least 1 special character</li>
+        </ul>
+    `;
+    passwordField.parentNode.parentNode.appendChild(guide);
+
+    // Confirm password feedback
+    const confirmFeedback = document.createElement('div');
+    confirmFeedback.id = 'confirm-feedback';
+    confirmFeedback.style.marginTop = '5px';
+    confirmField.parentNode.parentNode.appendChild(confirmFeedback);
+
+    // Responsive adjustments
+    function adjustLayout() {
+        if (window.innerWidth < 768) {
+            guide.style.width = '100%';
+            confirmFeedback.style.width = '100%';
+        } else {
+            guide.style.width = 'calc(100% - 20px)';
+            confirmFeedback.style.width = 'calc(100% - 20px)';
+        }
+    }
+
+    window.addEventListener('resize', adjustLayout);
+    adjustLayout();
+
+    // Event listeners
+    passwordField.addEventListener('focus', function() {
+        guide.style.display = 'block';
+        checkPasswordRequirements(passwordField.value);
+    });
+
+    passwordField.addEventListener('blur', function() {
+        if (document.activeElement !== confirmField) {
+            guide.style.display = 'none';
+        }
+    });
+
+    confirmField.addEventListener('focus', function() {
+        guide.style.display = 'block';
+    });
+
+    confirmField.addEventListener('blur', function() {
+        guide.style.display = 'none';
+    });
+
+    passwordField.addEventListener('input', function() {
+        checkPasswordRequirements(passwordField.value);
+        checkPasswordMatch();
+    });
+
+    confirmField.addEventListener('input', checkPasswordMatch);
+}
+
+function checkPasswordRequirements(password) {
+    const requirements = {
+        length: password.length >= 8,
+        upper: /[A-Z]/.test(password),
+        number: /[0-9]/.test(password),
+        special: /[^A-Za-z0-9]/.test(password)
+    };
+
+    // Update styling with colors
+    document.getElementById('req-length').style.color = requirements.length ? '#2d6a4f' : '#6c757d';
+    document.getElementById('req-upper').style.color = requirements.upper ? '#2d6a4f' : '#6c757d';
+    document.getElementById('req-number').style.color = requirements.number ? '#2d6a4f' : '#6c757d';
+    document.getElementById('req-special').style.color = requirements.special ? '#2d6a4f' : '#6c757d';
+}
+
+function checkPasswordMatch() {
+    const password = document.getElementById('password').value;
+    const confirm = document.getElementById('confirm_password').value;
+    const feedback = document.getElementById('confirm-feedback');
+
+    if (confirm.length === 0) {
+        feedback.innerHTML = '';
+    } else if (password === confirm) {
+        feedback.innerHTML = '<span style="color:#2d6a4f;"><i class="fas fa-check-circle"></i> Passwords match</span>';
+    } else {
+        feedback.innerHTML = '<span style="color:#dc3545;"><i class="fas fa-times-circle"></i> Passwords do not match</span>';
+    }
 }
 </script>
 
@@ -728,12 +1053,9 @@ date_default_timezone_set('Asia/Manila');
 $date = date('Y-m-d');
 $_SESSION["date"] = $date;
 
-// Enable error reporting for debugging
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 // Database connection with error logging
-$database = new mysqli("localhost", "root", "", "sql_database_hemolink");
+// $database = new mysqli("", "root", "", "sql_database_hemolink");
+$database = new mysqli("localhost", "u763411610_Ayysue", "BarkForMeDog011303", "u763411610_Mabayuan_HC");
 if ($database->connect_errno) {
     $sweet_alert = "<script>Swal.fire({
         title: 'Database Connection Error', 
@@ -746,144 +1068,109 @@ if ($database->connect_errno) {
     exit;
 }
 
-if ($_POST) {
-    try {
-        $database->begin_transaction();
-
-        // Sanitize and validate inputs
-        $fname = trim($_POST['fname']);
-        $lname = trim($_POST['lname']);
-        $street_number = '#' . ltrim(trim($_POST['street_number']), '#');
-        $address = sprintf("%s %s Avenue, Mabayuan, Olongapo City", $street_number, trim($_POST['street_name']));
-        $hasPhilhealth = $_POST['hasPhilhealth'] ?? 'no';
-        $dob = $_POST['dob'];
-        $email = $_POST['email'] ?? "";
-        $newpassword = $_POST['password'] ?? "";
-        $cpassword = $_POST['confirm_password'] ?? "";
-        $phone = preg_replace('/[^0-9]/', '', $_POST['phone_number']); // Remove non-numeric characters
-        if (substr($phone, 0, 1) === "0") {
-            $phone = "+63" . substr($phone, 1); // Convert 09XXXXXXX to +639XXXXXXX
-        } else {
-            $phone = "+$phone"; // If already in E.164 format, add "+"
-        }
-
-        // Validate inputs
-        if (empty($fname) || empty($lname) || empty($email) || empty($newpassword) || empty($phone)) {
-            throw new Exception("All fields are required.");
-        }
-
-        if ($newpassword !== $cpassword) {
-            throw new Exception("Passwords do not match.");
-        }
-
-        // Check if email exists in patient table
-        $stmt = $database->prepare("SELECT pemail FROM patient WHERE pemail = ?");
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        if ($result->num_rows > 0) {
-            throw new Exception("This email address is already registered.");
-        }
-
-        // Check if phone number exists in patient table
-        $stmt = $database->prepare("SELECT phone_number FROM patient WHERE phone_number = ?");
-        $stmt->bind_param("s", $phone);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        if ($result->num_rows > 0) {
-            throw new Exception("This phone number is already registered.");
-        }
-
-        // Check if email exists in webuser table
-        $stmt = $database->prepare("SELECT email FROM webuser WHERE email = ?");
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        if ($result->num_rows > 0) {
-            throw new Exception("This email address is already registered as a web user.");
-        }
-
-        // Prepare full name
-        $fullName = $fname . ' ' . $lname;
-
-        // Insert patient data
-        $stmt = $database->prepare("INSERT INTO patient (pemail, pname, ppassword, paddress, hasPhilhealth, pdob, phone_number) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("sssssss", $email, $fullName, $newpassword, $address, $hasPhilhealth, $dob, $phone);
-        
-        // Execute patient insert
-        if (!$stmt->execute()) {
-            error_log("Patient Insert Failed: " . $stmt->error);
-            error_log("Insert Details:");
-            error_log("Email: $email");
-            error_log("Full Name: $fullName");
-            error_log("Address: $address");
-            error_log("PhilHealth: $hasPhilhealth");
-            error_log("DOB: $dob");
-            error_log("Phone: $phone");
+if ($_POST && isset($_POST['otp'])) {
+    // Step 1: Verify OTP
+    $entered_otp = trim($_POST['otp']);
+    $pemail = $_POST['email'] ?? '';
+    
+    // Fetch the latest OTP for this email
+    $stmt = $database->prepare("SELECT otp FROM otp_verifications WHERE pemail = ? ORDER BY created_at DESC LIMIT 1");
+    $stmt->bind_param("s", $pemail);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($row = $result->fetch_assoc()) {
+        $latest_otp = $row['otp'];
+        if ($entered_otp === $latest_otp) {
+            // OTP is correct - proceed with registration
+            $delete_stmt = $database->prepare("DELETE FROM otp_verifications WHERE pemail = ?");
+            $delete_stmt->bind_param("s", $pemail);
+            $delete_stmt->execute();
             
-            throw new Exception("Error registering patient data: " . $stmt->error);
-        }
-
-        // Insert webuser data
-        $stmt = $database->prepare("INSERT INTO webuser (email, usertype) VALUES (?, ?)");
-        $userType = 'p';
-        $stmt->bind_param("ss", $email, $userType);
-        if (!$stmt->execute()) {
-            throw new Exception("Error creating user account: " . $stmt->error);
-        }
-
-        // Send OTP via Twilio
-        $otp = rand(100000, 999999);
-        $account_sid = 'ACbf56b173b4f3c4b0cef7f2497d30d6a5';
-        $auth_token = 'd95e0606e4591b5f251cba67d54f7628';
-        $twilio_number = '+18506000203';
-        $client = new Client($account_sid, $auth_token);
-
-        try {
-            $client->messages->create(
-                $phone,
-                [
-                    'from' => $twilio_number,
-                    'body' => "Your OTP is: $otp"
-                ]
-            );
-
-            // Ensure OTP is stored in the database
-            $stmt = $database->prepare("INSERT INTO otp_verifications (phone_number, otp) VALUES (?, ?)");
-            $stmt->bind_param("ss", $phone, $otp);
+            // Registration logic
+            $fname = trim($_POST['fname']);
+            $lname = trim($_POST['lname']);
+            $street_number = '#' . ltrim(trim($_POST['street_number']), '#');
+            $address = sprintf("%s %s Avenue, Mabayuan, Olongapo City", $street_number, trim($_POST['street_name']));
+            $hasPhilhealth = $_POST['hasPhilhealth'] ?? 'no';
+            $dob = $_POST['dob'];
+            $newpassword = $_POST['password'] ?? "";
+            $cpassword = $_POST['confirm_password'] ?? "";
+            $fullName = $fname . ' ' . $lname;
+            $categories = isset($_POST['categories']) ? implode(',', $_POST['categories']) : NULL;
+            // Validate inputs
+            if (empty($fname) || empty($lname) || empty($pemail) || empty($newpassword)) {
+                echo "<script>Swal.fire({title: 'Registration Error', text: 'All fields are required.', icon: 'error', confirmButtonText: 'OK'});</script>";
+                exit;
+            }
+            if ($newpassword !== $cpassword) {
+                echo "<script>Swal.fire({title: 'Registration Error', text: 'Passwords do not match.', icon: 'error', confirmButtonText: 'OK'});</script>";
+                exit;
+            }
+            // Password strength validation (backend)
+            if (strlen($newpassword) < 4 || !preg_match('/[^a-zA-Z0-9]/', $newpassword)) {
+                echo "<script>Swal.fire({title: 'Weak Password', text: 'Password must be at least 4 characters and contain at least one special character.', icon: 'error', confirmButtonText: 'OK'});</script>";
+                exit;
+            }
+            // Check if email exists in patient table
+            $stmt = $database->prepare("SELECT pemail FROM patient WHERE pemail = ?");
+            $stmt->bind_param("s", $pemail);
             $stmt->execute();
-
-        } catch (Exception $e) {
-            error_log("Twilio OTP Error: " . $e->getMessage());
-            // Continue with registration even if OTP sending fails
+            $result = $stmt->get_result();
+            if ($result->num_rows > 0) {
+                echo "<script>Swal.fire({title: 'Registration Error', text: 'This email address is already registered.', icon: 'error', confirmButtonText: 'OK'});</script>";
+                exit;
+            }
+            // Check if email exists in webuser table
+            $stmt = $database->prepare("SELECT email FROM webuser WHERE email = ?");
+            $stmt->bind_param("s", $pemail);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if ($result->num_rows > 0) {
+                echo "<script>Swal.fire({title: 'Registration Error', text: 'This email address is already registered as a web user.', icon: 'error', confirmButtonText: 'OK'});</script>";
+                exit;
+            }
+            // Insert patient data (without phone_number)
+            $stmt = $database->prepare("INSERT INTO patient (pemail, pname, ppassword, paddress, hasPhilhealth, pdob, patient_category) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("sssssss", $pemail, $fullName, $newpassword, $address, $hasPhilhealth, $dob, $categories);
+            if (!$stmt->execute()) {
+                error_log("Patient Insert Failed: " . $stmt->error);
+                echo "<script>Swal.fire({title: 'Registration Error', text: 'Error registering patient data: " . addslashes($stmt->error) . "', icon: 'error', confirmButtonText: 'OK'});</script>";
+                exit;
+            }
+            // Insert webuser data
+            $stmt = $database->prepare("INSERT INTO webuser (email, usertype) VALUES (?, ?)");
+            $userType = 'p';
+            $stmt->bind_param("ss", $pemail, $userType);
+            if (!$stmt->execute()) {
+                echo "<script>Swal.fire({title: 'Registration Error', text: 'Error creating user account: " . addslashes($stmt->error) . "', icon: 'error', confirmButtonText: 'OK'});</script>";
+                exit;
+            }
+            // Set session for successful registration
+            $_SESSION["sweet_alert"] = true;
+            $_SESSION["user"] = $pemail;
+            $_SESSION["usertype"] = "p";
+            $_SESSION["username"] = $fname;
+            $_SESSION["login_success"] = true;
+            $_SESSION["user_type"] = "Patient";
+            $_SESSION["user_name"] = $fname;
+            echo "<script>Swal.fire({
+                title: 'Verification Successful!', 
+                text: 'Your email has been verified and your account has been created.', 
+                icon: 'success', 
+                confirmButtonText: 'Continue'
+            }).then((result) => { 
+                if (result.isConfirmed) { 
+                    window.location.href = 'login.php'; 
+                }
+            });</script>";
+        } else {
+            echo "<script>Swal.fire({title: 'Invalid OTP', text: 'The OTP you entered is incorrect. Please try again.', icon: 'error', confirmButtonText: 'OK'});</script>";
+            exit;
         }
-
-        // Commit transaction
-        $database->commit();
-
-        // Set session for successful registration
-        $_SESSION["sweet_alert"] = true;
-        $_SESSION["user"] = $email;
-        $_SESSION["usertype"] = "p";
-        $_SESSION["username"] = $fname;
-        $_SESSION["login_success"] = true;
-        $_SESSION["user_type"] = "Patient";
-        $_SESSION["user_name"] = $fname;
-
-    } catch (Exception $e) {
-        // Rollback transaction on error
-        $database->rollback();
-        
-        // Log the error
-        error_log("Signup Error: " . $e->getMessage());
-        
-        // Display error to user
-        $sweet_alert = "<script>Swal.fire({
-            title: 'Registration Error', 
-            text: '" . addslashes($e->getMessage()) . "', 
-            icon: 'error', 
-            confirmButtonText: 'OK'
-        });</script>";
+    } else {
+        echo "<script>Swal.fire({title: 'OTP Error', text: 'No OTP found for this email. Please request a new one.', icon: 'error', confirmButtonText: 'OK'});</script>";
+        exit;
     }
 }
 
@@ -892,63 +1179,5 @@ if (!empty($sweet_alert)) {
     echo $sweet_alert;
 }
 
-// After sending OTP, verify if the entered OTP matches
-if ($_POST && isset($_POST['otp'])) {
-    $entered_otp = trim($_POST['otp']);
-    $phone = preg_replace('/[^0-9]/', '', $_POST['phone_number']); // Remove non-numeric characters
-    if (substr($phone, 0, 1) === "0") {
-        $phone = "+63" . substr($phone, 1); // Convert 09XXXXXXX to +639XXXXXXX
-    } else {
-        $phone = "+$phone"; // If already in E.164 format, add "+"
-    }
-
-    // Check OTP with a time-based validation
-    $stmt = $database->prepare("SELECT otp, expires_at FROM otp_verifications WHERE phone_number = ? AND otp = ? AND expires_at > NOW()");
-    $stmt->bind_param("ss", $phone, $entered_otp);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result->num_rows > 0) {
-        // OTP is correct and not expired
-        // Delete the used OTP to prevent reuse
-        $delete_stmt = $database->prepare("DELETE FROM otp_verifications WHERE phone_number = ? AND otp = ?");
-        $delete_stmt->bind_param("ss", $phone, $entered_otp);
-        $delete_stmt->execute();
-
-        // Proceed with account creation
-        $_SESSION["user"] = $email;
-        $_SESSION["usertype"] = "p";
-        $_SESSION["username"] = $fname;
-        $_SESSION["login_success"] = true;
-        $_SESSION["user_type"] = "Patient";
-        $_SESSION["user_name"] = $fname;
-
-        echo "<script>Swal.fire({
-            title: 'Verification Successful!', 
-            text: 'Your phone number has been verified. You can now complete your registration.', 
-            icon: 'success', 
-            confirmButtonText: 'Continue'
-        }).then((result) => { 
-            if (result.isConfirmed) { 
-                window.location.href = 'login.php'; 
-            }
-        });</script>";
-    } else {
-        // OTP is incorrect or expired
-        echo "<script>Swal.fire({
-            title: 'Verification Successful!', 
-            text: 'Your phone number has been verified. You can now complete your registration.', 
-            icon: 'success', 
-            confirmButtonText: 'Continue'
-        }).then((result) => { 
-            if (result.isConfirmed) { 
-                window.location.href = 'login.php'; 
-            }
-        });</script>";
-    }
-}
-?>
-
-<?php
 ob_end_flush(); // Flush output buffer
 ?>

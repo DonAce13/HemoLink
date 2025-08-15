@@ -61,7 +61,7 @@ if ($userrow->num_rows > 0) {
 
 // Default values for filtering and search
 $selecttype = "My";
-$current = "My patients Only";
+$current = "Patients Only";
 
 // Handle search and filtering logic
 if ($_POST) {
@@ -79,7 +79,7 @@ if ($_POST) {
         } else {
             $sqlmain = "SELECT * FROM appointment INNER JOIN patient ON patient.pid=appointment.pid INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid WHERE schedule.docid=$userid";
             $selecttype = "My";
-            $current = "My patients Only";
+            $current = "Patients Only";
         }
     }
 } else {
@@ -150,18 +150,18 @@ if ($result->num_rows == 0) {
                 </tr>
                 <tr class="menu-row">
                     <td class="menu-btn menu-icon-appoinment">
-                        <a href="appointment.php" class="non-style-link-menu"><div><p class="menu-text">My Appointments</p></a></div>
+                        <a href="appointment.php" class="non-style-link-menu"><div><p class="menu-text">Appointments</p></a></div>
                     </td>
                 </tr>
                 
                 <tr class="menu-row" >
                     <td class="menu-btn menu-icon-session">
-                        <a href="schedule.php" class="non-style-link-menu"><div><p class="menu-text">My Sessions</p></div></a>
+                        <a href="schedule.php" class="non-style-link-menu"><div><p class="menu-text">Sessions</p></div></a>
                     </td>
                 </tr>
                 <tr class="menu-row" >
                     <td class="menu-btn menu-icon-patient menu-active menu-icon-patient-active">
-                        <a href="patient.php" class="non-style-link-menu  non-style-link-menu-active"><div><p class="menu-text">My Patients</p></a></div>
+                        <a href="patient.php" class="non-style-link-menu  non-style-link-menu-active"><div><p class="menu-text">Patients</p></a></div>
                     </td>
                 </tr>
                 <tr class="menu-row" >
@@ -175,7 +175,7 @@ if ($result->num_rows == 0) {
         <?php       
 
                     $selecttype="My";
-                    $current="My patients Only";
+                    $current="Patients Only";
                     if($_POST){
 
                         if(isset($_POST["search"])){
@@ -193,7 +193,7 @@ if ($result->num_rows == 0) {
                             }else{
                                 $sqlmain= "select * from appointment inner join patient on patient.pid=appointment.pid inner join schedule on schedule.scheduleid=appointment.scheduleid where schedule.docid=$userid;";
                                 $selecttype="My";
-                                $current="My patients Only";
+                                $current="Patients Only";
                             }
                         }
                     }else{
@@ -280,7 +280,7 @@ if ($result->num_rows == 0) {
                         <td width="30%">
                         <select name="showonly" id="" class="box filter-container-items" style="width:90% ;height: 37px;margin: 0;" >
                                     <option value="" disabled selected hidden><?php echo $current   ?></option><br/>
-                                    <option value="my">My Patients Only</option><br/>
+                                    <option value="my">Patients Only</option><br/>
                                     <option value="all">All Patients</option><br/>
                                     
 

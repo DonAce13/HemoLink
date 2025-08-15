@@ -1,0 +1,886 @@
+[04-Mar-2025 17:55:02 Asia/Manila] Patient Retrieval Query: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=98 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[04-Mar-2025 17:55:02 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 17:55:05 Asia/Manila] Patient Retrieval Query: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=98 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[04-Mar-2025 17:55:05 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 17:55:08 Asia/Manila] Patient Retrieval Query: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=96 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[04-Mar-2025 17:55:08 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 17:55:10 Asia/Manila] Patient Retrieval Query: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=92 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[04-Mar-2025 17:55:10 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 17:55:40 Asia/Manila] Patient Retrieval Query: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=89 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[04-Mar-2025 17:55:40 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 17:55:43 Asia/Manila] Patient Retrieval Query: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=93 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[04-Mar-2025 17:55:43 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 17:56:07 Asia/Manila] Patient Retrieval Query: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=4 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[04-Mar-2025 17:56:07 Asia/Manila] Total Patients Found: 1
+[04-Mar-2025 17:56:07 Asia/Manila] Patient Details: {"pid":"1","pname":"test patient","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 17:58:05 Asia/Manila] Patient Retrieval Query: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=4 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[04-Mar-2025 17:58:05 Asia/Manila] Total Patients Found: 1
+[04-Mar-2025 17:58:05 Asia/Manila] Patient Details: {"pid":"1","pname":"test patient","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 17:58:09 Asia/Manila] Patient Retrieval Query: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=101 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[04-Mar-2025 17:58:09 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 17:58:14 Asia/Manila] Patient Retrieval Query: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=5 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[04-Mar-2025 17:58:14 Asia/Manila] Total Patients Found: 3
+[04-Mar-2025 17:58:14 Asia/Manila] Patient Details: {"pid":"2","pname":"John Tester","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 17:58:14 Asia/Manila] Patient Details: {"pid":"2","pname":"John Tester","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 17:58:14 Asia/Manila] Patient Details: {"pid":"1","pname":"test patient","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 17:58:17 Asia/Manila] Patient Retrieval Query: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=5 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[04-Mar-2025 17:58:17 Asia/Manila] Total Patients Found: 3
+[04-Mar-2025 17:58:17 Asia/Manila] Patient Details: {"pid":"2","pname":"John Tester","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 17:58:17 Asia/Manila] Patient Details: {"pid":"2","pname":"John Tester","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 17:58:17 Asia/Manila] Patient Details: {"pid":"1","pname":"test patient","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 17:58:39 Asia/Manila] Patient Retrieval Query: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=101 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[04-Mar-2025 17:58:39 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 17:58:42 Asia/Manila] Patient Retrieval Query: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=3 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[04-Mar-2025 17:58:42 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 17:58:51 Asia/Manila] Patient Retrieval Query: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=5 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[04-Mar-2025 17:58:51 Asia/Manila] Total Patients Found: 3
+[04-Mar-2025 17:58:51 Asia/Manila] Patient Details: {"pid":"2","pname":"John Tester","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 17:58:51 Asia/Manila] Patient Details: {"pid":"2","pname":"John Tester","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 17:58:51 Asia/Manila] Patient Details: {"pid":"1","pname":"test patient","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 17:59:01 Asia/Manila] Patient Retrieval Query: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=5 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[04-Mar-2025 17:59:01 Asia/Manila] Total Patients Found: 3
+[04-Mar-2025 17:59:01 Asia/Manila] Patient Details: {"pid":"2","pname":"John Tester","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 17:59:01 Asia/Manila] Patient Details: {"pid":"2","pname":"John Tester","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 17:59:01 Asia/Manila] Patient Details: {"pid":"1","pname":"test patient","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 18:00:16 Asia/Manila] Patient Retrieval Query: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=7 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[04-Mar-2025 18:00:16 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:00:19 Asia/Manila] Patient Retrieval Query: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=7 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[04-Mar-2025 18:00:19 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:00:26 Asia/Manila] Patient Retrieval Query: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=7 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[04-Mar-2025 18:00:26 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:00:26 Asia/Manila] Patient Retrieval Query: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=7 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[04-Mar-2025 18:00:26 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:00:45 Asia/Manila] Patient Retrieval Query: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=6 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[04-Mar-2025 18:00:45 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:00:46 Asia/Manila] Patient Retrieval Query: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=7 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[04-Mar-2025 18:00:46 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:00:48 Asia/Manila] Patient Retrieval Query: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=5 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[04-Mar-2025 18:00:48 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:00:50 Asia/Manila] Patient Retrieval Query: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=2 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[04-Mar-2025 18:00:50 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:01:03 Asia/Manila] Patient Retrieval Query: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=2 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[04-Mar-2025 18:01:03 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:01:09 Asia/Manila] Patient Retrieval Query: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=101 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[04-Mar-2025 18:01:09 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:01:11 Asia/Manila] Patient Retrieval Query: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=3 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[04-Mar-2025 18:01:11 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:01:32 Asia/Manila] Patient Retrieval Query: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=6 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[04-Mar-2025 18:01:32 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:01:47 Asia/Manila] Patient Retrieval Query: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=7 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[04-Mar-2025 18:01:47 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:01:50 Asia/Manila] Patient Retrieval Query: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=6 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[04-Mar-2025 18:01:50 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:03:19 Asia/Manila] Patient Retrieval Query: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=7 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[04-Mar-2025 18:03:19 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:03:22 Asia/Manila] Patient Retrieval Query: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=6 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[04-Mar-2025 18:03:22 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:03:24 Asia/Manila] Patient Retrieval Query: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=6 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[04-Mar-2025 18:03:24 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:04:21 Asia/Manila] Patient Retrieval Query: SELECT 
+                patient.pid, 
+                patient.pname, 
+                appointment.apponum, 
+                patient.phone_number,
+                appointment.is_confirmed,
+                appointment.status
+            FROM appointment 
+            INNER JOIN patient ON patient.pid=appointment.pid 
+            INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
+            WHERE schedule.scheduleid=7 
+                AND (appointment.is_confirmed=1 OR appointment.status='Approved')
+[04-Mar-2025 18:04:21 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:05:59 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:05:59 Asia/Manila] Patient Retrieval Query for Schedule ID 7: 
+[04-Mar-2025 18:05:59 Asia/Manila] Database Connection Status: Connected
+[04-Mar-2025 18:05:59 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:05:59 Asia/Manila] Debug Parameters: {"schedule_id":"7","current_datetime":"2025-03-04 18:05:59"}
+[04-Mar-2025 18:06:01 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:06:01 Asia/Manila] Patient Retrieval Query for Schedule ID 101: 
+[04-Mar-2025 18:06:01 Asia/Manila] Database Connection Status: Connected
+[04-Mar-2025 18:06:01 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:06:01 Asia/Manila] Debug Parameters: {"schedule_id":"101","current_datetime":"2025-03-04 18:06:01"}
+[04-Mar-2025 18:06:03 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:06:03 Asia/Manila] Patient Retrieval Query for Schedule ID 100: 
+[04-Mar-2025 18:06:03 Asia/Manila] Database Connection Status: Connected
+[04-Mar-2025 18:06:03 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:06:03 Asia/Manila] Debug Parameters: {"schedule_id":"100","current_datetime":"2025-03-04 18:06:03"}
+[04-Mar-2025 18:06:04 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:06:04 Asia/Manila] Patient Retrieval Query for Schedule ID 102: 
+[04-Mar-2025 18:06:04 Asia/Manila] Database Connection Status: Connected
+[04-Mar-2025 18:06:04 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:06:04 Asia/Manila] Debug Parameters: {"schedule_id":"102","current_datetime":"2025-03-04 18:06:04"}
+[04-Mar-2025 18:06:06 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:06:06 Asia/Manila] Patient Retrieval Query for Schedule ID 2: 
+[04-Mar-2025 18:06:06 Asia/Manila] Database Connection Status: Connected
+[04-Mar-2025 18:06:06 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:06:06 Asia/Manila] Debug Parameters: {"schedule_id":"2","current_datetime":"2025-03-04 18:06:06"}
+[04-Mar-2025 18:06:07 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:06:07 Asia/Manila] Patient Retrieval Query for Schedule ID 3: 
+[04-Mar-2025 18:06:07 Asia/Manila] Database Connection Status: Connected
+[04-Mar-2025 18:06:07 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:06:07 Asia/Manila] Debug Parameters: {"schedule_id":"3","current_datetime":"2025-03-04 18:06:07"}
+[04-Mar-2025 18:06:09 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:06:09 Asia/Manila] Patient Retrieval Query for Schedule ID 1: 
+[04-Mar-2025 18:06:09 Asia/Manila] Database Connection Status: Connected
+[04-Mar-2025 18:06:09 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:06:09 Asia/Manila] Debug Parameters: {"schedule_id":"1","current_datetime":"2025-03-04 18:06:09"}
+[04-Mar-2025 18:06:11 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:06:11 Asia/Manila] Patient Retrieval Query for Schedule ID 6: 
+[04-Mar-2025 18:06:11 Asia/Manila] Database Connection Status: Connected
+[04-Mar-2025 18:06:11 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:06:11 Asia/Manila] Debug Parameters: {"schedule_id":"6","current_datetime":"2025-03-04 18:06:11"}
+[04-Mar-2025 18:06:13 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:06:13 Asia/Manila] Patient Retrieval Query for Schedule ID 7: 
+[04-Mar-2025 18:06:13 Asia/Manila] Database Connection Status: Connected
+[04-Mar-2025 18:06:13 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:06:13 Asia/Manila] Debug Parameters: {"schedule_id":"7","current_datetime":"2025-03-04 18:06:13"}
+[04-Mar-2025 18:06:54 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:06:54 Asia/Manila] Patient Retrieval Query for Schedule ID 101: 
+[04-Mar-2025 18:06:54 Asia/Manila] Database Connection Status: Connected
+[04-Mar-2025 18:06:54 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:06:54 Asia/Manila] Debug Parameters: {"schedule_id":"101","current_datetime":"2025-03-04 18:06:54"}
+[04-Mar-2025 18:08:12 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:08:12 Asia/Manila] Patient Retrieval Query for Schedule ID 101: 
+[04-Mar-2025 18:08:12 Asia/Manila] Debug Parameters: {"schedule_id":"101","current_datetime":"2025-03-04 18:08:12"}
+[04-Mar-2025 18:08:12 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:08:12 Asia/Manila] Debug Parameters: {"schedule_id":"101","current_datetime":"2025-03-04 18:08:12"}
+[04-Mar-2025 18:08:13 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:08:13 Asia/Manila] Patient Retrieval Query for Schedule ID 101: 
+[04-Mar-2025 18:08:13 Asia/Manila] Debug Parameters: {"schedule_id":"101","current_datetime":"2025-03-04 18:08:13"}
+[04-Mar-2025 18:08:13 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:08:13 Asia/Manila] Debug Parameters: {"schedule_id":"101","current_datetime":"2025-03-04 18:08:13"}
+[04-Mar-2025 18:08:20 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:08:20 Asia/Manila] Patient Retrieval Query for Schedule ID 99: 
+[04-Mar-2025 18:08:20 Asia/Manila] Debug Parameters: {"schedule_id":"99","current_datetime":"2025-03-04 18:08:20"}
+[04-Mar-2025 18:08:20 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:08:20 Asia/Manila] Debug Parameters: {"schedule_id":"99","current_datetime":"2025-03-04 18:08:20"}
+[04-Mar-2025 18:08:36 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:08:36 Asia/Manila] Patient Retrieval Query for Schedule ID 99: 
+[04-Mar-2025 18:08:36 Asia/Manila] Debug Parameters: {"schedule_id":"99","current_datetime":"2025-03-04 18:08:36"}
+[04-Mar-2025 18:08:36 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:08:36 Asia/Manila] Debug Parameters: {"schedule_id":"99","current_datetime":"2025-03-04 18:08:36"}
+[04-Mar-2025 18:08:42 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:08:42 Asia/Manila] Patient Retrieval Query for Schedule ID 99: 
+[04-Mar-2025 18:08:42 Asia/Manila] Debug Parameters: {"schedule_id":"99","current_datetime":"2025-03-04 18:08:42"}
+[04-Mar-2025 18:08:42 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:08:42 Asia/Manila] Debug Parameters: {"schedule_id":"99","current_datetime":"2025-03-04 18:08:42"}
+[04-Mar-2025 18:08:45 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:08:45 Asia/Manila] Patient Retrieval Query for Schedule ID 7: 
+[04-Mar-2025 18:08:45 Asia/Manila] Debug Parameters: {"schedule_id":"7","current_datetime":"2025-03-04 18:08:45"}
+[04-Mar-2025 18:08:45 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:08:45 Asia/Manila] Debug Parameters: {"schedule_id":"7","current_datetime":"2025-03-04 18:08:45"}
+[04-Mar-2025 18:08:46 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:08:46 Asia/Manila] Patient Retrieval Query for Schedule ID 5: 
+[04-Mar-2025 18:08:46 Asia/Manila] Debug Parameters: {"schedule_id":"5","current_datetime":"2025-03-04 18:08:46"}
+[04-Mar-2025 18:08:46 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:08:46 Asia/Manila] Debug Parameters: {"schedule_id":"5","current_datetime":"2025-03-04 18:08:46"}
+[04-Mar-2025 18:08:47 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:08:47 Asia/Manila] Patient Retrieval Query for Schedule ID 2: 
+[04-Mar-2025 18:08:47 Asia/Manila] Debug Parameters: {"schedule_id":"2","current_datetime":"2025-03-04 18:08:47"}
+[04-Mar-2025 18:08:47 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:08:47 Asia/Manila] Debug Parameters: {"schedule_id":"2","current_datetime":"2025-03-04 18:08:47"}
+[04-Mar-2025 18:08:59 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:08:59 Asia/Manila] Patient Retrieval Query for Schedule ID 1: 
+[04-Mar-2025 18:08:59 Asia/Manila] Debug Parameters: {"schedule_id":"1","current_datetime":"2025-03-04 18:08:59"}
+[04-Mar-2025 18:08:59 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:08:59 Asia/Manila] Debug Parameters: {"schedule_id":"1","current_datetime":"2025-03-04 18:08:59"}
+[04-Mar-2025 18:09:02 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:09:02 Asia/Manila] Patient Retrieval Query for Schedule ID 6: 
+[04-Mar-2025 18:09:02 Asia/Manila] Debug Parameters: {"schedule_id":"6","current_datetime":"2025-03-04 18:09:02"}
+[04-Mar-2025 18:09:02 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:09:02 Asia/Manila] Debug Parameters: {"schedule_id":"6","current_datetime":"2025-03-04 18:09:02"}
+[04-Mar-2025 18:09:23 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:09:23 Asia/Manila] Patient Retrieval Query for Schedule ID 6: 
+[04-Mar-2025 18:09:23 Asia/Manila] Debug Parameters: {"schedule_id":"6","current_datetime":"2025-03-04 18:09:23"}
+[04-Mar-2025 18:09:23 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:09:23 Asia/Manila] Debug Parameters: {"schedule_id":"6","current_datetime":"2025-03-04 18:09:23"}
+[04-Mar-2025 18:09:44 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:09:44 Asia/Manila] Patient Retrieval Query for Schedule ID 6: 
+[04-Mar-2025 18:09:44 Asia/Manila] Debug Parameters: {"schedule_id":"6","current_datetime":"2025-03-04 18:09:44"}
+[04-Mar-2025 18:09:44 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:09:44 Asia/Manila] Debug Parameters: {"schedule_id":"6","current_datetime":"2025-03-04 18:09:44"}
+[04-Mar-2025 18:10:33 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:10:33 Asia/Manila] Patient Retrieval Query for Schedule ID 6: 
+[04-Mar-2025 18:10:33 Asia/Manila] Debug Parameters: {"schedule_id":"6","current_datetime":"2025-03-04 18:10:33"}
+[04-Mar-2025 18:10:33 Asia/Manila] Total Patients Found: 1
+[04-Mar-2025 18:10:33 Asia/Manila] Debug Parameters: {"schedule_id":"6","current_datetime":"2025-03-04 18:10:33"}
+[04-Mar-2025 18:10:33 Asia/Manila] Patient Details: {"pid":"2","pname":"John Tester","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 18:10:38 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:10:38 Asia/Manila] Patient Retrieval Query for Schedule ID 5: 
+[04-Mar-2025 18:10:38 Asia/Manila] Debug Parameters: {"schedule_id":"5","current_datetime":"2025-03-04 18:10:38"}
+[04-Mar-2025 18:10:38 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:10:38 Asia/Manila] Debug Parameters: {"schedule_id":"5","current_datetime":"2025-03-04 18:10:38"}
+[04-Mar-2025 18:10:41 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:10:41 Asia/Manila] Patient Retrieval Query for Schedule ID 4: 
+[04-Mar-2025 18:10:41 Asia/Manila] Debug Parameters: {"schedule_id":"4","current_datetime":"2025-03-04 18:10:41"}
+[04-Mar-2025 18:10:41 Asia/Manila] Total Patients Found: 2
+[04-Mar-2025 18:10:41 Asia/Manila] Debug Parameters: {"schedule_id":"4","current_datetime":"2025-03-04 18:10:41"}
+[04-Mar-2025 18:10:41 Asia/Manila] Patient Details: {"pid":"1","pname":"test patient","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 18:10:41 Asia/Manila] Patient Details: {"pid":"2","pname":"John Tester","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 18:10:49 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:10:49 Asia/Manila] Patient Retrieval Query for Schedule ID 4: 
+[04-Mar-2025 18:10:49 Asia/Manila] Debug Parameters: {"schedule_id":"4","current_datetime":"2025-03-04 18:10:49"}
+[04-Mar-2025 18:10:49 Asia/Manila] Total Patients Found: 2
+[04-Mar-2025 18:10:49 Asia/Manila] Debug Parameters: {"schedule_id":"4","current_datetime":"2025-03-04 18:10:49"}
+[04-Mar-2025 18:10:49 Asia/Manila] Patient Details: {"pid":"1","pname":"test patient","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 18:10:49 Asia/Manila] Patient Details: {"pid":"2","pname":"John Tester","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 18:11:05 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:11:05 Asia/Manila] Patient Retrieval Query for Schedule ID 4: 
+[04-Mar-2025 18:11:05 Asia/Manila] Debug Parameters: {"schedule_id":"4","current_datetime":"2025-03-04 18:11:05"}
+[04-Mar-2025 18:11:05 Asia/Manila] Total Patients Found: 2
+[04-Mar-2025 18:11:05 Asia/Manila] Debug Parameters: {"schedule_id":"4","current_datetime":"2025-03-04 18:11:05"}
+[04-Mar-2025 18:11:05 Asia/Manila] Patient Details: {"pid":"1","pname":"test patient","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 18:11:05 Asia/Manila] Patient Details: {"pid":"2","pname":"John Tester","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 18:14:24 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:14:24 Asia/Manila] Patient Retrieval Query for Schedule ID 4: 
+[04-Mar-2025 18:14:24 Asia/Manila] Debug Parameters: {"schedule_id":"4","current_datetime":"2025-03-04 18:14:24"}
+[04-Mar-2025 18:14:24 Asia/Manila] Total Patients Found: 2
+[04-Mar-2025 18:14:24 Asia/Manila] Debug Parameters: {"schedule_id":"4","current_datetime":"2025-03-04 18:14:24"}
+[04-Mar-2025 18:14:24 Asia/Manila] Patient Details: {"pid":"1","pname":"test patient","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 18:14:24 Asia/Manila] Patient Details: {"pid":"2","pname":"John Tester","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 18:28:48 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:28:48 Asia/Manila] Patient Retrieval Query for Schedule ID 101: 
+[04-Mar-2025 18:28:48 Asia/Manila] Debug Parameters: {"schedule_id":"101","current_datetime":"2025-03-04 18:28:48"}
+[04-Mar-2025 18:28:48 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:28:48 Asia/Manila] Debug Parameters: {"schedule_id":"101","current_datetime":"2025-03-04 18:28:48"}
+[04-Mar-2025 18:28:51 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:28:51 Asia/Manila] Patient Retrieval Query for Schedule ID 100: 
+[04-Mar-2025 18:28:51 Asia/Manila] Debug Parameters: {"schedule_id":"100","current_datetime":"2025-03-04 18:28:51"}
+[04-Mar-2025 18:28:51 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:28:51 Asia/Manila] Debug Parameters: {"schedule_id":"100","current_datetime":"2025-03-04 18:28:51"}
+[04-Mar-2025 18:28:54 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:28:54 Asia/Manila] Patient Retrieval Query for Schedule ID 102: 
+[04-Mar-2025 18:28:54 Asia/Manila] Debug Parameters: {"schedule_id":"102","current_datetime":"2025-03-04 18:28:54"}
+[04-Mar-2025 18:28:54 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:28:54 Asia/Manila] Debug Parameters: {"schedule_id":"102","current_datetime":"2025-03-04 18:28:54"}
+[04-Mar-2025 18:28:59 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:28:59 Asia/Manila] Patient Retrieval Query for Schedule ID 7: 
+[04-Mar-2025 18:28:59 Asia/Manila] Debug Parameters: {"schedule_id":"7","current_datetime":"2025-03-04 18:28:59"}
+[04-Mar-2025 18:28:59 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:28:59 Asia/Manila] Debug Parameters: {"schedule_id":"7","current_datetime":"2025-03-04 18:28:59"}
+[04-Mar-2025 18:29:01 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:29:01 Asia/Manila] Patient Retrieval Query for Schedule ID 6: 
+[04-Mar-2025 18:29:01 Asia/Manila] Debug Parameters: {"schedule_id":"6","current_datetime":"2025-03-04 18:29:01"}
+[04-Mar-2025 18:29:01 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:29:01 Asia/Manila] Debug Parameters: {"schedule_id":"6","current_datetime":"2025-03-04 18:29:01"}
+[04-Mar-2025 18:29:05 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:29:05 Asia/Manila] Patient Retrieval Query for Schedule ID 2: 
+[04-Mar-2025 18:29:05 Asia/Manila] Debug Parameters: {"schedule_id":"2","current_datetime":"2025-03-04 18:29:05"}
+[04-Mar-2025 18:29:05 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:29:05 Asia/Manila] Debug Parameters: {"schedule_id":"2","current_datetime":"2025-03-04 18:29:05"}
+[04-Mar-2025 18:29:19 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:29:19 Asia/Manila] Patient Retrieval Query for Schedule ID 7: 
+[04-Mar-2025 18:29:19 Asia/Manila] Debug Parameters: {"schedule_id":"7","current_datetime":"2025-03-04 18:29:19"}
+[04-Mar-2025 18:29:19 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:29:19 Asia/Manila] Debug Parameters: {"schedule_id":"7","current_datetime":"2025-03-04 18:29:19"}
+[04-Mar-2025 18:29:32 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:29:32 Asia/Manila] Patient Retrieval Query for Schedule ID 7: 
+[04-Mar-2025 18:29:32 Asia/Manila] Debug Parameters: {"schedule_id":"7","current_datetime":"2025-03-04 18:29:32"}
+[04-Mar-2025 18:29:32 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:29:32 Asia/Manila] Debug Parameters: {"schedule_id":"7","current_datetime":"2025-03-04 18:29:32"}
+[04-Mar-2025 18:29:46 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:29:46 Asia/Manila] Patient Retrieval Query for Schedule ID 4: 
+[04-Mar-2025 18:29:46 Asia/Manila] Debug Parameters: {"schedule_id":"4","current_datetime":"2025-03-04 18:29:46"}
+[04-Mar-2025 18:29:46 Asia/Manila] Total Patients Found: 1
+[04-Mar-2025 18:29:46 Asia/Manila] Debug Parameters: {"schedule_id":"4","current_datetime":"2025-03-04 18:29:46"}
+[04-Mar-2025 18:29:46 Asia/Manila] Patient Details: {"pid":"2","pname":"John Tester","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 18:29:50 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:29:50 Asia/Manila] Patient Retrieval Query for Schedule ID 7: 
+[04-Mar-2025 18:29:50 Asia/Manila] Debug Parameters: {"schedule_id":"7","current_datetime":"2025-03-04 18:29:50"}
+[04-Mar-2025 18:29:50 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 18:29:50 Asia/Manila] Debug Parameters: {"schedule_id":"7","current_datetime":"2025-03-04 18:29:50"}
+[04-Mar-2025 18:30:01 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:30:01 Asia/Manila] Patient Retrieval Query for Schedule ID 4: 
+[04-Mar-2025 18:30:01 Asia/Manila] Debug Parameters: {"schedule_id":"4","current_datetime":"2025-03-04 18:30:01"}
+[04-Mar-2025 18:30:01 Asia/Manila] Total Patients Found: 1
+[04-Mar-2025 18:30:01 Asia/Manila] Debug Parameters: {"schedule_id":"4","current_datetime":"2025-03-04 18:30:01"}
+[04-Mar-2025 18:30:01 Asia/Manila] Patient Details: {"pid":"2","pname":"John Tester","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 18:30:32 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:30:32 Asia/Manila] Patient Retrieval Query for Schedule ID 4: 
+[04-Mar-2025 18:30:32 Asia/Manila] Debug Parameters: {"schedule_id":"4","current_datetime":"2025-03-04 18:30:32"}
+[04-Mar-2025 18:30:32 Asia/Manila] Total Patients Found: 2
+[04-Mar-2025 18:30:32 Asia/Manila] Debug Parameters: {"schedule_id":"4","current_datetime":"2025-03-04 18:30:32"}
+[04-Mar-2025 18:30:32 Asia/Manila] Patient Details: {"pid":"1","pname":"test patient","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 18:30:32 Asia/Manila] Patient Details: {"pid":"2","pname":"John Tester","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 18:30:49 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:30:49 Asia/Manila] Patient Retrieval Query for Schedule ID 4: 
+[04-Mar-2025 18:30:49 Asia/Manila] Debug Parameters: {"schedule_id":"4","current_datetime":"2025-03-04 18:30:49"}
+[04-Mar-2025 18:30:49 Asia/Manila] Total Patients Found: 2
+[04-Mar-2025 18:30:49 Asia/Manila] Debug Parameters: {"schedule_id":"4","current_datetime":"2025-03-04 18:30:49"}
+[04-Mar-2025 18:30:49 Asia/Manila] Patient Details: {"pid":"1","pname":"test patient","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 18:30:49 Asia/Manila] Patient Details: {"pid":"2","pname":"John Tester","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 18:30:56 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:30:56 Asia/Manila] Patient Retrieval Query for Schedule ID 4: 
+[04-Mar-2025 18:30:56 Asia/Manila] Debug Parameters: {"schedule_id":"4","current_datetime":"2025-03-04 18:30:56"}
+[04-Mar-2025 18:30:56 Asia/Manila] Total Patients Found: 3
+[04-Mar-2025 18:30:56 Asia/Manila] Debug Parameters: {"schedule_id":"4","current_datetime":"2025-03-04 18:30:56"}
+[04-Mar-2025 18:30:56 Asia/Manila] Patient Details: {"pid":"1","pname":"test patient","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 18:30:56 Asia/Manila] Patient Details: {"pid":"2","pname":"John Tester","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 18:30:56 Asia/Manila] Patient Details: {"pid":"1","pname":"test patient","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 18:31:26 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:31:26 Asia/Manila] Patient Retrieval Query for Schedule ID 4: 
+[04-Mar-2025 18:31:26 Asia/Manila] Debug Parameters: {"schedule_id":"4","current_datetime":"2025-03-04 18:31:26"}
+[04-Mar-2025 18:31:26 Asia/Manila] Total Patients Found: 3
+[04-Mar-2025 18:31:26 Asia/Manila] Debug Parameters: {"schedule_id":"4","current_datetime":"2025-03-04 18:31:26"}
+[04-Mar-2025 18:31:26 Asia/Manila] Patient Details: {"pid":"1","pname":"test patient","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 18:31:26 Asia/Manila] Patient Details: {"pid":"2","pname":"John Tester","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 18:31:26 Asia/Manila] Patient Details: {"pid":"1","pname":"test patient","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 18:31:41 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:31:41 Asia/Manila] Patient Retrieval Query for Schedule ID 4: 
+[04-Mar-2025 18:31:41 Asia/Manila] Debug Parameters: {"schedule_id":"4","current_datetime":"2025-03-04 18:31:41"}
+[04-Mar-2025 18:31:41 Asia/Manila] Total Patients Found: 3
+[04-Mar-2025 18:31:41 Asia/Manila] Debug Parameters: {"schedule_id":"4","current_datetime":"2025-03-04 18:31:41"}
+[04-Mar-2025 18:31:41 Asia/Manila] Patient Details: {"pid":"1","pname":"test patient","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 18:31:41 Asia/Manila] Patient Details: {"pid":"2","pname":"John Tester","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 18:31:41 Asia/Manila] Patient Details: {"pid":"1","pname":"test patient","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 18:33:07 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:33:07 Asia/Manila] Patient Retrieval Query for Schedule ID 4: 
+[04-Mar-2025 18:33:07 Asia/Manila] Debug Parameters: {"schedule_id":"4","current_datetime":"2025-03-04 18:33:07"}
+[04-Mar-2025 18:33:07 Asia/Manila] Total Patients Found: 3
+[04-Mar-2025 18:33:07 Asia/Manila] Debug Parameters: {"schedule_id":"4","current_datetime":"2025-03-04 18:33:07"}
+[04-Mar-2025 18:33:07 Asia/Manila] Patient Details: {"pid":"1","pname":"test patient","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 18:33:07 Asia/Manila] Patient Details: {"pid":"2","pname":"John Tester","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 18:33:07 Asia/Manila] Patient Details: {"pid":"1","pname":"test patient","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 18:35:18 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:35:18 Asia/Manila] Patient Retrieval Query for Schedule ID 4: 
+[04-Mar-2025 18:35:18 Asia/Manila] Debug Parameters: {"schedule_id":"4","current_datetime":"2025-03-04 18:35:18"}
+[04-Mar-2025 18:35:18 Asia/Manila] Total Patients Found: 3
+[04-Mar-2025 18:35:18 Asia/Manila] Debug Parameters: {"schedule_id":"4","current_datetime":"2025-03-04 18:35:18"}
+[04-Mar-2025 18:35:18 Asia/Manila] Patient Details: {"pid":"1","pname":"test patient","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 18:35:18 Asia/Manila] Patient Details: {"pid":"2","pname":"John Tester","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 18:35:18 Asia/Manila] Patient Details: {"pid":"1","pname":"test patient","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 18:35:40 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:35:40 Asia/Manila] Patient Retrieval Query for Schedule ID 4: 
+[04-Mar-2025 18:35:40 Asia/Manila] Debug Parameters: {"schedule_id":"4","current_datetime":"2025-03-04 18:35:40"}
+[04-Mar-2025 18:35:40 Asia/Manila] Total Patients Found: 1
+[04-Mar-2025 18:35:40 Asia/Manila] Debug Parameters: {"schedule_id":"4","current_datetime":"2025-03-04 18:35:40"}
+[04-Mar-2025 18:35:40 Asia/Manila] Patient Details: {"pid":"1","pname":"test patient","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 18:35:47 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:35:47 Asia/Manila] Patient Retrieval Query for Schedule ID 4: 
+[04-Mar-2025 18:35:47 Asia/Manila] Debug Parameters: {"schedule_id":"4","current_datetime":"2025-03-04 18:35:47"}
+[04-Mar-2025 18:35:47 Asia/Manila] Total Patients Found: 1
+[04-Mar-2025 18:35:47 Asia/Manila] Debug Parameters: {"schedule_id":"4","current_datetime":"2025-03-04 18:35:47"}
+[04-Mar-2025 18:35:47 Asia/Manila] Patient Details: {"pid":"1","pname":"test patient","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 18:35:50 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:35:50 Asia/Manila] Patient Retrieval Query for Schedule ID 4: 
+[04-Mar-2025 18:35:50 Asia/Manila] Debug Parameters: {"schedule_id":"4","current_datetime":"2025-03-04 18:35:50"}
+[04-Mar-2025 18:35:50 Asia/Manila] Total Patients Found: 1
+[04-Mar-2025 18:35:50 Asia/Manila] Debug Parameters: {"schedule_id":"4","current_datetime":"2025-03-04 18:35:50"}
+[04-Mar-2025 18:35:50 Asia/Manila] Patient Details: {"pid":"1","pname":"test patient","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 18:44:07 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 18:44:07 Asia/Manila] Patient Retrieval Query for Schedule ID 4: 
+[04-Mar-2025 18:44:07 Asia/Manila] Debug Parameters: {"schedule_id":"4","current_datetime":"2025-03-04 18:44:07"}
+[04-Mar-2025 18:44:07 Asia/Manila] Total Patients Found: 3
+[04-Mar-2025 18:44:07 Asia/Manila] Debug Parameters: {"schedule_id":"4","current_datetime":"2025-03-04 18:44:07"}
+[04-Mar-2025 18:44:07 Asia/Manila] Patient Details: {"pid":"1","pname":"test patient","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 18:44:07 Asia/Manila] Patient Details: {"pid":"2","pname":"John Tester","apponum":"3","is_confirmed":"1","status":""}
+[04-Mar-2025 18:44:07 Asia/Manila] Patient Details: {"pid":"1","pname":"test patient","apponum":"2","is_confirmed":"1","status":""}
+[04-Mar-2025 19:28:18 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 19:28:18 Asia/Manila] Patient Retrieval Query for Schedule ID 6: 
+[04-Mar-2025 19:28:18 Asia/Manila] Debug Parameters: {"schedule_id":"6","current_datetime":"2025-03-04 19:28:18"}
+[04-Mar-2025 19:28:18 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 19:28:18 Asia/Manila] Debug Parameters: {"schedule_id":"6","current_datetime":"2025-03-04 19:28:18"}
+[04-Mar-2025 19:29:06 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 19:29:06 Asia/Manila] Patient Retrieval Query for Schedule ID 102: 
+[04-Mar-2025 19:29:06 Asia/Manila] Debug Parameters: {"schedule_id":"102","current_datetime":"2025-03-04 19:29:06"}
+[04-Mar-2025 19:29:06 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 19:29:06 Asia/Manila] Debug Parameters: {"schedule_id":"102","current_datetime":"2025-03-04 19:29:06"}
+[04-Mar-2025 19:34:10 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 19:34:10 Asia/Manila] Patient Retrieval Query for Schedule ID 102: 
+[04-Mar-2025 19:34:10 Asia/Manila] Debug Parameters: {"schedule_id":"102","current_datetime":"2025-03-04 19:34:10"}
+[04-Mar-2025 19:34:10 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 19:34:10 Asia/Manila] Debug Parameters: {"schedule_id":"102","current_datetime":"2025-03-04 19:34:10"}
+[04-Mar-2025 19:34:30 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 19:34:30 Asia/Manila] Patient Retrieval Query for Schedule ID 9: 
+[04-Mar-2025 19:34:30 Asia/Manila] Debug Parameters: {"schedule_id":"9","current_datetime":"2025-03-04 19:34:30"}
+[04-Mar-2025 19:34:30 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 19:34:30 Asia/Manila] Debug Parameters: {"schedule_id":"9","current_datetime":"2025-03-04 19:34:30"}
+[04-Mar-2025 19:34:38 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 19:34:38 Asia/Manila] Patient Retrieval Query for Schedule ID 10: 
+[04-Mar-2025 19:34:38 Asia/Manila] Debug Parameters: {"schedule_id":"10","current_datetime":"2025-03-04 19:34:38"}
+[04-Mar-2025 19:34:38 Asia/Manila] Total Patients Found: 0
+[04-Mar-2025 19:34:38 Asia/Manila] Debug Parameters: {"schedule_id":"10","current_datetime":"2025-03-04 19:34:38"}
+[04-Mar-2025 19:34:45 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[04-Mar-2025 19:34:45 Asia/Manila] Patient Retrieval Query for Schedule ID 4: 
+[04-Mar-2025 19:34:45 Asia/Manila] Debug Parameters: {"schedule_id":"4","current_datetime":"2025-03-04 19:34:45"}
+[04-Mar-2025 19:34:45 Asia/Manila] Total Patients Found: 3
+[04-Mar-2025 19:34:45 Asia/Manila] Debug Parameters: {"schedule_id":"4","current_datetime":"2025-03-04 19:34:45"}
+[04-Mar-2025 19:34:45 Asia/Manila] Patient Details: {"pid":"1","pname":"test patient","apponum":"1","is_confirmed":"1","status":""}
+[04-Mar-2025 19:34:45 Asia/Manila] Patient Details: {"pid":"2","pname":"John Tester","apponum":"3","is_confirmed":"1","status":""}
+[04-Mar-2025 19:34:45 Asia/Manila] Patient Details: {"pid":"1","pname":"test patient","apponum":"2","is_confirmed":"1","status":""}
+[10-Mar-2025 12:09:28 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[10-Mar-2025 12:09:28 Asia/Manila] Patient Retrieval Query for Schedule ID 19: 
+[10-Mar-2025 12:09:28 Asia/Manila] Debug Parameters: {"schedule_id":"19","current_datetime":"2025-03-10 12:09:28"}
+[10-Mar-2025 12:09:28 Asia/Manila] Total Patients Found: 0
+[10-Mar-2025 12:09:28 Asia/Manila] Debug Parameters: {"schedule_id":"19","current_datetime":"2025-03-10 12:09:28"}
+[10-Mar-2025 12:10:43 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\HemoLink\admin\schedule.php on line 669
+[10-Mar-2025 12:10:43 Asia/Manila] Patient Retrieval Query for Schedule ID 102: 
+[10-Mar-2025 12:10:43 Asia/Manila] Debug Parameters: {"schedule_id":"102","current_datetime":"2025-03-10 12:10:43"}
+[10-Mar-2025 12:10:43 Asia/Manila] Total Patients Found: 0
+[10-Mar-2025 12:10:43 Asia/Manila] Debug Parameters: {"schedule_id":"102","current_datetime":"2025-03-10 12:10:43"}
+[03-Apr-2025 20:45:23 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\Mabayuan Health Care\admin\schedule.php on line 669
+[03-Apr-2025 20:45:23 Asia/Manila] Patient Retrieval Query for Schedule ID 102: 
+[03-Apr-2025 20:45:23 Asia/Manila] Debug Parameters: {"schedule_id":"102","current_datetime":"2025-04-03 20:45:23"}
+[03-Apr-2025 20:45:23 Asia/Manila] Total Patients Found: 0
+[03-Apr-2025 20:45:23 Asia/Manila] Debug Parameters: {"schedule_id":"102","current_datetime":"2025-04-03 20:45:23"}
+[03-Apr-2025 20:45:37 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\Mabayuan Health Care\admin\schedule.php on line 669
+[03-Apr-2025 20:45:37 Asia/Manila] Patient Retrieval Query for Schedule ID 102: 
+[03-Apr-2025 20:45:37 Asia/Manila] Debug Parameters: {"schedule_id":"102","current_datetime":"2025-04-03 20:45:37"}
+[03-Apr-2025 20:45:37 Asia/Manila] Total Patients Found: 0
+[03-Apr-2025 20:45:37 Asia/Manila] Debug Parameters: {"schedule_id":"102","current_datetime":"2025-04-03 20:45:37"}
+[03-Apr-2025 20:45:41 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\Mabayuan Health Care\admin\schedule.php on line 669
+[03-Apr-2025 20:45:41 Asia/Manila] Patient Retrieval Query for Schedule ID 102: 
+[03-Apr-2025 20:45:41 Asia/Manila] Debug Parameters: {"schedule_id":"102","current_datetime":"2025-04-03 20:45:41"}
+[03-Apr-2025 20:45:41 Asia/Manila] Total Patients Found: 0
+[03-Apr-2025 20:45:41 Asia/Manila] Debug Parameters: {"schedule_id":"102","current_datetime":"2025-04-03 20:45:41"}
+[03-Apr-2025 20:45:43 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\Mabayuan Health Care\admin\schedule.php on line 669
+[03-Apr-2025 20:45:43 Asia/Manila] Patient Retrieval Query for Schedule ID 102: 
+[03-Apr-2025 20:45:43 Asia/Manila] Debug Parameters: {"schedule_id":"102","current_datetime":"2025-04-03 20:45:43"}
+[03-Apr-2025 20:45:43 Asia/Manila] Total Patients Found: 0
+[03-Apr-2025 20:45:43 Asia/Manila] Debug Parameters: {"schedule_id":"102","current_datetime":"2025-04-03 20:45:43"}
+[03-Apr-2025 20:45:54 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\Mabayuan Health Care\admin\schedule.php on line 669
+[03-Apr-2025 20:45:54 Asia/Manila] Patient Retrieval Query for Schedule ID 53: 
+[03-Apr-2025 20:45:54 Asia/Manila] Debug Parameters: {"schedule_id":"53","current_datetime":"2025-04-03 20:45:54"}
+[03-Apr-2025 20:45:54 Asia/Manila] Total Patients Found: 0
+[03-Apr-2025 20:45:54 Asia/Manila] Debug Parameters: {"schedule_id":"53","current_datetime":"2025-04-03 20:45:54"}
+[03-Apr-2025 20:45:56 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\Mabayuan Health Care\admin\schedule.php on line 669
+[03-Apr-2025 20:45:56 Asia/Manila] Patient Retrieval Query for Schedule ID 9: 
+[03-Apr-2025 20:45:56 Asia/Manila] Debug Parameters: {"schedule_id":"9","current_datetime":"2025-04-03 20:45:56"}
+[03-Apr-2025 20:45:56 Asia/Manila] Total Patients Found: 0
+[03-Apr-2025 20:45:56 Asia/Manila] Debug Parameters: {"schedule_id":"9","current_datetime":"2025-04-03 20:45:56"}
+[03-Apr-2025 20:46:04 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\Mabayuan Health Care\admin\schedule.php on line 669
+[03-Apr-2025 20:46:04 Asia/Manila] Patient Retrieval Query for Schedule ID 53: 
+[03-Apr-2025 20:46:04 Asia/Manila] Debug Parameters: {"schedule_id":"53","current_datetime":"2025-04-03 20:46:04"}
+[03-Apr-2025 20:46:04 Asia/Manila] Total Patients Found: 0
+[03-Apr-2025 20:46:04 Asia/Manila] Debug Parameters: {"schedule_id":"53","current_datetime":"2025-04-03 20:46:04"}
+[03-Apr-2025 20:46:10 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\Mabayuan Health Care\admin\schedule.php on line 669
+[03-Apr-2025 20:46:10 Asia/Manila] Patient Retrieval Query for Schedule ID 61: 
+[03-Apr-2025 20:46:10 Asia/Manila] Debug Parameters: {"schedule_id":"61","current_datetime":"2025-04-03 20:46:10"}
+[03-Apr-2025 20:46:10 Asia/Manila] Total Patients Found: 0
+[03-Apr-2025 20:46:10 Asia/Manila] Debug Parameters: {"schedule_id":"61","current_datetime":"2025-04-03 20:46:10"}
+[03-Apr-2025 20:46:33 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\Mabayuan Health Care\admin\schedule.php on line 669
+[03-Apr-2025 20:46:33 Asia/Manila] Patient Retrieval Query for Schedule ID 54: 
+[03-Apr-2025 20:46:33 Asia/Manila] Debug Parameters: {"schedule_id":"54","current_datetime":"2025-04-03 20:46:33"}
+[03-Apr-2025 20:46:33 Asia/Manila] Total Patients Found: 1
+[03-Apr-2025 20:46:33 Asia/Manila] Debug Parameters: {"schedule_id":"54","current_datetime":"2025-04-03 20:46:33"}
+[03-Apr-2025 20:46:33 Asia/Manila] Patient Details: {"pid":"2","pname":"Don Ace Ranada","apponum":"1","is_confirmed":"1","status":""}
+[03-Apr-2025 20:47:50 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\Mabayuan Health Care\admin\schedule.php on line 669
+[03-Apr-2025 20:47:50 Asia/Manila] Patient Retrieval Query for Schedule ID 54: 
+[03-Apr-2025 20:47:50 Asia/Manila] Debug Parameters: {"schedule_id":"54","current_datetime":"2025-04-03 20:47:50"}
+[03-Apr-2025 20:47:50 Asia/Manila] Total Patients Found: 1
+[03-Apr-2025 20:47:50 Asia/Manila] Debug Parameters: {"schedule_id":"54","current_datetime":"2025-04-03 20:47:50"}
+[03-Apr-2025 20:47:50 Asia/Manila] Patient Details: {"pid":"2","pname":"Don Ace Ranada","apponum":"1","is_confirmed":"1","status":""}
+[03-Apr-2025 20:48:16 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\Mabayuan Health Care\admin\schedule.php on line 669
+[03-Apr-2025 20:48:16 Asia/Manila] Patient Retrieval Query for Schedule ID 54: 
+[03-Apr-2025 20:48:16 Asia/Manila] Debug Parameters: {"schedule_id":"54","current_datetime":"2025-04-03 20:48:16"}
+[03-Apr-2025 20:48:16 Asia/Manila] Total Patients Found: 1
+[03-Apr-2025 20:48:16 Asia/Manila] Debug Parameters: {"schedule_id":"54","current_datetime":"2025-04-03 20:48:16"}
+[03-Apr-2025 20:48:16 Asia/Manila] Patient Details: {"pid":"2","pname":"Don Ace Ranada","apponum":"1","is_confirmed":"1","status":""}
+[03-Apr-2025 20:48:17 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\Mabayuan Health Care\admin\schedule.php on line 669
+[03-Apr-2025 20:48:17 Asia/Manila] Patient Retrieval Query for Schedule ID 54: 
+[03-Apr-2025 20:48:17 Asia/Manila] Debug Parameters: {"schedule_id":"54","current_datetime":"2025-04-03 20:48:17"}
+[03-Apr-2025 20:48:17 Asia/Manila] Total Patients Found: 1
+[03-Apr-2025 20:48:17 Asia/Manila] Debug Parameters: {"schedule_id":"54","current_datetime":"2025-04-03 20:48:17"}
+[03-Apr-2025 20:48:17 Asia/Manila] Patient Details: {"pid":"2","pname":"Don Ace Ranada","apponum":"1","is_confirmed":"1","status":""}
+[25-May-2025 00:32:15 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\Mabayuan Health Care\admin\schedule.php on line 669
+[25-May-2025 00:32:15 Asia/Manila] Patient Retrieval Query for Schedule ID 102: 
+[25-May-2025 00:32:15 Asia/Manila] Debug Parameters: {"schedule_id":"102","current_datetime":"2025-05-25 00:32:15"}
+[25-May-2025 00:32:15 Asia/Manila] Total Patients Found: 0
+[25-May-2025 00:32:15 Asia/Manila] Debug Parameters: {"schedule_id":"102","current_datetime":"2025-05-25 00:32:15"}
+[25-May-2025 00:32:20 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\Mabayuan Health Care\admin\schedule.php on line 669
+[25-May-2025 00:32:20 Asia/Manila] Patient Retrieval Query for Schedule ID 102: 
+[25-May-2025 00:32:20 Asia/Manila] Debug Parameters: {"schedule_id":"102","current_datetime":"2025-05-25 00:32:20"}
+[25-May-2025 00:32:20 Asia/Manila] Total Patients Found: 0
+[25-May-2025 00:32:20 Asia/Manila] Debug Parameters: {"schedule_id":"102","current_datetime":"2025-05-25 00:32:20"}
+[25-May-2025 00:41:10 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\Mabayuan Health Care\admin\schedule.php on line 669
+[25-May-2025 00:41:10 Asia/Manila] Patient Retrieval Query for Schedule ID 102: 
+[25-May-2025 00:41:10 Asia/Manila] Debug Parameters: {"schedule_id":"102","current_datetime":"2025-05-25 00:41:10"}
+[25-May-2025 00:41:10 Asia/Manila] Total Patients Found: 0
+[25-May-2025 00:41:10 Asia/Manila] Debug Parameters: {"schedule_id":"102","current_datetime":"2025-05-25 00:41:10"}
+[25-May-2025 00:51:29 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\Mabayuan Health Care\admin\schedule.php on line 669
+[25-May-2025 00:51:29 Asia/Manila] Patient Retrieval Query for Schedule ID 102: 
+[25-May-2025 00:51:29 Asia/Manila] Debug Parameters: {"schedule_id":"102","current_datetime":"2025-05-25 00:51:29"}
+[25-May-2025 00:51:29 Asia/Manila] Total Patients Found: 0
+[25-May-2025 00:51:29 Asia/Manila] Debug Parameters: {"schedule_id":"102","current_datetime":"2025-05-25 00:51:29"}
+[25-May-2025 00:52:07 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\Mabayuan Health Care\admin\schedule.php on line 669
+[25-May-2025 00:52:07 Asia/Manila] Patient Retrieval Query for Schedule ID 102: 
+[25-May-2025 00:52:07 Asia/Manila] Debug Parameters: {"schedule_id":"102","current_datetime":"2025-05-25 00:52:07"}
+[25-May-2025 00:52:07 Asia/Manila] Total Patients Found: 0
+[25-May-2025 00:52:07 Asia/Manila] Debug Parameters: {"schedule_id":"102","current_datetime":"2025-05-25 00:52:07"}
+[25-May-2025 00:54:11 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\Mabayuan Health Care\admin\schedule.php on line 669
+[25-May-2025 00:54:11 Asia/Manila] Patient Retrieval Query for Schedule ID 102: 
+[25-May-2025 00:54:11 Asia/Manila] Debug Parameters: {"schedule_id":"102","current_datetime":"2025-05-25 00:54:11"}
+[25-May-2025 00:54:11 Asia/Manila] Total Patients Found: 0
+[25-May-2025 00:54:11 Asia/Manila] Debug Parameters: {"schedule_id":"102","current_datetime":"2025-05-25 00:54:11"}
+[25-May-2025 01:01:50 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\Mabayuan Health Care\admin\schedule.php on line 669
+[25-May-2025 01:01:50 Asia/Manila] Patient Retrieval Query for Schedule ID 102: 
+[25-May-2025 01:01:50 Asia/Manila] Debug Parameters: {"schedule_id":"102","current_datetime":"2025-05-25 01:01:50"}
+[25-May-2025 01:01:50 Asia/Manila] Total Patients Found: 0
+[25-May-2025 01:01:50 Asia/Manila] Debug Parameters: {"schedule_id":"102","current_datetime":"2025-05-25 01:01:50"}
+[25-May-2025 01:15:34 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\Mabayuan Health Care\admin\schedule.php on line 609
+[25-May-2025 01:15:34 Asia/Manila] Patient Retrieval Query for Schedule ID 102: 
+[25-May-2025 01:15:34 Asia/Manila] Debug Parameters: {"schedule_id":"102","current_datetime":"2025-05-25 01:15:34"}
+[25-May-2025 01:15:34 Asia/Manila] Total Patients Found: 0
+[25-May-2025 01:15:34 Asia/Manila] Debug Parameters: {"schedule_id":"102","current_datetime":"2025-05-25 01:15:34"}
+[25-May-2025 01:35:19 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\Mabayuan Health Care\admin\schedule.php on line 609
+[25-May-2025 01:35:19 Asia/Manila] Patient Retrieval Query for Schedule ID 102: 
+[25-May-2025 01:35:19 Asia/Manila] Debug Parameters: {"schedule_id":"102","current_datetime":"2025-05-25 01:35:19"}
+[25-May-2025 01:35:19 Asia/Manila] Total Patients Found: 0
+[25-May-2025 01:35:19 Asia/Manila] Debug Parameters: {"schedule_id":"102","current_datetime":"2025-05-25 01:35:19"}
+[25-May-2025 01:35:56 Asia/Manila] PHP Warning:  Undefined variable $sqlmain12 in C:\xampp\htdocs\Mabayuan Health Care\admin\schedule.php on line 609
+[25-May-2025 01:35:56 Asia/Manila] Patient Retrieval Query for Schedule ID 102: 
+[25-May-2025 01:35:56 Asia/Manila] Debug Parameters: {"schedule_id":"102","current_datetime":"2025-05-25 01:35:56"}
+[25-May-2025 01:35:56 Asia/Manila] Total Patients Found: 0
+[25-May-2025 01:35:56 Asia/Manila] Debug Parameters: {"schedule_id":"102","current_datetime":"2025-05-25 01:35:56"}

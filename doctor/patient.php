@@ -1,3 +1,26 @@
+<?php
+session_start();
+
+if (isset($_SESSION["user"])) {
+    if (($_SESSION["user"]) == "" or $_SESSION['usertype'] != 'd') {
+        header("location: ../login.php");
+        exit();
+    } else {
+        $useremail = $_SESSION["user"];
+    }
+} else {
+    header("location: ../login.php");
+    exit();
+}
+
+// Import database
+include("../connection.php");
+$userrow = $database->query("SELECT * FROM doctor WHERE docemail = '$useremail'");
+$userfetch = $userrow->fetch_assoc();
+$userid = $userfetch["docid"];
+$username = $userfetch["docname"];
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,40 +42,167 @@
         .sub-table{
             animation: transitionIn-Y-bottom 0.5s;
         }
-</style>
-</head>
-<body>
-    <?php
-
-    //learn from w3schools.com
-
-    session_start();
-
-    if(isset($_SESSION["user"])){
-        if(($_SESSION["user"])=="" or $_SESSION['usertype']!='d'){
-            header("location: ../login.php");
-        }else{
-            $useremail=$_SESSION["user"];
+        
+        /* SweetAlert Patient Profile Styling */
+        .patient-profile-popup {
+            width: 600px !important;
+            border-radius: 15px !important;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
         }
 
-    }else{
-        header("location: ../login.php");
-    }
-    
+        .patient-profile-container {
+            padding: 0 !important;
+            margin: 0 !important;
+        }
 
-    //import database
-    include("../connection.php");
-    $userrow = $database->query("select * from doctor where docemail='$useremail'");
-    $userfetch=$userrow->fetch_assoc();
-    $userid= $userfetch["docid"];
-    $username=$userfetch["docname"];
+        .patient-profile-container .patient-header {
+            background-color: #007bff;
+            color: white;
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+        }
 
+        .patient-header .patient-avatar {
+            margin-right: 20px;
+        }
 
-    //echo $userid;
-    //echo $username;
-    ?>
+        .patient-header .patient-avatar i {
+            font-size: 80px;
+            color: white;
+        }
+
+        .patient-header .patient-name-id h2 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .patient-header .patient-name-id .patient-id-text {
+            margin: 5px 0 0;
+            opacity: 0.8;
+            font-size: 14px;
+        }
+
+        .patient-details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+
+        .patient-detail-item {
+            display: flex;
+            align-items: center;
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+            flex-direction: column;
+        }
+
+        .patient-detail-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .patient-detail-item.full-width {
+            grid-column: span 2;
+        }
+
+        .patient-detail-item i {
+            font-size: 30px;
+            color: #007bff;
+            margin-right: 15px;
+            width: 50px;
+            text-align: center;
+        }
+
+        .patient-detail-item div h3 {
+            margin: 0 0 5px;
+            font-size: 14px;
+            color: #6c757d;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .patient-detail-item div p {
+            margin: 0;
+            font-size: 16px;
+            color: #212529;
+            font-weight: 500;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .patient-details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .patient-detail-item.full-width {
+                grid-column: span 1;
+            }
+        }
+        
+        /* SweetAlert Custom Styling */
+        .patient-details-popup .swal2-html-container {
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        
+        .patient-details-popup .swal-patient-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+        
+        .patient-details-popup .swal-patient-table tr {
+            margin-bottom: 10px;
+        }
+        
+        .patient-details-popup .swal-patient-table .label-td {
+            font-weight: bold;
+            text-align: right;
+            padding-right: 15px;
+            color: #555;
+            width: 40%;
+        }
+        
+        .patient-details-popup .swal-patient-table td {
+            text-align: left;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+<?php
+// Check if login_success action is passed in the URL
+if (isset($_GET['action']) && $_GET['action'] == 'login_success' && !isset($_SESSION['login_alert_shown'])) {
+    // Set the session variable to indicate the alert has been shown
+    $_SESSION['login_alert_shown'] = true;
+
+    // Display SweetAlert for successful login
+    echo "
+    <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+    <script>
+        setTimeout(function() {
+            Swal.fire({
+                title: 'Login Successful',
+                text: 'Welcome Dr. " . $username . "!',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+        }, 250); // Delay for 250ms
+    </script>
+    ";
+}
+?>
+
     <div class="container">
-    <div class="menu">
+        <div class="menu">
             <table class="menu-container" border="0">
                 <tr>
                     <td style="padding:10px" colspan="2">
@@ -62,7 +212,7 @@
                                     <img src="../img/user.png" alt="" width="100%" style="border-radius:50%">
                                 </td>
                                 <td style="padding:0px;margin:0px;">
-                                    <p class="profile-title"><?php echo substr($username,0,13)  ?>..</p>
+                                    <p class="profile-title"><?php echo substr($username,0,13)  ?></p>
                                     <p class="profile-subtitle"><?php echo substr($useremail,0,22)  ?></p>
                                 </td>
                             </tr>
@@ -91,8 +241,10 @@
     }
 </script>
                             </tr>
+                            </tr>
                     </table>
                     </td>
+                </tr>
                 </tr>
                 <tr class="menu-row" >
                     <td class="menu-btn menu-icon-dashbord" >
@@ -101,60 +253,28 @@
                 </tr>
                 <tr class="menu-row">
                     <td class="menu-btn menu-icon-appoinment">
-                        <a href="appointment.php" class="non-style-link-menu"><div><p class="menu-text">My Appointments</p></a></div>
+                        <a href="appointment.php" class="non-style-link-menu"><div><p class="menu-text">Appointments</p></a></div>
                     </td>
                 </tr>
                 
                 <tr class="menu-row" >
                     <td class="menu-btn menu-icon-session">
-                        <a href="schedule.php" class="non-style-link-menu"><div><p class="menu-text">My Sessions</p></div></a>
+                        <a href="schedule.php" class="non-style-link-menu"><div><p class="menu-text">Sessions</p></div></a>
                     </td>
                 </tr>
                 <tr class="menu-row" >
                     <td class="menu-btn menu-icon-patient menu-active menu-icon-patient-active">
-                        <a href="patient.php" class="non-style-link-menu  non-style-link-menu-active"><div><p class="menu-text">My Patients</p></a></div>
+                        <a href="patient.php" class="non-style-link-menu"><div><p class="menu-text">Patients</p></a></div>
                     </td>
                 </tr>
                 <tr class="menu-row" >
-                    <td class="menu-btn menu-icon-settings   ">
-                        <a href="settings.php" class="non-style-link-menu"><div><p class="menu-text">Settings</p></a></div>
+                    <td class="menu-btn menu-icon-settings">
+                        <a href="settings.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">Settings</p></a></div>
                     </td>
                 </tr>
-                
+
             </table>
         </div>
-        <?php       
-
-                    $selecttype="My";
-                    $current="My patients Only";
-                    if($_POST){
-
-                        if(isset($_POST["search"])){
-                            $keyword=$_POST["search12"];
-                            
-                            $sqlmain= "select * from patient where pemail='$keyword' or pname='$keyword' or pname like '$keyword%' or pname like '%$keyword' or pname like '%$keyword%' ";
-                            $selecttype="my";
-                        }
-                        
-                        if(isset($_POST["filter"])){
-                            if($_POST["showonly"]=='all'){
-                                $sqlmain= "select * from patient";
-                                $selecttype="All";
-                                $current="All patients";
-                            }else{
-                                $sqlmain= "select * from appointment inner join patient on patient.pid=appointment.pid inner join schedule on schedule.scheduleid=appointment.scheduleid where schedule.docid=$userid;";
-                                $selecttype="My";
-                                $current="My patients Only";
-                            }
-                        }
-                    }else{
-                        $sqlmain= "select * from appointment inner join patient on patient.pid=appointment.pid inner join schedule on schedule.scheduleid=appointment.scheduleid where schedule.docid=$userid;";
-                        $selecttype="My";
-                    }
-
-
-
-                ?>
         <div class="dash-body">
             <table border="0" width="100%" style=" border-spacing: 0;margin:0;padding:0;margin-top:25px; ">
                 <tr >
@@ -163,50 +283,56 @@
                     <a href="patient.php" ><button  class="login-btn btn-primary-soft btn btn-icon-back"  style="padding-top:11px;padding-bottom:11px;margin-left:20px;width:125px"><font class="tn-in-text">Back</font></button></a>
                         
                     </td> -->
-                    <td> 
-                        
-                        <form action="" method="post" class="header-search">
-
-                            <input type="search" name="search12" class="input-text header-searchbar" placeholder="Search Patient name or Email" list="patient">&nbsp;&nbsp;
-                            
-                            <?php
-                                echo '<datalist id="patient">';
-                                $list11 = $database->query($sqlmain);
-                               //$list12= $database->query("select * from appointment inner join patient on patient.pid=appointment.pid inner join schedule on schedule.scheduleid=appointment.scheduleid where schedule.docid=1;");
-
-                                for ($y=0;$y<$list11->num_rows;$y++){
-                                    $row00=$list11->fetch_assoc();
-                                    $d=$row00["pname"];
-                                    $c=$row00["pemail"];
-                                    echo "<option value='$d'><br/>";
-                                    echo "<option value='$c'><br/>";
-                                };
-
-                            echo ' </datalist>';
-?>
-                            
-                       
-                            <input type="Submit" value="Search" name="search" class="login-btn btn-primary btn" style="padding-left: 25px;padding-right: 25px;padding-top: 10px;padding-bottom: 10px;">
-                        
-                        </form>
-                        
-                    </td>
-                    <td width="15%">
-                        <p style="font-size: 14px;color: rgb(119, 119, 119);padding: 0;margin: 0;text-align: right;">
-                            Today's Date
-                        </p>
-                        <p class="heading-sub12" style="padding: 0;margin: 0;">
-                            <?php 
+                    <tr class="date-container">
+            <td width="100%">
+            <p style="font-size: 14px;color: rgb(119, 119, 119);padding: 0;margin: 0;">
+                    Today's Date
+                </p>
+                <p class="heading-sub12" style="padding: 0; margin: 0;">
+                    <?php 
                         date_default_timezone_set('Asia/Manila');
-
                         $date = date('Y-m-d');
                         echo $date;
-                        ?>
-                        </p>
-                    </td>
-                    <td width="10%">
-                        <button  class="btn-label"  style="display: flex;justify-content: center;align-items: center;"><img src="../img/calendar.svg" width="100%"></button>
-                    </td>
+
+                        $patientrow = $database->query("SELECT * FROM patient;");
+                        $doctorrow = $database->query("SELECT * FROM doctor;");
+                        $appointmentrow = $database->query("SELECT * FROM appointment WHERE appodate >= '$date';");
+                        $schedulerow = $database->query("SELECT * FROM schedule WHERE scheduledate = '$date';");
+                    ?>
+                </p>
+            </td>
+        </tr>
+                    
+
+                </tr>
+                <td colspan="2" class="nav-bar" >
+                                
+                                <form action="patient.php" method="post" class="header-search">
+        
+                                    <input type="search" name="search" class="input-text header-searchbar" placeholder="Search Patient Name or Email" list="patients">&nbsp;&nbsp;
+                                    
+                                    <?php
+                                        echo '<datalist id="patients">';
+                                        $list11 = $database->query("select pname, pemail from patient;");
+        
+                                        for ($y=0;$y<$list11->num_rows;$y++){
+                                            $row00=$list11->fetch_assoc();
+                                            $p=$row00["pname"];
+                                            $c=$row00["pemail"];
+                                            echo "<option value='$p'><br/>";
+                                            echo "<option value='$c'><br/>";
+                                        };
+        
+                                    echo ' </datalist>';
+                                    ?>
+                                    
+                               
+                                    <input type="Submit" value="Search" class="btn-primary-soft btn button-icon btn-search" style="padding-left: 25px;padding-right: 25px;padding-top: 10px;padding-bottom: 10px;">
+                                
+                                </form>
+                                
+                            </td>
+                    
 
 
                 </tr>
@@ -214,91 +340,72 @@
                 
                 <tr>
                     <td colspan="4" style="padding-top:10px;">
-                        <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)"><?php echo $selecttype." Patients (".$list11->num_rows.")"; ?></p>
+                        <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)">All Patients </p>
                     </td>
                     
                 </tr>
-                <tr>
-                    <td colspan="4" style="padding-top:0px;width: 100%;" >
-                        <center>
-                        <table class="filter-container" border="0" >
- 
-                        <form action="" method="post">
+                <?php
+                    // Pagination setup
+                    $resultsPerPage = 10;
+                    $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+                    $page = max(1, $page); // Ensure page is at least 1
+
+                    // Modify search query to support pagination
+                    if($_POST){
+                        $keyword=$_POST["search"];
                         
-                        <td  style="text-align: right;">
-                        Show Details About : &nbsp;
-                        </td>
-                        <td width="30%">
-                        <select name="showonly" id="" class="box filter-container-items" style="width:90% ;height: 37px;margin: 0;" >
-                                    <option value="" disabled selected hidden><?php echo $current   ?></option><br/>
-                                    <option value="my">My Patients Only</option><br/>
-                                    <option value="all">All Patients</option><br/>
-                                    
+                        $sqlmain= "select * from patient where pemail='$keyword' or pname='$keyword' or pname like '$keyword%' or pname like '%$keyword' or pname like '%$keyword%' ";
+                    }else{
+                        $sqlmain= "select * from patient order by pid desc";
+                    }
 
-                        </select>
-                    </td>
-                    <td width="12%">
-                        <input type="submit"  name="filter" value=" Filter" class=" btn-primary-soft btn button-icon btn-filter"  style="padding: 15px; margin :0;width:100%">
-                        </form>
-                    </td>
+                    // Count total results
+                    $countResult = $database->query($sqlmain);
+                    $totalResults = $countResult->num_rows;
+                    $totalPages = ceil($totalResults / $resultsPerPage);
 
-                    </tr>
-                            </table>
+                    // Modify query to include LIMIT for pagination
+                    $offset = ($page - 1) * $resultsPerPage;
+                    $sqlmain .= " LIMIT $offset, $resultsPerPage";
 
-                        </center>
-                    </td>
-                    
-                </tr>
+                    $result = $database->query($sqlmain);
+                ?>
                   
                 <tr>
                    <td colspan="4">
                        <center>
                         <div class="abc scroll">
-                        <table width="93%" class="sub-table scrolldown"  style="border-spacing:0; text-align:center">
+                        <table width="93%" class="sub-table scrolldown"  style="border-spacing:0;">
                         <thead>
                         <tr>
                                 <th class="table-headin">
-                                    
-                                
                                 Name
-                                
+                                </th>
+                                <th class="table-headin">   
+                                Philhealth Id:
                                 </th>
                                 <th class="table-headin">
-                                    
-                                
-                                    NIC
-                                    
+                                Telephone 
                                 </th>
                                 <th class="table-headin">
-                                
-                            
-                                Telephone
-                                
+                                Email
                                 </th>
                                 <th class="table-headin">
-                                    Email
+                                Date of Birth
                                 </th>
                                 <th class="table-headin">
-                                    
-                                    Date of Birth
-                                    
+                                Age
                                 </th>
                                 <th class="table-headin">
-                                    
-                                    Events
-                                    
+                                Actions
                                 </tr>
                         </thead>
                         <tbody>
                         
                             <?php
-
-                                
-                                $result= $database->query($sqlmain);
-                                //echo $sqlmain;
                                 if($result->num_rows==0){
                                     echo '<tr>
-                                    <td colspan="4">
+                                    <td colspan="7">
                                     <br><br><br><br>
                                     <center>
                                     <img src="../img/notfound.svg" width="25%">
@@ -319,30 +426,40 @@
                                     $pid=$row["pid"];
                                     $name=$row["pname"];
                                     $email=$row["pemail"];
-                                    $nic=$row["hasPhilhealth"];
+                                    $nic = strtolower($row["hasPhilhealth"]) === 'yes' ? 'Yes' : 'No';
                                     $dob=$row["pdob"];
                                     $tel=$row["phone_number"];
                                     
+                                    // Calculate age
+                                    $birthDate = new DateTime($dob);
+                                    $currentDate = new DateTime();
+                                    $age = $currentDate->diff($birthDate)->y;
+                                    
                                     echo '<tr>
-                                        <td> &nbsp;'.
+                                        <td style="text-align: center;"> &nbsp;'.
                                         substr($name,0,35)
                                         .'</td>
-                                        <td>
-                                        '.substr($nic,0,12).'
+                                        <td style="text-align: center;"> &nbsp;'.
+                                        substr($nic,0,12).'
                                         </td>
-                                        <td>
-                                            '.substr($tel,0,10).'
+                                        <td style="text-align: center;"> &nbsp;'.
+                                        $tel.'
                                         </td>
-                                        <td>
-                                        '.substr($email,0,20).'
+                                        <td style="text-align: center;"> &nbsp;'.
+                                        substr($email,0,25).'
                                          </td>
-                                        <td>
-                                        '.substr($dob,0,10).'
+                                        <td style="text-align: center;"> &nbsp;'.
+                                        substr($dob,0,10).'
+                                        </td>
+                                        <td style="text-align: center;"> &nbsp;'.
+                                        $age.'
                                         </td>
                                         <td >
                                         <div style="display:flex;justify-content: center;">
                                         
                                         <a href="?action=view&id='.$pid.'" class="non-style-link"><button  class="btn-primary-soft btn button-icon btn-view"  style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">View</font></button></a>
+                                        
+                                        <a href="?action=drop&id='.$pid.'&name='.urlencode($name).'" class="non-style-link"><button  class="btn-primary-soft btn button-icon btn-delete"  style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">Remove</font></button></a>
                                        
                                         </div>
                                         </td>
@@ -360,6 +477,37 @@
                         </center>
                    </td> 
                 </tr>
+                
+                <!-- Pagination -->
+                <tr>
+                    <td colspan="7" style="text-align: center; padding: 20px;">
+                        <?php
+                        // Pagination links
+                        echo '<div class="pagination">';
+                        
+                        // Previous page link
+                        if ($page > 1) {
+                            echo '<a href="?page='.($page-1).'" class="btn btn-primary-soft" style="margin-right: 10px;">&laquo; Previous</a>';
+                        }
+                        
+                        // Page numbers
+                        for ($i = 1; $i <= $totalPages; $i++) {
+                            if ($i == $page) {
+                                echo '<span class="btn btn-primary" style="margin: 0 5px; background-color: #007bff; color: white;">'.$i.'</span>';
+                            } else {
+                                echo '<a href="?page='.$i.'" class="btn btn-primary-soft" style="margin: 0 5px;">'.$i.'</a>';
+                            }
+                        }
+                        
+                        // Next page link
+                        if ($page < $totalPages) {
+                            echo '<a href="?page='.($page+1).'" class="btn btn-primary-soft" style="margin-left: 10px;">Next &raquo;</a>';
+                        }
+                        
+                        echo '</div>';
+                        ?>
+                    </td>
+                </tr>
                        
                         
                         
@@ -368,131 +516,168 @@
     </div>
     <?php 
     if($_GET){
-        
         $id=$_GET["id"];
         $action=$_GET["action"];
+
+        // Drop (Delete) Action
+        if ($action == 'drop') {
+            $nameget = $_GET["name"];
+            echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
+            echo '<script type="text/javascript">
+            Swal.fire({
+              title: "Are you sure?",
+              text: "You want to delete this patient record for ' . htmlspecialchars($nameget) . '.",
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonText: "Yes, delete it",
+              cancelButtonText: "No, cancel",
+              reverseButtons: true
+            }).then((result) => {
+              if (result.isConfirmed) {
+                window.location.href = "delete-patient.php?id=' . $id . '&name=' . urlencode($nameget) . '";
+              }
+            });
+            </script>';
+            exit(); // Prevent further execution
+        }
+        
+        // View Action
+        if ($action == 'view'){
             $sqlmain= "select * from patient where pid='$id'";
             $result= $database->query($sqlmain);
             $row=$result->fetch_assoc();
             $name=$row["pname"];
             $email=$row["pemail"];
-            $nic=$row["has_philhealth"];
+            $nic = strtolower($row["hasPhilhealth"]) === 'yes' ? 'Yes' : 'No';
             $dob=$row["pdob"];
             $phone_number=$row["phone_number"];
             $address=$row["paddress"];
-            echo '
-            <div id="popup1" class="overlay">
-                    <div class="popup">
-                    <center>
-                        <a class="close" href="patient.php">&times;</a>
-                        <div class="content">
-
+            
+            // Detailed age calculation
+            $birthDate = new DateTime($dob);
+            $currentDate = new DateTime();
+            $age = $currentDate->diff($birthDate);
+            
+            // Format age string
+            $ageString = $age->y . ' years';
+            if ($age->m > 0) {
+                $ageString .= ', ' . $age->m . ' months';
+            }
+            
+            echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+            <script type="text/javascript">
+            Swal.fire({
+                title: "Patient Profile",
+                html: `
+                    <div class="patient-profile-container">
+                        <div class="patient-header">
+                            <div class="patient-avatar">
+                                <i class="fas fa-user-circle"></i>
+                            </div>
+                            <div class="patient-name-id">
+                                <h2>' . htmlspecialchars($name) . '</h2>
+                                <p class="patient-id-text">Patient ID: P-' . $id . '</p>
+                            </div>
                         </div>
-                        <div style="display: flex;text-align:center: center;">
-                        <table width="80%" class="sub-table scrolldown add-doc-form-container" border="0">
-                        
-                            <tr>
-                                <td>
-                                    <p style="padding: 0;margin: 0;text-align: left;font-size: 25px;font-weight: 500;">View Details.</p><br><br>
-                                </td>
-                            </tr>
-                            <tr>
-                                
-                                <td class="label-td" colspan="2">
-                                    <label for="name" class="form-label">Patient ID: </label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                    P-'.$id.'<br><br>
-                                </td>
-                                
-                            </tr>
-                            
-                            <tr>
-                                
-                                <td class="label-td" colspan="2">
-                                    <label for="name" class="form-label">Name: </label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                    '.$name.'<br><br>
-                                </td>
-                                
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                    <label for="Email" class="form-label">Email: </label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                '.$email.'<br><br>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                    <label for="nic" class="form-label">PhilHealth ID: </label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                '.$nic.'<br><br>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                    <label for="Tele" class="form-label">Telephone: </label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                '.$phone_number.'<br><br>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                    <label for="spec" class="form-label">Address: </label>
-                                    
-                                </td>
-                            </tr>
-                            <tr>
-                            <td class="label-td" colspan="2">
-                            '.$address.'<br><br>
-                            </td>
-                            </tr>
-                            <tr>
-                                
-                                <td class="label-td" colspan="2">
-                                    <label for="name" class="form-label">Date of Birth: </label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                    '.$dob.'<br><br>
-                                </td>
-                                
-                            </tr>
-<tr>
-    <td colspan="2">
-        <div style="display: flex; text-align:center;">
-            <a href="patient.php"><input type="button" value="OK" class="login-btn btn-primary-soft btn"></a>
-        </div>
-    </td>
-</tr>
-                           
-
-                        </table>
+                        <div class="patient-details-grid">
+                            <div class="patient-detail-item">
+                                <i class="fas fa-envelope"></i>
+                                <div>
+                                    <h3>Email</h3>
+                                    <p>' . htmlspecialchars($email) . '</p>
+                                </div>
+                            </div>
+                            <div class="patient-detail-item">
+                                <i class="fas fa-phone"></i>
+                                <div>
+                                    <h3>Telephone</h3>
+                                    <p>' . htmlspecialchars($phone_number) . '</p>
+                                </div>
+                            </div>
+                            <div class="patient-detail-item">
+                                <i class="fas fa-calendar-alt"></i>
+                                <div>
+                                    <h3>Date of Birth</h3>
+                                    <p>' . htmlspecialchars($dob) . ' (Age: ' . htmlspecialchars($ageString) . ')</p>
+                                </div>
+                            </div>
+                            <div class="patient-detail-item">
+                                <i class="fas fa-id-card"></i>
+                                <div>
+                                    <h3>PhilHealth ID</h3>
+                                    <p>' . htmlspecialchars($nic) . '</p>
+                                </div>
+                            </div>
+                            <div class="patient-detail-item full-width">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <div>
+                                    <h3>Address</h3>
+                                    <p>' . htmlspecialchars($address) . '</p>
+                                </div>
+                            </div>
                         </div>
-                    </center>
-                    <br><br>
-            </div>
-            </div>
-            ';
+                    </div>
+                `,
+                icon: "info",
+                confirmButtonText: "Close",
+                showCloseButton: true,
+                customClass: {
+                    popup: "patient-profile-popup",
+                    htmlContainer: "patient-profile-container",
+                    confirmButton: "btn btn-primary"
+                },
+                didOpen: () => {
+                    // Add Font Awesome if not already loaded
+                    if (!document.querySelector("link[href*=\'fontawesome\']")) {
+                        const link = document.createElement("link");
+                        link.rel = "stylesheet";
+                        link.href = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css";
+                        document.head.appendChild(link);
+                    }
+                }
+            });
+            </script>';
+            exit(); // Prevent further execution
+        }
         
+        // Rest of the code remains the same
     };
 
+    // Check for delete success message
+    if (isset($_SESSION['delete_success']) && $_SESSION['delete_success'] === true) {
+        $deleted_title = isset($_SESSION['title']) ? $_SESSION['title'] : 'Patient';
+        echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
+        echo '<script type="text/javascript">
+        Swal.fire({
+            icon: "success",
+            title: "Patient Deleted",
+            text: "' . htmlspecialchars($deleted_title, ENT_QUOTES) . ' has been successfully removed.",
+            confirmButtonText: "OK"
+        });
+        </script>';
+
+        // Unset the session variables to prevent repeated alerts
+        unset($_SESSION['delete_success']);
+        unset($_SESSION['title']);
+    }
+
+    // Existing error handling can remain the same
+    if (isset($_SESSION['delete_error'])) {
+        $error_message = $_SESSION['delete_error'];
+        echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
+        echo '<script type="text/javascript">
+        Swal.fire({
+            icon: "error",
+            title: "Deletion Error",
+            text: "' . htmlspecialchars($error_message, ENT_QUOTES) . '",
+            confirmButtonText: "OK"
+        });
+        </script>';
+
+        // Unset error session variable
+        unset($_SESSION['delete_error']);
+    }
 ?>
 </div>
 

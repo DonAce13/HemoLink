@@ -265,9 +265,9 @@ if (isset($_SESSION["welcome_alert"])) {
     .header-text {
         color: var(--primary-dark);
         font-size: 5rem;
-        font-weight: 700;
+        font-weight: 600;
         text-align: center;
-        margin-bottom: 0.5rem;
+        margin-bottom: -1.5rem;
     }
 
     .sub-text {
@@ -306,6 +306,7 @@ if (isset($_SESSION["welcome_alert"])) {
         border-radius: 10px;
         padding: 0.75rem 1rem;
         transition: all 0.3s ease;
+        padding-right: 35px; /* Make space for icon */
     }
 
     .form-control:focus {
@@ -321,12 +322,12 @@ if (isset($_SESSION["welcome_alert"])) {
     }
 
     .btn-primary {
-        background: #2d6a4f;
+        background: #40916c;
         border: none;
     }
 
     .btn-primary:hover {
-        background: #40916c;
+        background: #2d6a4f;
         transform: translateY(-2px);
     }
 
@@ -429,7 +430,37 @@ if (isset($_SESSION["welcome_alert"])) {
         }
     }
         
-</style>
+    .go-back-link:hover svg circle {
+        fill: #b7e4c7;
+    }
+    .go-back-link .go-back-text {
+        transition: color 0.2s;
+    }
+    .go-back-link:hover .go-back-text {
+        color: #40916c;
+    }
+    @media (max-width: 480px) {
+        .go-back-link svg {
+            width: 32px;
+            height: 32px;
+        }
+        .go-back-link .go-back-text {
+            font-size: 1rem;
+        }
+    }
+    .password-container {
+        position: relative;
+    }
+    .password-toggle {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #6c757d;
+        z-index: 2;
+    }
+    </style>
 </head>
 <body>
     <?php if ($alertMessage): ?>
@@ -445,11 +476,19 @@ if (isset($_SESSION["welcome_alert"])) {
     </script>
     <?php endif; ?>
     
-    <div class="container">
+
+            <div class="container">
+            <a href="/index.html" class="go-back-link" aria-label="Go back to home" style="display:inline-flex; align-items:center; gap:10px; margin-bottom: 24px;">
+                <svg width="40" height="40" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle;">
+                    <circle cx="16" cy="16" r="16" fill="#e9ecef"/>
+                    <path d="M18.5 10L13 16L18.5 22" stroke="#2d6a4f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="go-back-text" style="font-size: 1.2rem; color: #2d6a4f; font-weight: 600; letter-spacing: 0.5px;">Go Back</span>
+            </a>
         <div class="row justify-content-center">
-                    <div class="card-body p-5">
-                        <h1 class="header-text mb-4">Mabayuan Health</h1>
-                        <p class="sub-text mb-4">Connecting you to better health</p>
+                    <div class="card-body p-4">
+                        <h4 class="header-text mb-10" style="font-size: 54px; color: #6BBF8A; font-family: 'Poppins', sans-serif; font-weight: 800; ">Mabayuan</h4>
+                        <h2 class="header-text mb-7" style="font-size: 90px; color: #1B4C30; font-family: 'Poppins', sans-serif; font-weight: 600;" >Health Care</h2>
                         <p class="sub-text mb-4">Login with your details to continue</p>
                         
                         <form action="" method="POST">
@@ -460,7 +499,10 @@ if (isset($_SESSION["welcome_alert"])) {
                             
                             <div class="mb-4">
                                 <label for="userpassword" class="form-label">Password</label>
-                                <input type="password" name="userpassword" class="form-control" required>
+                                <div class="password-container">
+                                    <input type="password" name="userpassword" id="userpassword" class="form-control" required>
+                                    <i class="fas fa-eye password-toggle" onclick="togglePassword('userpassword')"></i>
+                                </div>
                             </div>
                             
                             <button type="submit" class="btn btn-primary w-100 mb-4">
@@ -475,5 +517,29 @@ if (isset($_SESSION["welcome_alert"])) {
                     </div>
         </div>
     </div>
+
+<style>
+@media (max-width: 768px) {
+    .header-text.mb-10 {
+        margin-bottom:.5rem !important; /* Equivalent to mb-2 */
+        font-size: 36px !important; /* Optional: smaller font */
+    }
+
+    .header-text.mb-7 {
+        font-size:46px !important;
+        margin-bottom: 1rem !important; /* Equivalent to mb-2 */
+    }
+}
+</style>
+<script>
+function togglePassword(id) {
+    var x = document.getElementById(id);
+    if (x.type === "password") {
+        x.type = "text";
+    } else {
+        x.type = "password";
+    }
+}
+</script>
 </body>
 </html>

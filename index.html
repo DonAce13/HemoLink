@@ -131,6 +131,7 @@
             color: #1b4332;
             margin-bottom: 20px;
             line-height: 1.2;
+            margin-top: 40px;
         }
 
         .hero p {
@@ -229,7 +230,7 @@
         }
 
         .cta-button:hover {
-            background: #40916c;
+            background: #175f3f;
         }
 
         /* Video Section */
@@ -496,6 +497,69 @@
     }
 }
 }
+      /* Responsive grid styling for How to Register section */
+      .how-to-register-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr); /* 4 columns */
+        grid-template-rows: repeat(2, 1fr); /* 2 rows */
+        gap: 12px; /* Less gap for bigger images */
+        justify-items: stretch;
+        align-items: stretch;
+        margin: 0 auto 18px auto;
+        max-width: 1400px;
+      }
+      .how-to-register-img {
+        width: 360px;
+        height: 100%;
+        max-width: none;
+        max-height: none;
+        object-fit: cover;
+        border-radius: 16px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+        background: #fff;
+        transition: transform 0.18s;
+        aspect-ratio: 1/1;
+      }
+      .how-to-register-img:hover {
+        transform: scale(1.04);
+      }
+      @media (max-width: 1200px) {
+        .how-to-register-grid {
+          max-width: 1000px;
+          gap: 16px;
+          grid-template-columns: repeat(3, 1fr);
+          grid-template-rows: repeat(3, 1fr);
+        }
+        .how-to-register-img {
+          max-width: none;
+        }
+      }
+      @media (max-width: 900px) {
+        .how-to-register-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      @media (max-width: 600px) {
+        .how-to-register-grid {
+          grid-template-columns: 1fr;
+          gap: 18px;
+          padding: 0 20px;
+        }
+        .how-to-register-img {
+          max-width: 100%;
+          height: auto;
+          margin: 0 auto;
+        }
+        .how-to-register-section {
+          margin-left: 0 !important;
+          padding: 20px 0 !important;
+        }
+        .how-to-register-section h2 {
+          margin-left: 0 !important;
+          font-size: 1.8rem !important;
+          padding: 0 20px;
+        }
+      }
     </style>
 </head>
 <body>
@@ -554,6 +618,23 @@
             <div class="feature-icon" style="background-image: url('../img/icons/records.svg');"></div>
             <h3>Health Records Access</h3>
             <p>Securely view your medical history and track your health records conveniently online.</p>
+        </div>
+    </section>
+
+    <!-- Responsive grid styling for How to Register section -->
+    <section class="how-to-register-section" style="padding: 40px 0; margin-left: -200px; background-color: #eeeeee;">
+        <div style="max-width: 1200px; margin: 0 auto; text-align: center;">
+            <h2 style="font-size: 2.2rem; color: #2d6a4f; font-weight: bold; margin-bottom: 22px; margin-left: 200px; letter-spacing:1px;">How to Register and Book an Appointment</h2>
+            <div class="how-to-register-grid">
+                <img src="img/1.png" alt="Step 1" class="how-to-register-img">
+                <img src="img/2.png" alt="Step 2" class="how-to-register-img">
+                <img src="img/3.png" alt="Step 3" class="how-to-register-img">
+                <img src="img/4.png" alt="Step 4" class="how-to-register-img">
+                <img src="img/5.png" alt="Step 5" class="how-to-register-img">
+                <img src="img/6.png" alt="Step 6" class="how-to-register-img">
+                <img src="img/7.png" alt="Step 7" class="how-to-register-img">
+                <img src="img/8.png" alt="Step 8" class="how-to-register-img">
+            </div>
         </div>
     </section>
 
@@ -618,13 +699,13 @@
                 <h3>Follow Us</h3>
                 <div class="social-links">
                     <a href="https://www.youtube.com/@TheMabayuan Health"><img src="../img/icons/youtube.svg" alt="Youtube"></a>
-                    <a href="https://www.facebook.com/profile.php?id=61565227891474"><img src="../img/icons/facebook.svg" alt="Facebook"></a>
+                    <a href="https://www.facebook.com/profile.php?id=61576816975344"><img src="../img/icons/facebook.svg" alt="Facebook"></a>
                     <a href="#"><img src="../img/icons/instagram.svg" alt="Instagram"></a>
                 </div>
             </div>
         </div>
         <div class="copyright">
-            <p>© 2025 Mabayuan Health. All rights reserved.</p>
+            <p> 2025 Mabayuan Health. All rights reserved.</p>
         </div>
     </footer>
 
@@ -668,6 +749,7 @@
 
                 <h4 style="margin-top: 15px;">5. Data Disclosure</h4>
                 <p>Your personal information will only be disclosed to authorized personnel within Mabayuan Health who are directly involved in providing healthcare services. We do not sell, share, or rent your personal data to third parties for marketing or any other purposes without your explicit consent. In certain cases, we may disclose information to legal authorities if required by law or if it is necessary to protect your safety or the safety of others.</p>
+                <p><span style="font-weight: 700;">For further verification of identity, all patients <span style="font-weight:00;">must present a valid ID</span> when showing up for their approved booking. Administrators will verify the appropriate ID before allowing access to healthcare services.</span></p>
 
                 <h4 style="margin-top: 15px;">6. Your Rights</h4>
                 <ul style="margin-left: 20px;">
@@ -685,7 +767,6 @@
         confirmButtonColor: '#2d6a4f'
     });
 });
-
 
 // Terms and Conditions popup
 document.getElementById('termsLink').addEventListener('click', function() {
@@ -743,20 +824,18 @@ document.getElementById('termsLink').addEventListener('click', function() {
 });
 
 // Function to enable Send OTP button
-function enableSendOtpButton() {
-    const teleInput = document.getElementById('phone_number'); // Corrected ID
-    const sendOtpButton = document.getElementById('sendOtpButton');
-    sendOtpButton.disabled = !teleInput.value.match(/^09\d{9}$/);
-}
 
 // Add event listener to telephone input for enabling Send OTP button
-document.getElementById('phone_number').addEventListener('input', enableSendOtpButton);
-
-        // Learn More scroll functionality
-        document.getElementById('learnMoreBtn').addEventListener('click', function() {
-            const featuresSection = document.querySelector('.features');
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('learnMoreBtn').addEventListener('click', function () {
+        const featuresSection = document.querySelector('.features');
+        if (featuresSection) {
             featuresSection.scrollIntoView({ behavior: 'smooth' });
-        });
+        } else {
+            console.warn('No element with class "features" found.');
+        }
+    });
+});
     </script>
 </body>
 </html>

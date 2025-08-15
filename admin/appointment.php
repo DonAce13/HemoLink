@@ -19,7 +19,62 @@
         .sub-table{
             animation: transitionIn-Y-bottom 0.5s;
         }
-</style>
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+            cursor: not-allowed;
+            user-select: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .status-badge:hover {
+            transform: scale(1.05);
+            opacity: 0.9;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+        }
+
+        .status-badge .status-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+        }
+
+        .status-badge .status-icon svg {
+            width: 100%;
+            height: 100%;
+            stroke-width: 2.5;
+        }
+
+        .status-badge.status-approved {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+        }
+
+        .status-badge.status-approved .status-icon svg {
+            stroke: #28a745;
+        }
+
+        .status-badge.status-rejected {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+
+        .status-badge.status-rejected .status-icon svg {
+            stroke: #dc3545;
+        }
+
+        .status-badge .status-text {
+            vertical-align: middle;
+        }
+    </style>
 </head>
 <body>
     <?php
@@ -116,10 +171,16 @@
                     </td>
                 </tr>
                 <tr class="menu-row" >
-                    <td class="menu-btn menu-icon-records">
-                        <a href="records.php" class="non-style-link-menu"><div><p class="menu-text">Records</p></a></div>
+                    <td class="menu-btn menu-icon-logs">
+                        <a href="logs.php" class="non-style-link-menu">
+                            <div style="display:flex;align-items:center;gap:8px;">
+                                <span class="menu-icon-svg menu-icon-logs-svg"></span>
+                                <p class="menu-text">Logs</p>
+                            </div>
+                        </a>
                     </td>
                 </tr>
+                
 
             </table>
         </div>
@@ -153,39 +214,13 @@
                     
 
                 </tr>
-                <td colspan="2" class="nav-bar" >
-                                
-                                <form action="doctors.php" method="post" class="header-search">
-        
-                                    <input type="search" name="search" class="input-text header-searchbar" placeholder="Search Doctor name or Email" list="doctors">&nbsp;&nbsp;
-                                    
-                                    <?php
-                                        echo '<datalist id="doctors">';
-                                        $list11 = $database->query("select  docname,docemail from  doctor;");
-        
-                                        for ($y=0;$y<$list11->num_rows;$y++){
-                                            $row00=$list11->fetch_assoc();
-                                            $d=$row00["docname"];
-                                            $c=$row00["docemail"];
-                                            echo "<option value='$d'><br/>";
-                                            echo "<option value='$c'><br/>";
-                                        };
-        
-                                    echo ' </datalist>';
-                                    ?>
-                                    
-                               
-                                    <input type="Submit" value="Search"class="btn-primary-soft btn button-icon btn-search" style="padding-left: 25px;padding-right: 25px;padding-top: 10px;padding-bottom: 10px;">
-                                
-                                </form>
-                                
-                            </td>
+                
                
                 <!-- <tr>
                     <td colspan="4" >
                         <div style="display: flex;margin-top: 40px;">
                         <div class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49);margin-top: 5px;">Schedule a Session</div>
-                        <a href="?action=add-session&id=none&error=0" class="non-style-link"><button  class="login-btn btn-primary btn button-icon"  style="margin-left:25px;background-image: url('../img/icons/add.svg');">Add a Session</font></button>
+                        <a href="?action=add-session&id=none&error=0" class="non-style-link"><button  class="login-btn btn-primary btn button-icon btn-approve"  style="margin-left:25px;background-image: url('../img/icons/add.svg');">Add a Session</font></button>
                         </a>
                         </div>
                     </td>
@@ -193,7 +228,7 @@
                 <tr>
                     <td colspan="4" style="padding-top:10px;width: 100%;" >
                     
-                    <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)">All Appointments (<?php echo $appointment_count; ?>)</p>
+                    <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)">All Appointments</p>
 
                     </td>
                     
@@ -209,33 +244,31 @@
                         <td width="5%" style="text-align: center;">
                         Date:
                         </td>
-                        <td width="30%">
+                        <td width="10%">
                         <form action="" method="post">
                             
                             <input type="date" name="scheduledate" id="date" class="input-text filter-container-items" style="margin: 0;width: 95%;">
 
                         </td>
                         <td width="5%" style="text-align: center;">
-                        Doctor:
+                        Status:
                         </td>
-                        <td width="30%">
-                        <select name="docid" id="" class="box filter-container-items" style="width:90% ;height: 37px;margin: 0;" >
-                            <option value="" disabled selected hidden>Choose Doctor Name from the list</option><br/>
-                                
-                            <?php 
-                             
-                                $list11 = $database->query("select  * from  doctor order by docname asc;");
-
-                                for ($y=0;$y<$list11->num_rows;$y++){
-                                    $row00=$list11->fetch_assoc();
-                                    $sn=$row00["docname"];
-                                    $id00=$row00["docid"];
-                                    echo "<option value=".$id00.">$sn</option><br/>";
-                                };
-
-
-                                ?>
-
+                        <td width="15%">
+                        <select name="appointment_status" id="" class="box filter-container-items" style="width:90% ;height: 37px;margin: 0;" >
+                            <option value="" disabled selected hidden>Choose Appointment Status</option>
+                            <option value="1">Approved</option>
+                            <option value="0">Pending</option>
+                            <option value="-1">Declined</option>
+                        </select>
+                    </td>
+                    <td width="5%" style="text-align: center;">
+                        Senior Citizen:
+                        </td>
+                        <td width="15%">
+                        <select name="senior_citizen" id="" class="box filter-container-items" style="width:90% ;height: 37px;margin: 0;" >
+                            <option value="" disabled selected hidden>Filter Senior Citizens</option>
+                            <option value="senior">60 and Above</option>
+                            <option value="non_senior">Below 60</option>
                         </select>
                     </td>
                     <td width="12%">
@@ -261,14 +294,24 @@
                         }
 
                         $sqlpt2="";
-                        if(!empty($_POST["docid"])){
-                            $docid=$_POST["docid"];
-                            $sqlpt2=" doctor.docid=$docid ";
+                        if(!empty($_POST["appointment_status"])){
+                            $appointment_status=$_POST["appointment_status"];
+                            $sqlpt2=" appointment.is_confirmed=$appointment_status ";
                         }
 
-                        $sqlmain= "select appointment.appoid,schedule.scheduleid,schedule.title,doctor.docname,patient.pname,schedule.scheduledate,schedule.scheduletime,appointment.apponum,appointment.appodate from schedule inner join appointment on schedule.scheduleid=appointment.scheduleid inner join patient on patient.pid=appointment.pid inner join doctor on schedule.docid=doctor.docid WHERE appointment.is_confirmed = 0 AND appointment.status != 'Rejected'";
-                        $sqllist=array($sqlpt1,$sqlpt2);
-                        $sqlkeywords=array(" AND "," AND ");
+                        $sqlpt3="";
+                        if(!empty($_POST["senior_citizen"])){
+                            $senior_citizen=$_POST["senior_citizen"];
+                            if($senior_citizen == "senior"){
+                                $sqlpt3=" TIMESTAMPDIFF(YEAR, patient.pdob, CURDATE()) >= 60 ";
+                            } else if($senior_citizen == "non_senior"){
+                                $sqlpt3=" TIMESTAMPDIFF(YEAR, patient.pdob, CURDATE()) < 60 ";
+                            }
+                        }
+
+                        $sqlmain= "select appointment.appoid,schedule.scheduleid,schedule.title,doctor.docname,patient.pname,pdob,schedule.scheduledate,schedule.scheduletime,appointment.apponum,appointment.appodate, appointment.is_confirmed from schedule inner join appointment on schedule.scheduleid=appointment.scheduleid inner join patient on patient.pid=appointment.pid inner join doctor on schedule.docid=doctor.docid WHERE 1=1";
+                        $sqllist=array($sqlpt1,$sqlpt2,$sqlpt3);
+                        $sqlkeywords=array(" AND "," AND "," AND ");
                         $key2=0;
                         foreach($sqllist as $key){
                             if(!empty($key)){
@@ -277,16 +320,17 @@
                             };
                         };
 
+                        $sqlmain .= " ORDER BY schedule.scheduledate DESC";
                         
                         
                         //
                     }else{
-                        $sqlmain= "SELECT appointment.appoid, schedule.scheduleid, schedule.title, doctor.docname, patient.pname, schedule.scheduledate, schedule.scheduletime, appointment.apponum, appointment.appodate
+                        $sqlmain= "SELECT appointment.appoid, schedule.scheduleid, schedule.title, doctor.docname, patient.pname, patient.pdob, schedule.scheduledate, schedule.scheduletime, appointment.apponum, appointment.appodate, appointment.is_confirmed
             FROM schedule
             INNER JOIN appointment ON schedule.scheduleid = appointment.scheduleid
             INNER JOIN patient ON patient.pid = appointment.pid
             INNER JOIN doctor ON schedule.docid = doctor.docid
-            WHERE appointment.is_confirmed = 0 AND appointment.status != 'Rejected' order by schedule.scheduledate desc";
+            WHERE appointment.is_confirmed = 1 ORDER BY schedule.scheduledate DESC";
 
                     }
 
@@ -305,45 +349,57 @@
                                     Patient name
                                 </th>
                                 <th class="table-headin">
-                                    
+                                    Age
+                                </th>
+                                <th class="table-headin">
                                     Appointment number
-                                    
                                 </th>
                                
                                 
                                 <th class="table-headin">
-                                    Doctor
+                                    Senior Citizen
                                 </th>
                                 <th class="table-headin">
-                                    
-                                
                                     Session Title
-                                    
-                                    </th>
+                                </th>
                                 
                                 <th class="table-headin" style="font-size:10px">
-                                    
                                     Session Date & Time
-                                    
                                 </th>
                                 
                                 
                                 <th class="table-headin">
-                                    
-                                    Events
-                                    
+                                    Actions
                                 </tr>
                         </thead>
                         <tbody>
                         
 <?php
+function calculateAge($dob) {
+    $birthDate = new DateTime($dob);
+    $currentDate = new DateTime('now');
+    $age = $currentDate->diff($birthDate)->y;
+    return $age;
+}
+
 // Initialize the SQL query
-$sqlmain = "SELECT appointment.appoid, schedule.scheduleid, schedule.title, doctor.docname, patient.pname, schedule.scheduledate, schedule.scheduletime, appointment.apponum, appointment.appodate
-            FROM schedule
-            INNER JOIN appointment ON schedule.scheduleid = appointment.scheduleid
-            INNER JOIN patient ON patient.pid = appointment.pid
-            INNER JOIN doctor ON schedule.docid = doctor.docid
-            WHERE appointment.is_confirmed = 0 AND appointment.status != 'Rejected'";
+$sqlmain = "SELECT 
+    appointment.appoid, 
+    schedule.scheduleid, 
+    schedule.title, 
+    doctor.docname, 
+    patient.pname, 
+    patient.pdob, 
+    schedule.scheduledate, 
+    schedule.scheduletime, 
+    appointment.apponum, 
+    appointment.appodate,
+    appointment.is_confirmed
+FROM schedule
+INNER JOIN appointment ON schedule.scheduleid = appointment.scheduleid
+INNER JOIN patient ON patient.pid = appointment.pid
+INNER JOIN doctor ON schedule.docid = doctor.docid
+WHERE 1=1"; // Remove previous filtering conditions
 
 // Initialize an array to hold filter conditions
 $filters = [];
@@ -354,10 +410,20 @@ if (!empty($_POST["scheduledate"])) {
     $filters[] = "schedule.scheduledate = '$scheduledate'";
 }
 
-// Check if a doctor filter is applied
-if (!empty($_POST["docid"])) {
-    $docid = $_POST["docid"];
-    $filters[] = "doctor.docid = $docid";
+// Check if an appointment status filter is applied
+if (isset($_POST["appointment_status"]) && $_POST["appointment_status"] !== "") {
+    $status = $_POST["appointment_status"];
+    $filters[] = "appointment.is_confirmed = $status";
+}
+
+// Check if a senior citizen filter is applied
+if (isset($_POST["senior_citizen"]) && $_POST["senior_citizen"] !== "") {
+    $senior_citizen = $_POST["senior_citizen"];
+    if($senior_citizen == "senior"){
+        $filters[] = "TIMESTAMPDIFF(YEAR, patient.pdob, CURDATE()) >= 60";
+    } else if($senior_citizen == "non_senior"){
+        $filters[] = "TIMESTAMPDIFF(YEAR, patient.pdob, CURDATE()) < 60";
+    }
 }
 
 // Append filters to the SQL query if any
@@ -365,8 +431,14 @@ if (!empty($filters)) {
     $sqlmain .= " AND " . implode(" AND ", $filters);
 }
 
+// Add default ordering
+$sqlmain .= " ORDER BY schedule.scheduledate DESC";
+
 // Execute the query
 $result = $database->query($sqlmain);
+
+// Update the appointment count to reflect filtered results
+$appointment_count = ($result) ? $result->num_rows : 0;
 
 // Check if any appointments were found
 if ($result->num_rows == 0) {
@@ -394,8 +466,11 @@ if ($result->num_rows == 0) {
         $scheduledate = $row["scheduledate"];
         $scheduletime = $row["scheduletime"];
         $pname = $row["pname"];
+        $dob = $row["pdob"];
+        $age = calculateAge($dob);
         $apponum = $row["apponum"];
         $appodate = $row["appodate"];
+        $is_confirmed = $row["is_confirmed"];
 
         // Combine scheduledate and scheduletime into a single DateTime object
         $scheduledDateTime = new DateTime("$scheduledate $scheduletime");
@@ -404,7 +479,35 @@ if ($result->num_rows == 0) {
         if ($currentDateTime >= $scheduledDateTime) {
             $buttonLabel = '<button class="btn-session-passed btn-primary-soft" style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;" disabled>Session Passed</button>';
         } else {
-            $buttonLabel = '<a href="javascript:void(0);" onclick="confirmAppointment('.$appoid.', \'approve\')" class="non-style-link">
+            // Determine button state based on appointment status
+            switch ($is_confirmed) {
+                case 1: // Approved
+                    $buttonLabel = '
+                    <div class="status-badge status-approved">
+                        <div class="status-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                            </svg>
+                        </div>
+                        <span class="status-text">Approved</span>
+                    </div>';
+                    break;
+                case -1: // Rejected
+                    $buttonLabel = '
+                    <div class="status-badge status-rejected">
+                        <div class="status-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="15" y1="9" x2="9" y2="15"></line>
+                                <line x1="9" y1="9" x2="15" y2="15"></line>
+                            </svg>
+                        </div>
+                        <span class="status-text">Declined</span>
+                    </div>';
+                    break;
+                default: // Pending
+                    $buttonLabel = '<a href="javascript:void(0);" onclick="confirmAppointment('.$appoid.', \'approve\')" class="non-style-link">
                             <button class="btn-primary-soft btn button-icon btn-approve" style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;">
                                 <img src="../img/icons/approve.svg" alt="Approve" style="width: 20px; height: 20px; margin-right: 10px;">
                                 <font class="tn-in-text">Approve</font>
@@ -414,17 +517,20 @@ if ($result->num_rows == 0) {
                         <a href="javascript:void(0);" onclick="confirmAppointment('.$appoid.', \'reject\')" class="non-style-link" style="margin-left: 10px;">
                             <button class="btn-primary-soft btn button-icon btn-reject" style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;">
                                 <img src="../img/icons/reject.svg" alt="Reject" style="width: 20px; height: 20px; margin-right: 10px;">
-                                <font class="tn-in-text">Reject</font>
+                                <font class="tn-in-text">Decline</font>
                             </button>
                         </a>';
+                    break;
+            }
         }
 
         echo '<tr data-appointment-id="' . $appoid . '">
                 <td style="text-align: center;font-weight:600;"> &nbsp;' . substr($pname, 0, 25) . '</td>
+                <td style="text-align: center;">' . $age . '</td>
                 <td style="text-align: center;font-size:23px;font-weight:500; color: var(--btnnicetext);">' . $apponum . '</td>
-                <td style="text-align: center;"> &nbsp;' . substr($docname, 0, 25) . '</td>
-                <td style="text-align: center;"> &nbsp;' . substr($title, 0, 15) . '</td>
-                <td style="text-align: center;font-size:12px;">' . substr($scheduledate, 0, 10) . ' <br>' . substr($scheduletime, 0, 5) . '</td>
+                <td style="text-align: center;">' . ($age >= 60 ? 'Yes' : 'No') . '</td>
+                <td style="text-align: center;"> &nbsp;' . substr($title, 0, 30) . '</td>
+                <td style="text-align: center;font-size:12px;">' . date('F j, Y', strtotime($scheduledate)) . ' <br>' . date('h:i A', strtotime($scheduletime)) . '</td>
                 <td>
                     <div style="display:flex;justify-content: center;">
                         ' . $buttonLabel . '
@@ -448,16 +554,16 @@ if ($result->num_rows == 0) {
 function confirmAppointment(appointmentId, action) {
     if (action === 'reject') {
         Swal.fire({
-            title: 'Reject Appointment',
-            text: 'Please provide a reason for rejection:',
+            title: 'Decline Appointment',
+            text: 'Please provide a reason for decline:',
             input: 'text',
-            inputPlaceholder: 'Reason for rejection',
+            inputPlaceholder: 'Reason for decline',
             inputValue: 'Scheduling Conflict',
             inputAttributes: {
                 maxlength: 20 // Set the maximum length here
             },
             showCancelButton: true,
-            confirmButtonText: 'Reject',
+            confirmButtonText: 'Decline',
             cancelButtonText: 'Cancel',
             preConfirm: (reason) => {
                 if (!reason) {
@@ -629,7 +735,7 @@ if ($_GET) {
                                 <tr>
                                     <td colspan="2">
                                         <input type="reset" value="Reset" class="login-btn btn-primary-soft btn" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        <input type="submit" value="Place this Session" class="login-btn btn-primary btn" name="shedulesubmit">
+                                        <input type="submit" value="Place this Session" class="login-btn btn-primary btn" name="schedulesubmit">
                                     </td>
                                 </tr>
                             </form>
@@ -870,16 +976,36 @@ if ($_GET) {
 
             // Determine next steps based on action
             if ($action == 'approve') {
-                // Fetch max appointment number
-                $maxAppoNumQuery = "SELECT COALESCE(MAX(apponum), 0) + 1 as next_apponum 
-                    FROM appointment 
-                    WHERE scheduleid = ? AND status = 'Approved'";
-                $stmt = $database->prepare($maxAppoNumQuery);
-                $stmt->bind_param("i", $details['scheduleid']);
-                $stmt->execute();
-                $maxResult = $stmt->get_result();
-                $maxRow = $maxResult->fetch_assoc();
-                $nextAppoNum = $maxRow['next_apponum'];
+                // Modify the appointment number generation logic
+                $nextNumQuery = "SELECT 
+                    COALESCE(
+                        (SELECT MAX(CAST(apponum AS UNSIGNED)) 
+                         FROM appointment 
+                         WHERE scheduleid = ? 
+                         AND (is_confirmed = 1 OR status = 'Approved')), 
+                    0) + 1 AS next_apponum";
+
+                $nextNumStmt = $database->prepare($nextNumQuery);
+                $nextNumStmt->bind_param("i", $details['scheduleid']);
+                $nextNumStmt->execute();
+                $nextNumResult = $nextNumStmt->get_result();
+                $nextNumRow = $nextNumResult->fetch_assoc();
+
+                $nextAppoNum = $nextNumRow['next_apponum'];
+
+                // Extensive logging for debugging
+                error_log("Appointment Number Generation Debug:\n" . print_r([
+                    'Appointment ID' => $appointmentId,
+                    'Schedule ID' => $details['scheduleid'],
+                    'Current Appointment Number' => $details['apponum'],
+                    'Generated Next Appointment Number' => $nextAppoNum,
+                    'Existing Appointments' => $database->query("
+                        SELECT appoid, apponum, is_confirmed 
+                        FROM appointment 
+                        WHERE scheduleid = {$details['scheduleid']} 
+                        ORDER BY CAST(apponum AS UNSIGNED)
+                    ")->fetch_all(MYSQLI_ASSOC)
+                ], true), 3, dirname(__FILE__) . '/appointment_number_debug.log');
 
                 // Update appointment
                 $updateQuery = "UPDATE appointment 

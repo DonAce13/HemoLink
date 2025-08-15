@@ -1,8 +1,8 @@
 @import url('font-inter.css');
 :root {
-  --primarycolor: #2d6a4f;
-  --primarycolorhover: #40916c;
-  --btnice:#D8EBFA;
+  --primarycolor: #3b8665;
+  --primarycolorhover: #14412d;
+  --btnice:#146640;
   --btnnicetext:#4F7DF1;
 }
 
@@ -109,7 +109,6 @@ font.logo-sub{
     font-weight: 300;
     line-height: 1.5;
     color: #212529;
-    background-color: #fff;
     background-clip: padding-box;
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -428,10 +427,14 @@ input[type=search]:focus {
 .menu-icon-patient{
   background-image: url('../img/icons/patients.svg');
 }
+.menu-icon-logs, .menu-icon-logs-svg {
+  background-image: url("data:image/svg+xml,%3Csvg width='22' height='22' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='5' y='4' width='14' height='17' rx='3' stroke='%23007bff' stroke-width='2' fill='%23eaf2fb'/%3E%3Crect x='9' y='2' width='6' height='4' rx='2' stroke='%23007bff' stroke-width='2' fill='%23fff'/%3E%3Cline x1='8' y1='9' x2='16' y2='9' stroke='%23007bff' stroke-width='1.5' stroke-linecap='round'/%3E%3Cline x1='8' y1='13' x2='16' y2='13' stroke='%23007bff' stroke-width='1.5' stroke-linecap='round'/%3E%3Cline x1='8' y1='17' x2='13' y2='17' stroke='%23007bff' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: 25px 25px;
+}
 .menu-icon-settings{
   background-image: url('../img/icons/settings.svg');
 }
-
 .menu-icon-session{
   background-image: url('../img/icons/session.svg');
 }
@@ -442,47 +445,44 @@ input[type=search]:focus {
 
 
 .menu-icon-dashbord:hover,.menu-icon-dashbord-active{
-  color: var(--primarycolor);
+  color: var(--primarycolorhover);
 
   background-image: url('../img/icons/dashboard-hover.svg');
 }
 
 
 .menu-icon-doctor:hover,.menu-icon-doctor-active{
-  color: var(--primarycolor);
+  color: var(--primarycolorhover);
   background-image: url('../img/icons/doctors-hover.svg');
 }
 .menu-icon-schedule:hover,.menu-icon-schedule-active{
-  color: var(--primarycolor);
+  color: var(--primarycolorhover);
   
   background-image: url('../img/icons/schedule-hover.svg');
 }
 .menu-icon-appoinment:hover,.menu-icon-appoinment-active{
-  color: var(--primarycolor);
+  color: var(--primarycolorhover);
   
   background-image: url('../img/icons/book-hover.svg');
 }
 .menu-icon-patient:hover,.menu-icon-patient-active{
-  color: var(--primarycolor);
+  color: var(--primarycolorhover);
   
   background-image: url('../img/icons/patients-hover.svg');
 }
 
 .menu-icon-settings:hover,.menu-icon-settings-active{
-  color: var(--primarycolor);
+  color: var(--primarycolorhover);
   
   background-image: url('../img/icons/settings-iceblue.svg');
 }
 
 .menu-icon-session:hover,.menu-icon-session-active{
-  color: var(--primarycolor);
-  padding-top: 12px;
-  padding-bottom: 12px;
-  margin-top: 10px;
+  color: var(--primarycolorhover);
   background-image: url('../img/icons/session-iceblue.svg');
 }
 .menu-icon-home:hover,.menu-icon-home-active{
-  color: var(--primarycolor);
+  color: var(--primarycolorhover);
   
   background-image: url('../img/icons/home-iceblue.svg');
 }
@@ -630,6 +630,120 @@ input[type=search]:focus {
       height: 40px;
   }
 }
+
+/* Approve and Reject Button Hover Effects */
+.btn-approve,
+.btn-reject {
+    transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1) !important;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    will-change: transform, box-shadow;
+}
+
+.btn-approve {
+    background-color: #8ae98d !important;
+    color: white !important;
+    border: 1px solid #45a049 !important;
+}
+
+.btn-approve:hover {
+    background-color: #2d6a4f !important;
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    border-color: #2d6a4f !important;
+}
+
+.btn-approve:hover svg {
+    stroke: white;
+    transform: scale(1.1);
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-reject {
+    background-color: #fc6358 !important;
+    color: white !important;
+    border: 1px solid #d32f2f !important;
+}
+
+.btn-reject:hover {
+    background-color: #b71c1c !important;
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    border-color: #a01616 !important;
+}
+
+.btn-reject:hover svg {
+    stroke: white;
+    transform: scale(1.1);
+    transition: all 0.2s ease-in-out;
+}
+
+/* Appointment Button Specific Styles */
+.btn-approved {
+    background-color: #696969 !important;
+    color: white !important;
+    border: 1px solid #45a049 !important;
+    padding-top: 2px !important;
+    padding-bottom: 12px !important;
+    margin-top: 10px !important;
+    cursor: not-allowed;
+    border-radius: 15px;
+}
+
+.btn-rejected {
+    background-color: #F44336 !important;
+    color: white !important;
+    border: 1px solid #d32f2f !important;
+    padding-left: 20px !important;
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
+    margin-top: 10px !important;
+    cursor: not-allowed;
+    border-radius: 15px;
+}
+
+.btn-approved:hover {
+  background-color: #008612 !important;
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  border-color: #00460c !important;
+}
+
+.btn-rejected:hover {
+  background-color: #d32f2f !important;
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  border-color: #b71c1c !important;
+}
+
+.btn-session-passed {
+    background-color: #6c757d !important;
+    color: white !important;
+    padding-left: 20px !important;
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
+    margin-top: 10px !important;
+    cursor: not-allowed;
+}
+
+.btn-approved svg,
+.btn-rejected svg {
+  padding-left: 20px !important;
+  padding-top: 12px !important;
+  padding-bottom: 12px !important;
+  margin-top: 10px !important;
+}
+
+.btn-approve,
+.btn-reject {
+    padding-left: 20px !important;
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
+    margin-top: 10px !important;
+}
+
+/* Consolidated Disabled Button Style */
 
 
 /* Hide scrollbar but keep functionality */
@@ -819,6 +933,4 @@ input[type=search]:focus {
 .sub-table th, .sub-table td {
     font-size: 14px;
 }
-}
-
-}
+}}

@@ -1,60 +1,73 @@
 <?php
-// Import database
+session_start();
 include("../connection.php");
 
-if ($_POST) {
-    // Check for all required fields
-    if (empty($_POST['name']) || empty($_POST['email']) || empty($_POST['phone_number']) || empty($_POST['current_password'])) {
-        $error = '3'; // Set error for missing fields
-    } else {
-        // Proceed with processing the form
-        $name = $_POST['name'];
-        $oldemail = $_POST['oldemail'];
-        $address = $_POST['address'];
-        $email = $_POST['email'];
-        $phone_number = $_POST['phone_number'];
-        $password = $_POST['password'];
-        $cpassword = $_POST['cpassword'];
-        $current_password = $_POST['current_password'];
-        $id = $_POST['id00'];
+// Check if user is logged in
+if (!isset($_SESSION["user"]) || $_SESSION["user"] == "" || $_SESSION['usertype'] != 'p') {
+    header("location: ../login.php");
+    exit;
+}
 
-        if ($password == $cpassword) {
-            // Check if user exists and validate current password
-            $sql = "SELECT ppassword FROM patient WHERE pid = ?";
-            $stmt = $database->prepare($sql);
-            $stmt->bind_param("i", $id);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $row = $result->fetch_assoc();
-
-            if (password_verify($current_password, $row['ppassword'])) {
-                // Update patient details
-                $sql1 = "UPDATE patient SET pemail=?, pname=?, ppassword=?, phone_number=?, paddress=? WHERE pid=?";
-                $stmt = $database->prepare($sql1);
-                $stmt->bind_param("ssssi", $email, $name, $password, $phone_number, $address, $id);
-                $stmt->execute();
-
-                // Update webuser email
-                $sql1 = "UPDATE webuser SET email=? WHERE email=?";
-                $stmt = $database->prepare($sql1);
-                $stmt->bind_param("ss", $email, $oldemail);
-                $stmt->execute();
-                $error = '4';
-            } else {
-                // Handle incorrect current password
-                echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
-                echo '<script>Swal.fire({
-                    title: "Error!",
-                    text: "Current password is incorrect.",
-                    icon: "error",
-                    confirmButtonText: "OK"
-                });</script>';
-            }
-        } else {
-            $error = '2'; // Passwords do not match
-        }
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Get user ID from session email
+    $useremail = $_SESSION["user"];
+    
+    // First verify the user exists
+    $sqlmain = "SELECT pid, ppassword FROM patient WHERE pemail=? AND is_deleted=0";
+    $stmt = $database->prepare($sqlmain);
+    $stmt->bind_param("s", $useremail);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($result->num_rows === 0) {
+        header("Location: settings.php?action=edit&error=6");
+        exit;
     }
-} // Removed else statement to avoid setting error 3 unnecessarily
-
-header("location: settings.php?action=edit&error=" . $error . "&id=" . $id);
-?>
+    
+    $userfetch = $result->fetch_assoc();
+    $userid = $userfetch["pid"];
+    $current_password = trim($_POST["current_password"] ?? '');
+    $password = trim($_POST["password"] ?? '');
+    $cpassword = trim($_POST["cpassword"] ?? '');
+    
+    // Validate inputs
+    if (empty($current_password)) {
+        header("Location: settings.php?action=edit&id=" . $userid . "&error=3");
+        exit;
+    }
+    
+    // Verify current password
+    if ($current_password !== $userfetch["ppassword"]) {
+        header("Location: settings.php?action=edit&id=" . $userid . "&error=5");
+        exit;
+    }
+    
+    // If new password is provided, validate it
+    if (!empty($password)) {
+        if ($password !== $cpassword) {
+            header("Location: settings.php?action=edit&id=" . $userid . "&error=2");
+        exit;
+    }
+    
+        // Update password
+        $sql = "UPDATE patient SET ppassword=? WHERE pid=? AND is_deleted=0";
+        $stmt = $database->prepare($sql);
+        $stmt->bind_param("si", $password, $userid);
+        
+        if ($stmt->execute()) {
+            header("Location: settings.php?action=edit&id=" . $userid . "&error=4");
+            exit;
+        } else {
+            header("Location: settings.php?action=edit&id=" . $userid . "&error=3");
+            exit;
+        }
+    } else {
+        // No new password provided
+        header("Location: settings.php?action=edit&id=" . $userid . "&error=3");
+                        exit;
+    }
+} else {
+    // Not a POST request
+    header("Location: settings.php");
+    exit;
+}

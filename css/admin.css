@@ -44,12 +44,13 @@
 .menu-container{
     width: 100%;
     border-spacing: 0;
+    margin-top: 50px;
     
 }
 
 .profile-title{
     font-weight: 500;
-    color: #161c2d;
+    color: #fff;
     font-size: 22px;
     margin: 0;
     text-align: left;
@@ -58,7 +59,7 @@
 
 .profile-subtitle{
     font-weight: 300;
-    color: #8492a6;
+    color: #fff;
     font-size: 15px;
     margin: 0;
     text-align: left;
@@ -221,6 +222,7 @@
     @media (max-width: 767px){
      margin-left: 20vh;;
     }
+    color: #fff;
 }
 
 
@@ -237,7 +239,7 @@
 .menu {
     width: 20%;
     min-width: 200px;
-    background: linear-gradient(to bottom, #69ee9cb7, #2aa559, #0e5a2c);
+    background:  #40916c;
     overflow-y: auto;
     position: sticky;
     top: 0;

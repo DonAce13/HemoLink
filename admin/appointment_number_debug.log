@@ -1,0 +1,400 @@
+Appointment Number Generation Debug:
+Array
+(
+    [Appointment ID] => 22
+    [Schedule ID] => 128
+    [Current Appointment Number] => 
+    [Generated Next Appointment Number] => 1
+    [Existing Appointments] => Array
+        (
+            [0] => Array
+                (
+                    [appoid] => 22
+                    [apponum] => 1
+                    [is_confirmed] => 0
+                )
+
+        )
+
+)
+Appointment Number Generation Debug:
+Array
+(
+    [Appointment ID] => 26
+    [Schedule ID] => 1
+    [Current Appointment Number] => 
+    [Generated Next Appointment Number] => 1
+    [Existing Appointments] => Array
+        (
+            [0] => Array
+                (
+                    [appoid] => 26
+                    [apponum] => 1
+                    [is_confirmed] => 0
+                )
+
+        )
+
+)
+Appointment Number Generation Debug:
+Array
+(
+    [Appointment ID] => 27
+    [Schedule ID] => 1
+    [Current Appointment Number] => 
+    [Generated Next Appointment Number] => 2
+    [Existing Appointments] => Array
+        (
+            [0] => Array
+                (
+                    [appoid] => 26
+                    [apponum] => 1
+                    [is_confirmed] => 1
+                )
+
+            [1] => Array
+                (
+                    [appoid] => 27
+                    [apponum] => 2
+                    [is_confirmed] => 0
+                )
+
+        )
+
+)
+Appointment Number Generation Debug:
+Array
+(
+    [Appointment ID] => 5
+    [Schedule ID] => 146
+    [Current Appointment Number] => 
+    [Generated Next Appointment Number] => 1
+    [Existing Appointments] => Array
+        (
+            [0] => Array
+                (
+                    [appoid] => 5
+                    [apponum] => 1
+                    [is_confirmed] => 0
+                )
+
+        )
+
+)
+Appointment Number Generation Debug:
+Array
+(
+    [Appointment ID] => 7
+    [Schedule ID] => 164
+    [Current Appointment Number] => 
+    [Generated Next Appointment Number] => 1
+    [Existing Appointments] => Array
+        (
+            [0] => Array
+                (
+                    [appoid] => 7
+                    [apponum] => 1
+                    [is_confirmed] => 0
+                )
+
+        )
+
+)
+Appointment Number Generation Debug:
+Array
+(
+    [Appointment ID] => 4
+    [Schedule ID] => 158
+    [Current Appointment Number] => 
+    [Generated Next Appointment Number] => 1
+    [Existing Appointments] => Array
+        (
+            [0] => Array
+                (
+                    [appoid] => 4
+                    [apponum] => 1
+                    [is_confirmed] => 0
+                )
+
+        )
+
+)
+Appointment Number Generation Debug:
+Array
+(
+    [Appointment ID] => 1005
+    [Schedule ID] => 167
+    [Current Appointment Number] => 
+    [Generated Next Appointment Number] => 1
+    [Existing Appointments] => Array
+        (
+            [0] => Array
+                (
+                    [appoid] => 1005
+                    [apponum] => 1
+                    [is_confirmed] => 0
+                )
+
+        )
+
+)
+Appointment Number Generation Debug:
+Array
+(
+    [Appointment ID] => 1006
+    [Schedule ID] => 167
+    [Current Appointment Number] => 
+    [Generated Next Appointment Number] => 2
+    [Existing Appointments] => Array
+        (
+            [0] => Array
+                (
+                    [appoid] => 1005
+                    [apponum] => 1
+                    [is_confirmed] => 1
+                )
+
+            [1] => Array
+                (
+                    [appoid] => 1006
+                    [apponum] => 2
+                    [is_confirmed] => 0
+                )
+
+        )
+
+)
+Appointment Number Generation Debug:
+Array
+(
+    [Appointment ID] => 1007
+    [Schedule ID] => 168
+    [Current Appointment Number] => 
+    [Generated Next Appointment Number] => 1
+    [Existing Appointments] => Array
+        (
+            [0] => Array
+                (
+                    [appoid] => 1007
+                    [apponum] => 1
+                    [is_confirmed] => 0
+                )
+
+        )
+
+)
+Appointment Number Generation Debug:
+Array
+(
+    [Appointment ID] => 1011
+    [Schedule ID] => 27
+    [Current Appointment Number] => 
+    [Generated Next Appointment Number] => 1
+    [Existing Appointments] => Array
+        (
+            [0] => Array
+                (
+                    [appoid] => 1011
+                    [apponum] => 1
+                    [is_confirmed] => 0
+                )
+
+            [1] => Array
+                (
+                    [appoid] => 1012
+                    [apponum] => 2
+                    [is_confirmed] => 0
+                )
+
+        )
+
+)
+Appointment Number Generation Debug:
+Array
+(
+    [Appointment ID] => 1012
+    [Schedule ID] => 27
+    [Current Appointment Number] => 
+    [Generated Next Appointment Number] => 2
+    [Existing Appointments] => Array
+        (
+            [0] => Array
+                (
+                    [appoid] => 1011
+                    [apponum] => 1
+                    [is_confirmed] => 1
+                )
+
+            [1] => Array
+                (
+                    [appoid] => 1012
+                    [apponum] => 2
+                    [is_confirmed] => 0
+                )
+
+        )
+
+)
+Appointment Number Generation Debug:
+Array
+(
+    [Appointment ID] => 1009
+    [Schedule ID] => 24
+    [Current Appointment Number] => 
+    [Generated Next Appointment Number] => 1
+    [Existing Appointments] => Array
+        (
+            [0] => Array
+                (
+                    [appoid] => 1009
+                    [apponum] => 1
+                    [is_confirmed] => 0
+                )
+
+            [1] => Array
+                (
+                    [appoid] => 1010
+                    [apponum] => 2
+                    [is_confirmed] => 0
+                )
+
+        )
+
+)
+Appointment Number Generation Debug:
+Array
+(
+    [Appointment ID] => 1010
+    [Schedule ID] => 24
+    [Current Appointment Number] => 
+    [Generated Next Appointment Number] => 2
+    [Existing Appointments] => Array
+        (
+            [0] => Array
+                (
+                    [appoid] => 1009
+                    [apponum] => 1
+                    [is_confirmed] => 1
+                )
+
+            [1] => Array
+                (
+                    [appoid] => 1010
+                    [apponum] => 2
+                    [is_confirmed] => 0
+                )
+
+        )
+
+)
+Appointment Number Generation Debug:
+Array
+(
+    [Appointment ID] => 1007
+    [Schedule ID] => 23
+    [Current Appointment Number] => 
+    [Generated Next Appointment Number] => 1
+    [Existing Appointments] => Array
+        (
+            [0] => Array
+                (
+                    [appoid] => 1007
+                    [apponum] => 1
+                    [is_confirmed] => 0
+                )
+
+        )
+
+)
+Appointment Number Generation Debug:
+Array
+(
+    [Appointment ID] => 1013
+    [Schedule ID] => 23
+    [Current Appointment Number] => 
+    [Generated Next Appointment Number] => 2
+    [Existing Appointments] => Array
+        (
+            [0] => Array
+                (
+                    [appoid] => 1007
+                    [apponum] => 1
+                    [is_confirmed] => 1
+                )
+
+            [1] => Array
+                (
+                    [appoid] => 1013
+                    [apponum] => 2
+                    [is_confirmed] => 0
+                )
+
+        )
+
+)
+Appointment Number Generation Debug:
+Array
+(
+    [Appointment ID] => 1014
+    [Schedule ID] => 24
+    [Current Appointment Number] => 
+    [Generated Next Appointment Number] => 3
+    [Existing Appointments] => Array
+        (
+            [0] => Array
+                (
+                    [appoid] => 1009
+                    [apponum] => 1
+                    [is_confirmed] => 1
+                )
+
+            [1] => Array
+                (
+                    [appoid] => 1010
+                    [apponum] => 2
+                    [is_confirmed] => 1
+                )
+
+            [2] => Array
+                (
+                    [appoid] => 1014
+                    [apponum] => 3
+                    [is_confirmed] => 0
+                )
+
+        )
+
+)
+Appointment Number Generation Debug:
+Array
+(
+    [Appointment ID] => 1015
+    [Schedule ID] => 22
+    [Current Appointment Number] => 
+    [Generated Next Appointment Number] => 1
+    [Existing Appointments] => Array
+        (
+            [0] => Array
+                (
+                    [appoid] => 1006
+                    [apponum] => 1
+                    [is_confirmed] => -1
+                )
+
+            [1] => Array
+                (
+                    [appoid] => 1008
+                    [apponum] => 2
+                    [is_confirmed] => -1
+                )
+
+            [2] => Array
+                (
+                    [appoid] => 1015
+                    [apponum] => 3
+                    [is_confirmed] => 0
+                )
+
+        )
+
+)
